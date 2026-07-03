@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* ── Somnia palette: calm night-sky lavender ── */
+  --color-night-50: #f6f5fc;
+  --color-night-100: #edebf8;
+  --color-night-200: #d9d5f0;
+  --color-night-300: #bcb4e3;
+  --color-night-400: #9a8cd2;
+  --color-night-500: #7f6ac1;
+  --color-night-600: #6d51ae;
+  --color-night-700: #5e4394;
+  --color-night-800: #4e3979;
+  --color-night-900: #423264;
+  --color-night-950: #171126;
+
+  --color-dusk-50: #fdf7f2;
+  --color-dusk-100: #fbeee2;
+  --color-dusk-200: #f6d9c0;
+  --color-dusk-300: #efbd94;
+  --color-dusk-400: #e69a66;
+  --color-dusk-500: #de7f45;
+  --color-dusk-600: #cf673a;
+
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, serif;
+
+  --radius-xl2: 1.25rem;
+
+  --shadow-dreamy: 0 4px 24px -6px rgb(94 67 148 / 0.14), 0 2px 8px -4px rgb(94 67 148 / 0.08);
+  --shadow-dreamy-lg: 0 12px 40px -8px rgb(94 67 148 / 0.22), 0 4px 12px -6px rgb(94 67 148 / 0.1);
+
+  --animate-fade-up: fade-up 0.5s ease both;
+  --animate-fade-in: fade-in 0.4s ease both;
+  --animate-twinkle: twinkle 3.5s ease-in-out infinite;
+  --animate-drift: drift 22s linear infinite;
+  --animate-pulse-soft: pulse-soft 2.2s ease-in-out infinite;
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.9; }
+  }
+  @keyframes drift {
+    from { transform: translateX(-4%); }
+    to { transform: translateX(4%); }
+  }
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+}
+
+:root {
+  --bg: #faf9fe;
+  --surface: #ffffff;
+  --surface-2: #f3f1fb;
+  --border: #e6e2f4;
+  --text: #2b2440;
+  --text-muted: #6f6790;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0d0b17;
+  --surface: #151125;
+  --surface-2: #1e1834;
+  --border: #2a2347;
+  --text: #ece9f8;
+  --text-muted: #9d94c4;
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: #7f6ac1;
+    color: #fff;
+  }
+  /* Accessible focus indicators (docs/05 accessibility) */
+  :focus-visible {
+    outline: 2px solid #7f6ac1;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@utility surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+@utility surface-2 {
+  background: var(--surface-2);
+}
+@utility text-body {
+  color: var(--text);
+}
+@utility text-muted {
+  color: var(--text-muted);
+}
+@utility border-base {
+  border-color: var(--border);
+}
+@utility bg-base {
+  background: var(--bg);
+}
+
+@utility card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 24px -6px rgb(94 67 148 / 0.1), 0 2px 8px -4px rgb(94 67 148 / 0.06);
+}
+
+@utility input-base {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.85rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.925rem;
+  color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  &::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
+  }
+  &:focus {
+    outline: none;
+    border-color: #9a8cd2;
+    box-shadow: 0 0 0 3px rgb(127 106 193 / 0.18);
+  }
+}
+
+/* Night-sky hero backdrop */
+.night-sky {
+  background:
+    radial-gradient(1200px 600px at 70% -10%, rgba(127, 106, 193, 0.35), transparent 60%),
+    radial-gradient(900px 500px at 15% 10%, rgba(222, 127, 69, 0.16), transparent 55%),
+    linear-gradient(180deg, #171126 0%, #241d3f 55%, #2f2752 100%);
+}
+
+/* Print: hide chrome, show report content only (docs/03 export PDF) */
+@media print {
+  .no-print { display: none !important; }
+  .print-area { box-shadow: none !important; border: none !important; }
+  body { background: #fff; }
+}
+
+/* Reduced motion (docs/12 motion) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

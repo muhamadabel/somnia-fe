@@ -1,0 +1,168 @@
+import Link from "next/link";
+import { getCurrentUser } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { PageHeader } from "@/components/layout/page-header";
+import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ReactionBar } from "@/components/community/reaction-bar";
+import { safeParseJson, timeAgo, truncate } from "@/lib/utils";
+import { emotionLabel } from "@/lib/constants";
+import { symbolLabel } from "@/lib/ai/lexicon";
+import { HeartHandshake, MessageCircle, Search } from "lucide-react";
+import type { Prisma } from "@prisma/client";
+
+export const metadata = { title: "Komunitas" };
+
+const PAGE_SIZE = 10;
+
+interface PostMeta {
+  emotions: Array<{ name: string; color: string }>;
+  symbols: string[];
+  mood: string | null;
+}
+
+export default async function CommunityPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
+  const user = (await getCurrentUser())!;
+  const sp = await searchParams;
+  const q = sp.q?.trim() ?? "";
+  const sort = sp.sort ?? "recent";
+  const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
+
+  const where: Prisma.CommunityPostWhereInput = {
+    deletedAt: null,
+    ...(q ? { OR: [{ title: { contains: q } }, { content: { contains: q } }] } : {}),
+  };
+
+  const [total, posts] = await Promise.all([
+    db.communityPost.count({ where }),
+    db.communityPost.findMany({
+      where,
+      orderBy:
+        sort === "top"
+          ? [{ reactions: { _count: "desc" } }, { createdAt: "desc" }]
+          : { createdAt: "desc" },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      include: {
+        user: { select: { anonName: true } },
+        reactions: true,
+        _count: { select: { comments: { where: { deletedAt: null } } } },
+      },
+    }),
+  ]);
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  const link = (patch: Record<string, string>) => {
+    const params = new URLSearchParams();
+    const merged = { q, sort, page: "", ...patch };
+    for (const [k, v] of Object.entries(merged)) if (v && v !== "recent") params.set(k, v);
+    const s = params.toString();
+    return `/community${s ? `?${s}` : ""}`;
+  };
+
+  return (
+    <>
+      <PageHeader
+        title="Komunitas"
+        subtitle="Mimpi yang dibagikan secara anonim oleh sesama pemimpi. Bersikaplah baik — seseorang mempercayakan malamnya pada kita."
+      />
+
+      <div className="card p-4 mb-6 flex flex-wrap gap-3 items-center">
+        <form method="GET" className="flex gap-2 flex-1 min-w-60">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted" aria-hidden />
+            <input type="search" name="q" defaultValue={q} placeholder="Cari mimpi yang dibagikan…" aria-label="Cari komunitas" className="input-base pl-9" />
+          </div>
+          {sort !== "recent" && <input type="hidden" name="sort" value={sort} />}
+          <button type="submit" className="bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-xl px-4 cursor-pointer transition-colors">
+            Cari
+          </button>
+        </form>
+        <div className="flex rounded-xl surface-2 p-1" role="tablist" aria-label="Urutkan feed">
+          <Link href={link({ sort: "recent" })} role="tab" aria-selected={sort === "recent"} className={`px-3 py-1.5 rounded-lg text-sm font-medium ${sort === "recent" ? "surface shadow-dreamy text-body" : "text-muted"}`}>
+            Terbaru
+          </Link>
+          <Link href={link({ sort: "top" })} role="tab" aria-selected={sort === "top"} className={`px-3 py-1.5 rounded-lg text-sm font-medium ${sort === "top" ? "surface shadow-dreamy text-body" : "text-muted"}`}>
+            Paling disukai
+          </Link>
+        </div>
+      </div>
+
+      {posts.length === 0 ? (
+        <EmptyState
+          icon={<HeartHandshake className="size-8" />}
+          title={q ? "Tidak ada postingan yang cocok" : "Belum ada mimpi dibagikan"}
+          message={q ? "Coba kata kunci lain." : "Jadilah yang pertama — buka salah satu mimpimu dan tekan Bagikan."}
+          action={
+            <Link href="/dreams" className="inline-flex items-center gap-2 bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-xl px-5 py-2.5 transition-colors">
+              Jelajahi mimpiku
+            </Link>
+          }
+        />
+      ) : (
+        <div className="space-y-4 max-w-3xl">
+          {posts.map((post) => {
+            const meta = safeParseJson<PostMeta>(post.meta, { emotions: [], symbols: [], mood: null });
+            const counts: Record<string, number> = {};
+            for (const r of post.reactions) counts[r.type] = (counts[r.type] ?? 0) + 1;
+            const mine = post.reactions.filter((r) => r.userId === user.id).map((r) => r.type);
+            return (
+              <article key={post.id} className="card p-5 hover:shadow-dreamy-lg transition-shadow">
+                <Link href={`/community/${post.id}`} className="block group">
+                  <div className="flex items-center gap-2.5 text-xs text-muted">
+                    <span className="size-7 rounded-full bg-gradient-to-br from-night-300 to-night-600 text-white grid place-items-center text-[11px] font-semibold" aria-hidden>
+                      {post.user.anonName.slice(0, 1)}
+                    </span>
+                    <span className="font-medium text-body">{post.user.anonName}</span>
+                    <span aria-hidden>·</span>
+                    <time>{timeAgo(post.createdAt)}</time>
+                  </div>
+                  <h2 className="mt-2.5 font-semibold text-body text-lg group-hover:text-night-600 dark:group-hover:text-night-300 transition-colors">
+                    {post.title}
+                  </h2>
+                  <p className="mt-1.5 text-sm text-muted leading-relaxed">{truncate(post.content, 260)}</p>
+                  {(meta.emotions.length > 0 || meta.symbols.length > 0) && (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {meta.emotions.slice(0, 2).map((e) => (
+                        <Badge key={e.name} color={e.color}>{emotionLabel(e.name)}</Badge>
+                      ))}
+                      {meta.symbols.slice(0, Math.max(0, 3 - Math.min(meta.emotions.length, 2))).map((s) => (
+                        <Badge key={s}>✧ {symbolLabel(s)}</Badge>
+                      ))}
+                    </div>
+                  )}
+                </Link>
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <ReactionBar postId={post.id} counts={counts} mine={mine} />
+                  <Link href={`/community/${post.id}`} className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-body">
+                    <MessageCircle className="size-3.5" /> {post._count.comments} komentar
+                  </Link>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <nav className="mt-8 flex items-center justify-center gap-2" aria-label="Paginasi">
+          {page > 1 && (
+            <Link href={link({ page: String(page - 1) })} className="surface border-base rounded-xl px-4 py-2 text-sm text-body hover:bg-(--surface-2)">
+              ← Sebelumnya
+            </Link>
+          )}
+          <span className="text-sm text-muted px-2">Halaman {page} dari {totalPages}</span>
+          {page < totalPages && (
+            <Link href={link({ page: String(page + 1) })} className="surface border-base rounded-xl px-4 py-2 text-sm text-body hover:bg-(--surface-2)">
+              Berikutnya →
+            </Link>
+          )}
+        </nav>
+      )}
+    </>
+  );
+}
