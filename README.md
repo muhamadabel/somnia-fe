@@ -97,13 +97,22 @@ docs/            dokumen spesifikasi (00–16)
 
 ---
 
-## ☁️ Deploy (database Supabase)
+## ☁️ Deploy / jalankan di server sendiri
 
-Untuk produksi, ganti SQLite dengan **PostgreSQL Supabase**. Panduan lengkap langkah-demi-langkah ada di repo backend:
+📘 **Panduan lengkap ada di [`DEPLOY.md`](DEPLOY.md)** — cara menjalankan di komputer/laptop sendiri sebagai server, dari jaringan lokal sampai diakses dari internet.
 
-👉 **https://github.com/muhamadabel/somnia-be-#-setup-database-di-supabase**
+Karena aplikasi ini **mandiri** (SQLite + penyimpanan lokal + AI gratis), di server dengan disk permanen tinggal:
 
-Ringkasnya: buat project Supabase → ubah `provider` Prisma ke `postgresql` + tambah `directUrl` → set `DATABASE_URL`/`DIRECT_URL` → `npx prisma db push && npx prisma db seed`. Host aplikasi Next.js di Vercel/Railway/Render.
+```bash
+npm install
+npm run setup          # buat DB + data demo
+# edit .env → isi SESSION_SECRET
+npm run build && npm start   # http://localhost:3000
+```
+
+Biar tetap nyala: pakai `pm2` (lihat [DEPLOY.md](DEPLOY.md)). Untuk diakses dari HP lain di WiFi yang sama: `http://<IP-server>:3000`. Untuk dari internet: **Cloudflare Tunnel** (gratis).
+
+**Opsional — PostgreSQL/Supabase:** kalau mau database server-grade, panduannya di [repo backend](https://github.com/muhamadabel/somnia-be-#-setup-database-di-supabase).
 
 ---
 
