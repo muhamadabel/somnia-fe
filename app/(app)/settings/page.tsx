@@ -28,7 +28,7 @@ export default function SettingsPage() {
   if (loading || !data) return <PageSkeleton />;
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-2xl mx-auto">
       <PageHeader title="Pengaturan" />
       <SettingsForm
         user={{

@@ -53,7 +53,7 @@ export default function CommunityPostPage() {
   const meta = safeParseJson<PostMeta>(post.meta, { emotions: [], symbols: [], mood: null });
 
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-3xl mx-auto">
       <Link href="/community" className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-body mb-4">
         <ArrowLeft className="size-4" /> Feed komunitas
       </Link>

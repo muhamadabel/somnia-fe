@@ -53,7 +53,7 @@ export default function CommunityPage() {
   };
 
   return (
-    <>
+    <div className="max-w-3xl mx-auto">
       <PageHeader
         title="Komunitas"
         subtitle="Dibagikan secara anonim — bersikaplah baik."
@@ -150,6 +150,6 @@ export default function CommunityPage() {
           )}
         </nav>
       )}
-    </>
+    </div>
   );
 }

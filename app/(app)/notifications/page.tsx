@@ -9,7 +9,7 @@ export default function NotificationsPage() {
   const { data, loading } = useApi<NotificationItem[]>("/api/notifications");
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-2xl mx-auto">
       <PageHeader title="Notifikasi" />
       {loading || !data ? <PageSkeleton /> : <NotificationList initial={data} />}
     </div>
