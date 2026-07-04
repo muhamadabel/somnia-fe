@@ -65,14 +65,15 @@ export function AnalysisPanel({
 
   const shouldAuto = search.get("analyze") === "1" && analyses.length === 0 && !isDraft;
 
-  async function generate() {
+  async function generate(chainSketch = false) {
     setGenerating(true);
     setError(null);
     try {
       await api(`/api/dreams/${dreamId}/analysis`, { method: "POST" });
       toast("success", "Analisis siap.");
-      // Reload the page data so the new analysis version appears.
-      window.location.href = `/dreams/${dreamId}`;
+      // Reload the page data so the new analysis version appears. On a fresh
+      // dream, chain into auto-generating the AI sketch (?sketch=1).
+      window.location.href = `/dreams/${dreamId}${chainSketch ? "?sketch=1" : ""}`;
       return;
     } catch (err) {
       setError(
@@ -88,7 +89,7 @@ export function AnalysisPanel({
   useEffect(() => {
     if (shouldAuto && !autoTriggered.current) {
       autoTriggered.current = true;
-      generate();
+      generate(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldAuto]);
@@ -131,7 +132,7 @@ export function AnalysisPanel({
           Buat pembacaan AI untuk mimpi ini — ringkasan, emosi, simbol, dan refleksi yang mendukung.
         </p>
         {error && <p className="mt-3 text-sm text-red-600 dark:text-red-400" role="alert">{error}</p>}
-        <Button onClick={generate} className="mt-4">
+        <Button onClick={() => generate()} className="mt-4">
           <Sparkles className="size-4" /> Buat Analisis AI
         </Button>
       </div>
@@ -175,7 +176,7 @@ export function AnalysisPanel({
               </select>
             </label>
           )}
-          <Button variant="secondary" size="sm" onClick={generate}>
+          <Button variant="secondary" size="sm" onClick={() => generate()}>
             <RefreshCw className="size-3.5" /> Buat ulang
           </Button>
         </div>

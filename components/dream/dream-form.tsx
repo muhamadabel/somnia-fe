@@ -4,10 +4,10 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
-import { api, ApiError, fileUrl } from "@/lib/client";
+import { api, ApiError } from "@/lib/client";
 import { MAX_DREAM_LENGTH, MOODS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { BedDouble, CalendarDays, ImagePlus, Sparkles, X } from "lucide-react";
+import { BedDouble, CalendarDays, Sparkles } from "lucide-react";
 
 export interface DreamFormValues {
   id?: string;
@@ -41,8 +41,6 @@ export function DreamForm({ initial }: { initial?: Partial<DreamFormValues> }) {
   const [showNotes, setShowNotes] = useState(!!initial?.notes);
   const [mood, setMood] = useState(initial?.mood ?? "");
   const [sleep, setSleep] = useState(initial?.sleepDuration ?? "");
-  const [file, setFile] = useState<File | null>(null);
-  const [removeImage, setRemoveImage] = useState(false);
   const [saving, setSaving] = useState<"dream" | "draft" | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
@@ -74,16 +72,6 @@ export function DreamForm({ initial }: { initial?: Partial<DreamFormValues> }) {
         : await api<{ id: string }>("/api/dreams", { method: "POST", json: payload });
       const dreamId = editing ? initial!.id! : data.id;
 
-      if (file) {
-        const fd = new FormData();
-        fd.append("file", file);
-        await api(`/api/dreams/${dreamId}/image`, { method: "POST", body: fd }).catch((err) => {
-          toast("warning", err instanceof ApiError ? err.message : "Gambar gagal diunggah — mimpinya tetap tersimpan.");
-        });
-      } else if (removeImage && editing) {
-        await api(`/api/dreams/${dreamId}/image`, { method: "DELETE" }).catch(() => {});
-      }
-
       toast("success", asDraft ? "Draf tersimpan." : editing ? "Mimpi diperbarui." : "Mimpi tercatat ✨");
       window.location.href = `/dreams/${dreamId}${asDraft ? "" : "?analyze=1"}`;
       return;
@@ -97,8 +85,6 @@ export function DreamForm({ initial }: { initial?: Partial<DreamFormValues> }) {
       setSaving(null);
     }
   }
-
-  const preview = initial?.imagePath && !removeImage && !file;
 
   return (
     <form
@@ -224,50 +210,8 @@ export function DreamForm({ initial }: { initial?: Partial<DreamFormValues> }) {
         </label>
       </div>
 
-      {/* ── Lampiran & catatan (opsional, dilipat) ── */}
+      {/* ── Catatan (opsional) ── */}
       <div className="card p-5 space-y-4">
-        <div>
-          <p className="text-sm font-medium text-body mb-2">Lampiran <span className="text-muted font-normal">— opsional</span></p>
-          {preview ? (
-            <div className="flex items-center gap-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={fileUrl(initial!.imagePath!)} alt="Lampiran mimpi saat ini" className="h-20 rounded-xl object-cover border border-base" />
-              <Button type="button" variant="ghost" size="sm" onClick={() => setRemoveImage(true)}>
-                <X className="size-4" /> Hapus
-              </Button>
-            </div>
-          ) : file ? (
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-2 surface-2 rounded-xl px-3.5 py-2.5 text-sm text-body">
-                <ImagePlus className="size-4 text-night-400" /> {file.name}
-              </span>
-              <Button type="button" variant="ghost" size="sm" onClick={() => setFile(null)}>
-                <X className="size-4" /> Batal
-              </Button>
-            </div>
-          ) : (
-            <label className="flex items-center gap-2 text-sm text-muted cursor-pointer surface-2 rounded-xl px-3.5 py-2.5 hover:text-body hover:bg-night-100 dark:hover:bg-night-800 transition-colors w-fit">
-              <ImagePlus className="size-4 text-night-400" />
-              Tambahkan gambar atau sketsa
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                className="sr-only"
-                onChange={(e) => {
-                  const f = e.target.files?.[0] ?? null;
-                  if (f && f.size > 5 * 1024 * 1024) {
-                    toast("error", "Gambar terlalu besar — maksimal 5 MB.");
-                    return;
-                  }
-                  setFile(f);
-                  setRemoveImage(false);
-                }}
-              />
-            </label>
-          )}
-          <p className="mt-1.5 text-xs text-muted">JPEG, PNG, atau WebP · maks 5 MB</p>
-        </div>
-
         {showNotes ? (
           <div className="space-y-1.5">
             <span className="block text-sm font-medium text-body">Catatan tambahan</span>
@@ -288,6 +232,9 @@ export function DreamForm({ initial }: { initial?: Partial<DreamFormValues> }) {
             + Tambah catatan tambahan
           </button>
         )}
+        <p className="flex items-center gap-1.5 text-xs text-muted">
+          <Sparkles className="size-3.5 text-night-400" /> Sketsa mimpimu dibuat otomatis oleh AI setelah disimpan.
+        </p>
       </div>
 
       {error && (

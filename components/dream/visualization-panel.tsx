@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
@@ -23,24 +23,37 @@ export function VisualizationPanel({
   dreamId: string;
   visualizations: VisualizationData[];
 }) {
-  const router = useRouter();
+  const search = useSearchParams();
   const toast = useToast();
   const [generating, setGenerating] = useState(false);
   const [current, setCurrent] = useState(0);
+  const autoTriggered = useRef(false);
+
+  // Fresh dream just saved → auto-generate the sketch once (chained from the
+  // analysis step via ?sketch=1). No manual "buat" click needed.
+  const shouldAuto = search.get("sketch") === "1" && visualizations.length === 0;
 
   async function generate() {
     setGenerating(true);
     try {
       await api(`/api/dreams/${dreamId}/visualization`, { method: "POST" });
-      toast("success", "Karya seni mimpi baru dibuat.");
-      window.location.reload();
+      toast("success", "Sketsa mimpi dibuat.");
+      window.location.href = `/dreams/${dreamId}`;
       return;
     } catch (err) {
-      toast("error", err instanceof ApiError ? err.message : "Gagal membuat karya seni saat ini.");
+      toast("error", err instanceof ApiError ? err.message : "Gagal membuat sketsa saat ini.");
     } finally {
       setGenerating(false);
     }
   }
+
+  useEffect(() => {
+    if (shouldAuto && !autoTriggered.current) {
+      autoTriggered.current = true;
+      generate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldAuto]);
 
   async function remove(id: string) {
     try {
@@ -62,16 +75,19 @@ export function VisualizationPanel({
           <Palette className="size-5 text-night-500" />
           <h2 className="font-semibold text-body">Visualisasi Mimpi</h2>
         </div>
-        <Button variant="secondary" size="sm" onClick={generate} loading={generating}>
-          <RefreshCw className="size-3.5" /> {visualizations.length ? "Buat ulang" : "Buat karya seni"}
+        <Button variant="secondary" size="sm" onClick={() => generate()} loading={generating}>
+          <RefreshCw className="size-3.5" /> {visualizations.length ? "Buat ulang" : "Buat sketsa"}
         </Button>
       </div>
 
-      {generating && visualizations.length === 0 ? (
-        <Skeleton className="aspect-[4/3] w-full rounded-xl" />
+      {(generating || shouldAuto) && visualizations.length === 0 ? (
+        <div className="space-y-2" role="status" aria-label="Membuat sketsa mimpi">
+          <Skeleton className="aspect-[4/3] w-full rounded-xl" />
+          <p className="text-xs text-muted text-center">Melukis sketsa dari isi mimpimu…</p>
+        </div>
       ) : visualizations.length === 0 ? (
         <p className="text-sm text-muted text-center py-8">
-          Ubah mimpi ini jadi karya seni unik yang dibentuk oleh emosi dan simbolnya.
+          Belum ada sketsa untuk mimpi ini.
         </p>
       ) : (
         <>
