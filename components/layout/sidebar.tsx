@@ -13,7 +13,6 @@ import {
   CalendarDays,
   HeartHandshake,
   Images,
-  LayoutDashboard,
   LineChart,
   LogOut,
   Menu,
@@ -27,7 +26,6 @@ import {
 } from "lucide-react";
 
 const NAV = [
-  { href: "/dashboard", label: "Beranda", icon: LayoutDashboard },
   { href: "/dreams", label: "Mimpi", icon: BookOpenText },
   { href: "/calendar", label: "Kalender", icon: CalendarDays },
   { href: "/trends", label: "Tren Emosi", icon: LineChart },
@@ -59,6 +57,21 @@ export function Sidebar({
 
   const nav = (
     <nav className="flex flex-col gap-1 flex-1" aria-label="Main navigation">
+      {user.role === "admin" && (
+        <Link
+          href="/admin"
+          onClick={() => setOpen(false)}
+          className={cn(
+            "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+            pathname.startsWith("/admin")
+              ? "bg-ice-tint text-signal-blue font-bold shadow-sm"
+              : "text-slate-channel hover:text-midnight-harbor hover:bg-ice-tint/50"
+          )}
+        >
+          <ShieldCheck className={cn("size-4.5 shrink-0", pathname.startsWith("/admin") ? "text-signal-blue" : "text-slate-channel")} />
+          Admin
+        </Link>
+      )}
       {NAV.map((item) => {
         const active = pathname === item.href || pathname.startsWith(item.href + "/");
         return (
@@ -97,21 +110,6 @@ export function Sidebar({
           </span>
         )}
       </Link>
-      {user.role === "admin" && (
-        <Link
-          href="/admin"
-          onClick={() => setOpen(false)}
-          className={cn(
-            "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
-            pathname.startsWith("/admin")
-              ? "bg-ice-tint text-signal-blue font-bold shadow-sm"
-              : "text-slate-channel hover:text-midnight-harbor hover:bg-ice-tint/50"
-          )}
-        >
-          <ShieldCheck className={cn("size-4.5 shrink-0", pathname.startsWith("/admin") ? "text-signal-blue" : "text-slate-channel")} />
-          Admin
-        </Link>
-      )}
     </nav>
   );
 
