@@ -164,7 +164,7 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-5 rounded-xl bg-ice-tint border border-sea-fog/50 p-3 text-xs text-slate-channel leading-relaxed">
+          <div className="mt-5 rounded-xl bg-ice-tint border border-sea-fog/50 p-3 text-xs text-slate-channel leading-relaxed text-center">
             <span className="font-bold text-midnight-harbor">Akun demo:</span> demo@somnia.app · dream1234
           </div>
         </div>

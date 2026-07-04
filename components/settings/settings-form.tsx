@@ -191,7 +191,13 @@ export function SettingsForm({
         <h2 className="flex items-center gap-2 font-semibold text-body mb-4">
           <Palette className="size-4.5 text-night-500" /> Tampilan
         </h2>
-        <div className="flex gap-3">
+        <div className="relative flex rounded-xl bg-ice-tint dark:bg-night-950/40 p-1 max-w-xs" role="tablist">
+          {/* Sliding Background Box */}
+          <div
+            className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white dark:bg-(--surface) rounded-lg shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+              prefs.theme === "dark" ? "left-[calc(50%+2px)]" : "left-1"
+            }`}
+          />
           {[
             { value: "light", label: "Terang", Icon: Sun },
             { value: "dark", label: "Gelap", Icon: Moon },
@@ -200,10 +206,10 @@ export function SettingsForm({
               key={t.value}
               onClick={() => setTheme(t.value)}
               aria-pressed={prefs.theme === t.value}
-              className={`flex-1 flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-colors cursor-pointer ${
+              className={`relative z-10 flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-colors duration-200 cursor-pointer ${
                 prefs.theme === t.value
-                  ? "border-night-500 bg-night-100 dark:bg-night-800 text-body"
-                  : "border-base surface text-muted hover:text-body"
+                  ? "text-signal-blue dark:text-white font-bold"
+                  : "text-slate-channel hover:text-midnight-harbor"
               }`}
             >
               <t.Icon className="size-4" /> {t.label}
