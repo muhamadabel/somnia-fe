@@ -19,14 +19,70 @@ import {
 } from "lucide-react";
 
 const FEATURES = [
-  { icon: BookOpenText, title: "Catat Mimpi", text: "Tangkap mimpi begitu kamu bangun — judul, suasana hati, tidur, dan setiap detail yang memudar, tersimpan aman." },
-  { icon: BrainCircuit, title: "Analisis Mimpi AI", text: "Insight terstruktur untuk tiap entri: ringkasan, emosi dominan, simbol terdeteksi, dan refleksi mendalam." },
-  { icon: Palette, title: "Visualisasi Mimpi", text: "Tiap mimpi jadi karya seni unik yang dibentuk oleh emosi dan simbolnya. Buat ulang sampai terasa pas." },
-  { icon: LineChart, title: "Tren Emosi", text: "Amati cuaca batinmu selama berminggu-minggu — frekuensi emosi, keseimbangan positif, dan observasi lembut AI." },
-  { icon: CalendarDays, title: "Kalender Mimpi", text: "Jelajahi riwayat mimpimu secara kronologis, dengan penanda emosi di tiap malam kamu bermimpi." },
-  { icon: Sparkles, title: "Pustaka Simbol", text: "Air yang berulang? Terbang? Gigi copot? Pelajari makna simbol pribadimu — dan di mana ia muncul." },
-  { icon: MessagesSquare, title: "Teman Mimpi AI", text: "Teman yang benar-benar mengenal riwayat mimpimu — tanya tentang pola, bandingkan mimpi, renungkan lebih dalam." },
-  { icon: HeartHandshake, title: "Komunitas Anonim", text: "Bagikan mimpi pilihan dengan nama samaran, beri reaksi, dan berdiskusi. Mimpi pribadi tetap pribadi, selalu." },
+  { 
+    icon: BookOpenText, 
+    title: "Catat Mimpi", 
+    text: "Tangkap mimpi begitu kamu bangun — judul, suasana hati, tidur, dan setiap detail yang memudar, tersimpan aman.",
+    gradient: "from-purple-500 to-indigo-600",
+    iconColor: "#8b5cf6",
+    tags: ["JURNAL", "DETAIL"]
+  },
+  { 
+    icon: BrainCircuit, 
+    title: "Analisis Mimpi AI", 
+    text: "Insight terstruktur untuk tiap entri: ringkasan, emosi dominan, simbol terdeteksi, dan refleksi mendalam.",
+    gradient: "from-orange-500 to-red-600",
+    iconColor: "#f97316",
+    tags: ["INSIGHT", "EMOSI"]
+  },
+  { 
+    icon: Palette, 
+    title: "Visualisasi Mimpi", 
+    text: "Tiap mimpi jadi karya seni unik yang dibentuk oleh emosi dan simbolnya. Buat ulang sampai terasa pas.",
+    gradient: "from-sky-500 to-teal-600",
+    iconColor: "#0ea5e9",
+    tags: ["SENI", "SIMBOL"]
+  },
+  { 
+    icon: LineChart, 
+    title: "Tren Emosi", 
+    text: "Amati cuaca batinmu selama berminggu-minggu — frekuensi emosi, keseimbangan positif, dan observasi lembut AI.",
+    gradient: "from-pink-500 to-rose-600",
+    iconColor: "#ec4899",
+    tags: ["GRAFIK", "KONDISI"]
+  },
+  { 
+    icon: CalendarDays, 
+    title: "Kalender Mimpi", 
+    text: "Jelajahi riwayat mimpimu secara kronologis, dengan penanda emosi di tiap malam kamu bermimpi.",
+    gradient: "from-blue-500 to-indigo-700",
+    iconColor: "#3b82f6",
+    tags: ["KRONOLOGI", "RIWAYAT"]
+  },
+  { 
+    icon: Sparkles, 
+    title: "Pustaka Simbol", 
+    text: "Air yang berulang? Terbang? Gigi copot? Pelajari makna simbol pribadimu — dan di mana ia muncul.",
+    gradient: "from-emerald-500 to-teal-700",
+    iconColor: "#10b981",
+    tags: ["MAKNA", "POLA"]
+  },
+  { 
+    icon: MessagesSquare, 
+    title: "Teman Mimpi AI", 
+    text: "Teman yang benar-benar mengenal riwayat mimpimu — tanya tentang pola, bandingkan mimpi, renungkan lebih dalam.",
+    gradient: "from-amber-500 to-orange-600",
+    iconColor: "#f59e0b",
+    tags: ["TANYA", "BANDING"]
+  },
+  { 
+    icon: HeartHandshake, 
+    title: "Komunitas Anonim", 
+    text: "Bagikan mimpi pilihan dengan nama samaran, beri reaksi, dan berdiskusi. Mimpi pribadi tetap pribadi, selalu.",
+    gradient: "from-slate-500 to-slate-700",
+    iconColor: "#64748b",
+    tags: ["BERBAGI", "REAKSI"]
+  },
 ];
 
 interface FeedPost {
@@ -206,10 +262,56 @@ export default function LandingPage() {
       <section className="max-w-6xl mx-auto px-6 pb-20">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((f) => (
-            <div key={f.title} className="card p-6 bg-white border border-sea-fog rounded-2xl hover:shadow-md transition-all">
-              <f.icon className="size-6 text-signal-blue" />
-              <h3 className="mt-4 font-bold text-base text-midnight-harbor">{f.title}</h3>
-              <p className="mt-2 text-xs sm:text-sm text-slate-channel leading-relaxed">{f.text}</p>
+            <div 
+              key={f.title} 
+              className="group relative flex flex-col bg-white rounded-[24px] border border-sea-fog overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300"
+            >
+              {/* Colored gradient background layer */}
+              <div className={`absolute inset-0 bg-gradient-to-b ${f.gradient} -z-10`} />
+
+              {/* White top header section */}
+              <div className="bg-white pt-8 pb-4 px-6 flex flex-col items-center text-center">
+                <div className="p-3 bg-slate-50 rounded-full mb-3 group-hover:scale-110 transition-transform duration-300">
+                  <f.icon className="size-7" style={{ color: f.iconColor }} />
+                </div>
+                <h3 className="font-extrabold text-base text-slate-800 tracking-tight">
+                  {f.title}
+                </h3>
+              </div>
+
+              {/* Double-layered Wave Divider */}
+              <div className="relative select-none pointer-events-none -mt-1 bg-white">
+                {/* Secondary faint wave */}
+                <svg viewBox="0 0 1440 100" preserveAspectRatio="none" className="w-full h-8 text-white/20 fill-current absolute top-[2px] left-0">
+                  <path d="M0,0 L1440,0 L1440,60 C1080,30 360,80 0,50 Z" />
+                </svg>
+                {/* Primary white wave */}
+                <svg viewBox="0 0 1440 100" preserveAspectRatio="none" className="w-full h-8 text-white fill-current relative">
+                  <path d="M0,0 L1440,0 L1440,40 C1080,90 360,20 0,70 Z" />
+                </svg>
+              </div>
+
+              {/* Bottom gradient section containing description and actions */}
+              <div className="p-6 pt-2 flex-1 flex flex-col justify-between text-white">
+                <p className="text-xs sm:text-sm leading-relaxed text-center text-white/90">
+                  {f.text}
+                </p>
+
+                <div className="mt-6 pt-4 border-t border-white/10 flex flex-col items-center gap-3">
+                  <div className="flex justify-center items-center gap-6 text-[10px] font-bold tracking-widest uppercase text-white/80">
+                    {f.tags.map((tag, idx) => (
+                      <span key={idx} className="border-b border-white/30 pb-0.5 hover:text-white hover:border-white transition-all cursor-pointer">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="text-white/70 hover:text-white transition-all duration-300 hover:translate-x-1 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
