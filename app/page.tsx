@@ -131,44 +131,51 @@ export default function LandingPage() {
           </div>
 
           <div className="grid gap-8 md:grid-cols-3">
-            {recentDreams.map((dream) => {
-              const parsedMeta = safeParseJson<{ emotions?: { name: string; color: string }[] }>(dream.meta, {});
-              const topEmotion = parsedMeta?.emotions?.[0];
-              // fallback colors if not available
-              const emotionLabelStr = topEmotion ? topEmotion.name : "Tidak terdeteksi";
-              
-              return (
-                <div 
-                  key={dream.id} 
-                  onClick={() => router.push(hasToken() ? `/community/${dream.id}` : "/login")}
-                  className="card overflow-hidden bg-white border border-sea-fog rounded-2xl flex flex-col cursor-pointer hover:shadow-md transition-shadow group"
-                >
-                  {/* Full-bleed gradient dream imagery placeholder */}
-                  <div className="h-40 bg-gradient-to-tr from-ice-tint via-sea-fog to-light-mist relative flex items-end p-4 rounded-t-2xl transition-all group-hover:opacity-90">
-                    <span className="absolute top-3 right-3 bg-white/95 text-signal-blue text-[10px] font-bold px-2 py-0.5 rounded-[5px] uppercase shadow-sm">
-                      {dream.user.anonName}
-                    </span>
-                  </div>
-                  <div className="p-5 flex-1 flex flex-col justify-between">
-                    <div>
-                      <h3 className="font-bold text-lg text-midnight-harbor line-clamp-1 mb-2 group-hover:text-signal-blue transition-colors">
-                        {dream.title}
-                      </h3>
-                      <p className="text-xs text-slate-channel font-semibold mb-3 flex items-center gap-1.5">
-                        <span className="inline-block size-2 rounded-full" style={{ backgroundColor: topEmotion?.color || "#cbd5e1" }} />
-                        Emosi: {emotionLabelStr}
-                      </p>
-                      <p className="text-sm text-slate-channel line-clamp-3 leading-relaxed mb-4">
-                        {dream.content}
-                      </p>
+            {recentDreams.length === 0 ? (
+              <div className="col-span-full text-center py-12 bg-white border border-sea-fog rounded-2xl p-6">
+                <HeartHandshake className="size-8 text-night-400 mx-auto" />
+                <p className="mt-3 text-sm text-slate-channel">Belum ada mimpi terbaru yang dibagikan ke komunitas saat ini.</p>
+              </div>
+            ) : (
+              recentDreams.map((dream) => {
+                const parsedMeta = safeParseJson<{ emotions?: { name: string; color: string }[] }>(dream.meta, {});
+                const topEmotion = parsedMeta?.emotions?.[0];
+                // fallback colors if not available
+                const emotionLabelStr = topEmotion ? topEmotion.name : "Tidak terdeteksi";
+                
+                return (
+                  <div 
+                    key={dream.id} 
+                    onClick={() => router.push(hasToken() ? `/community/${dream.id}` : "/login")}
+                    className="card overflow-hidden bg-white border border-sea-fog rounded-2xl flex flex-col cursor-pointer hover:shadow-md transition-shadow group"
+                  >
+                    {/* Full-bleed gradient dream imagery placeholder */}
+                    <div className="h-40 bg-gradient-to-tr from-ice-tint via-sea-fog to-light-mist relative flex items-end p-4 rounded-t-2xl transition-all group-hover:opacity-90">
+                      <span className="absolute top-3 right-3 bg-white/95 text-signal-blue text-[10px] font-bold px-2 py-0.5 rounded-[5px] uppercase shadow-sm">
+                        {dream.user.anonName}
+                      </span>
                     </div>
-                    <div className="pt-4 border-t border-sea-fog/50 mt-auto text-xs text-slate-channel">
-                      <span>{timeAgo(dream.createdAt)}</span>
+                    <div className="p-5 flex-1 flex flex-col justify-between">
+                      <div>
+                        <h3 className="font-bold text-lg text-midnight-harbor line-clamp-1 mb-2 group-hover:text-signal-blue transition-colors">
+                          {dream.title}
+                        </h3>
+                        <p className="text-xs text-slate-channel font-semibold mb-3 flex items-center gap-1.5">
+                          <span className="inline-block size-2 rounded-full" style={{ backgroundColor: topEmotion?.color || "#cbd5e1" }} />
+                          Emosi: {emotionLabelStr}
+                        </p>
+                        <p className="text-sm text-slate-channel line-clamp-3 leading-relaxed mb-4">
+                          {dream.content}
+                        </p>
+                      </div>
+                      <div className="pt-4 border-t border-sea-fog/50 mt-auto text-xs text-slate-channel">
+                        <span>{timeAgo(dream.createdAt)}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </div>
       </section>
