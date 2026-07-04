@@ -71,10 +71,10 @@ export default function SymbolsPage() {
         </button>
       </form>
 
-      <div className="relative flex rounded-xl bg-ice-tint dark:bg-night-950/40 p-1 mb-6 max-w-sm" role="tablist" aria-label="Tampilan simbol">
+      <div className="relative flex rounded-full bg-ice-tint dark:bg-night-950/40 p-1 mb-6 max-w-sm" role="tablist" aria-label="Tampilan simbol">
         {/* Sliding Background Box */}
         <div
-          className="absolute top-1 bottom-1 bg-white dark:bg-(--surface) rounded-lg shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+          className="absolute top-1 bottom-1 bg-white dark:bg-(--surface) rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
           style={{
             width: "calc(33.333% - 5.33px)",
             left: view === "mine"
@@ -90,7 +90,7 @@ export default function SymbolsPage() {
             href={link({ view: t.key })}
             role="tab"
             aria-selected={view === t.key}
-            className={`relative z-10 flex-1 text-center py-1.5 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+            className={`relative z-10 flex-1 text-center py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
               view === t.key ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
             }`}
           >

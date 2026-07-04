@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   poweredByHeader: false,
+  outputFileTracingRoot: __dirname,
   async rewrites() {
     return [
       {

@@ -55,10 +55,10 @@ export default function TrendsPage() {
     <>
       <PageHeader title="Tren Emosi" />
 
-      <div className="relative flex rounded-xl bg-ice-tint dark:bg-night-950/40 p-1 mb-6 max-w-sm" role="tablist" aria-label="Rentang waktu">
+      <div className="relative flex rounded-full bg-ice-tint dark:bg-night-950/40 p-1 mb-6 max-w-sm" role="tablist" aria-label="Rentang waktu">
         {/* Sliding Background Box */}
         <div
-          className="absolute top-1 bottom-1 bg-white dark:bg-(--surface) rounded-lg shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+          className="absolute top-1 bottom-1 bg-white dark:bg-(--surface) rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
           style={{
             width: "calc(25% - 6px)",
             left: range === 7
@@ -76,7 +76,7 @@ export default function TrendsPage() {
             href={`/trends?range=${r.days}`}
             role="tab"
             aria-selected={range === r.days}
-            className={`relative z-10 flex-1 text-center py-1.5 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+            className={`relative z-10 flex-1 text-center py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
               range === r.days ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
             }`}
           >

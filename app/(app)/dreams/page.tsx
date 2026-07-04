@@ -85,10 +85,10 @@ export default function DreamsPage() {
         {status !== "active" && <input type="hidden" name="status" value={status} />}
       </form>
 
-      <div className="relative flex rounded-xl bg-ice-tint dark:bg-night-950/40 p-1 mb-5 max-w-xs" role="tablist" aria-label="Status mimpi">
+      <div className="relative flex rounded-full bg-ice-tint dark:bg-night-950/40 p-1 mb-5 max-w-xs" role="tablist" aria-label="Status mimpi">
         {/* Sliding Background Box */}
         <div
-          className="absolute top-1 bottom-1 bg-white dark:bg-(--surface) rounded-lg shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+          className="absolute top-1 bottom-1 bg-white dark:bg-(--surface) rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
           style={{
             width: "calc(33.333% - 5.33px)",
             left: status === "drafts"
@@ -108,7 +108,7 @@ export default function DreamsPage() {
             href={filterLink({ status: t.key, page: "" })}
             role="tab"
             aria-selected={status === t.key}
-            className={`relative z-10 flex-1 text-center py-1.5 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+            className={`relative z-10 flex-1 text-center py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
               status === t.key ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
             }`}
           >

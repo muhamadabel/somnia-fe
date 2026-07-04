@@ -125,10 +125,10 @@ export default function CalendarPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="relative flex rounded-xl surface-2 p-1" role="tablist" aria-label="Tampilan kalender">
+          <div className="relative flex rounded-full surface-2 p-1" role="tablist" aria-label="Tampilan kalender">
             {/* Sliding Background Box */}
             <div
-              className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white dark:bg-(--surface) rounded-lg shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+              className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white dark:bg-(--surface) rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
                 view === "week" ? "left-[calc(50%+2px)]" : "left-1"
               }`}
             />
@@ -136,7 +136,7 @@ export default function CalendarPage() {
               href={qp({ view: undefined, day: undefined })}
               role="tab"
               aria-selected={view === "month"}
-              className={`relative z-10 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+              className={`relative z-10 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
                 view === "month" ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
               }`}
             >
@@ -146,7 +146,7 @@ export default function CalendarPage() {
               href={qp({ view: "week", day: undefined })}
               role="tab"
               aria-selected={view === "week"}
-              className={`relative z-10 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+              className={`relative z-10 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
                 view === "week" ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
               }`}
             >
