@@ -70,11 +70,31 @@ export default function CommunityPage() {
             Cari
           </button>
         </form>
-        <div className="flex rounded-xl surface-2 p-1" role="tablist" aria-label="Urutkan feed">
-          <Link href={link({ sort: "recent" })} role="tab" aria-selected={sort === "recent"} className={`px-3 py-1.5 rounded-lg text-sm font-medium ${sort === "recent" ? "surface shadow-dreamy text-body" : "text-muted"}`}>
+        <div className="relative flex rounded-xl surface-2 p-1" role="tablist" aria-label="Urutkan feed">
+          {/* Sliding Background Box */}
+          <div
+            className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white dark:bg-(--surface) rounded-lg shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+              sort === "top" ? "left-[calc(50%+2px)]" : "left-1"
+            }`}
+          />
+          <Link
+            href={link({ sort: "recent" })}
+            role="tab"
+            aria-selected={sort === "recent"}
+            className={`relative z-10 flex-1 text-center px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+              sort === "recent" ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
+            }`}
+          >
             Terbaru
           </Link>
-          <Link href={link({ sort: "top" })} role="tab" aria-selected={sort === "top"} className={`px-3 py-1.5 rounded-lg text-sm font-medium ${sort === "top" ? "surface shadow-dreamy text-body" : "text-muted"}`}>
+          <Link
+            href={link({ sort: "top" })}
+            role="tab"
+            aria-selected={sort === "top"}
+            className={`relative z-10 flex-1 text-center px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+              sort === "top" ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
+            }`}
+          >
             Paling disukai
           </Link>
         </div>

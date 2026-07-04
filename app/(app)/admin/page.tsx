@@ -84,7 +84,19 @@ export default function AdminPage() {
         ))}
       </div>
 
-      <div className="flex gap-2 mb-6" role="tablist" aria-label="Bagian admin">
+      <div className="relative flex rounded-xl bg-ice-tint dark:bg-night-950/40 p-1 mb-6 max-w-md" role="tablist" aria-label="Bagian admin">
+        {/* Sliding Background Box */}
+        <div
+          className="absolute top-1 bottom-1 bg-white dark:bg-(--surface) rounded-lg shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+          style={{
+            width: "calc(33.333% - 5.33px)",
+            left: tab === "users"
+              ? "calc(33.333% + 1.33px)"
+              : tab === "audit"
+                ? "calc(66.666% + 1.33px)"
+                : "4px"
+          }}
+        />
         {[
           { key: "moderation", label: `Moderasi${openReports ? ` (${openReports})` : ""}` },
           { key: "users", label: "Pengguna" },
@@ -95,8 +107,8 @@ export default function AdminPage() {
             href={`/admin?tab=${t.key}`}
             role="tab"
             aria-selected={tab === t.key}
-            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-              tab === t.key ? "bg-night-600 text-white" : "surface border-base text-muted hover:text-body"
+            className={`relative z-10 flex-1 text-center py-1.5 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+              tab === t.key ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
             }`}
           >
             {t.label}
