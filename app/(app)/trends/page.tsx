@@ -98,8 +98,16 @@ export default function TrendsPage() {
         />
       ) : (
         <div className="grid gap-6 lg:grid-cols-3">
-          <Card className="lg:col-span-2">
-            <CardHeader title="Positivitas dari waktu ke waktu" />
+          <Card className="lg:col-span-2 overflow-hidden bg-white dark:bg-slate-900 border-sea-fog/50">
+            <div className="flex items-center gap-3 px-2 pt-2 mb-8">
+              <div className="text-signal-blue">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              </div>
+              <div>
+                <h2 className="font-extrabold text-xl text-midnight-harbor dark:text-white leading-tight">Mood Waves</h2>
+                <p className="text-sm text-signal-blue font-medium mt-0.5">Your emotions, visualized.</p>
+              </div>
+            </div>
             <MoodScoreChart data={chartDaily} />
           </Card>
 
