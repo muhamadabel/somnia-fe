@@ -270,11 +270,11 @@ export default function LandingPage() {
                   }}
                 >
                   {/* Top Half: Illustration placeholder */}
-                  <div className="h-44 sm:h-48 relative overflow-hidden bg-slate-50 flex items-center justify-center border-b border-sea-fog/50">
+                  <div className="h-44 sm:h-48 relative overflow-hidden bg-white flex items-center justify-center border-b border-sea-fog/50">
                     <img 
                       src={f.image} 
                       alt={f.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 bg-white"
                       onError={(e) => {
                         // Fallback placeholder with nice gradient if image hasn't been generated/saved yet
                         e.currentTarget.style.display = "none";
