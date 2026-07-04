@@ -15,8 +15,6 @@ import {
   BookOpenText,
   CalendarDays,
   Flame,
-  LineChart,
-  MessagesSquare,
   MoonStar,
   PenLine,
   ScrollText,
@@ -44,11 +42,11 @@ export default function DashboardPage() {
   if (totalDreams === 0) {
     return (
       <>
-        <PageHeader title={`${greeting}, ${firstName}`} subtitle="Selamat datang di jurnal mimpimu." />
+        <PageHeader title={`${greeting}, ${firstName}`} />
         <EmptyState
           icon={<MoonStar className="size-8" />}
           title="Mulai jurnal mimpi pertamamu"
-          message="Mimpi memudar dalam hitungan menit setelah bangun. Catat satu — bahkan fragmen — dan Somnia akan mulai mengubah malam-malammu jadi insight. Grafik dan laporan muncul setelah ada beberapa entri."
+          message="Catat satu mimpi — fragmen pun cukup. Grafik dan insight akan tumbuh seiring waktu."
           action={
             <Link
               href="/dreams/new"
@@ -58,21 +56,6 @@ export default function DashboardPage() {
             </Link>
           }
         />
-        <div className="mt-6 grid gap-4 sm:grid-cols-3">
-          {[
-            { icon: Sparkles, t: "Analisis AI", d: "Tiap mimpi dapat ringkasan, emosi, simbol, dan refleksi." },
-            { icon: LineChart, t: "Tren emosi", d: "Pola emosi muncul setelah beberapa mimpi tercatat." },
-            { icon: ScrollText, t: "Laporan mingguan", d: "Refleksi jangka panjang dari riwayatmu." },
-          ].map((x) => (
-            <div key={x.t} className="card p-4 flex gap-3">
-              <x.icon className="size-5 text-night-500 shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm font-medium text-body">{x.t}</p>
-                <p className="text-xs text-muted mt-0.5">{x.d}</p>
-              </div>
-            </div>
-          ))}
-        </div>
       </>
     );
   }
@@ -88,7 +71,6 @@ export default function DashboardPage() {
     <>
       <PageHeader
         title={`${greeting}, ${firstName}`}
-        subtitle="Inilah perjalanan mimpimu belakangan ini."
         action={
           <Link
             href="/dreams/new"
@@ -153,32 +135,12 @@ export default function DashboardPage() {
               ))}
             </div>
           </Card>
-
-          <div className="mt-4 grid grid-cols-3 gap-3">
-            {[
-              { href: "/dreams/new", icon: PenLine, label: "Catat", tint: "#9a8cd2" },
-              { href: "/companion", icon: MessagesSquare, label: "Teman AI", tint: "#2dd4bf" },
-              { href: "/reports", icon: ScrollText, label: "Laporan", tint: "#e69a66" },
-            ].map((a) => (
-              <Link
-                key={a.href}
-                href={a.href}
-                className="card flex flex-col items-center gap-2 py-4 text-sm font-medium text-body hover:shadow-dreamy-lg transition-shadow"
-              >
-                <span className="rounded-xl p-2.5" style={{ backgroundColor: `${a.tint}1f`, color: a.tint }}>
-                  <a.icon className="size-5" />
-                </span>
-                {a.label}
-              </Link>
-            ))}
-          </div>
         </section>
 
         <div className="lg:col-span-3 space-y-6">
           <Card>
             <CardHeader
               title="Nada emosi minggu ini"
-              subtitle="50 = netral — di atasnya condong positif"
               action={
                 <Link href="/trends" className="text-sm text-night-600 dark:text-night-300 hover:underline shrink-0">
                   Tren →
@@ -212,13 +174,6 @@ export default function DashboardPage() {
                 Baca →
               </Link>
             </Card>
-          )}
-
-          {user.reminderEnabled && (
-            <div className="rounded-xl2 border border-dashed border-base px-4 py-3 text-xs text-muted flex items-center gap-2">
-              <MoonStar className="size-4 text-night-400 shrink-0" />
-              Pengingat harian disetel pukul {user.reminderTime} — ubah di Pengaturan → Notifikasi.
-            </div>
           )}
         </div>
       </div>

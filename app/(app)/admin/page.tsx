@@ -63,7 +63,7 @@ export default function AdminPage() {
 
   return (
     <>
-      <PageHeader title="Administrasi" subtitle="Antrean moderasi, ringkasan pengguna, dan jejak audit." />
+      <PageHeader title="Administrasi" />
 
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 mb-6">
         {[

@@ -56,7 +56,7 @@ export default function CommunityPage() {
     <>
       <PageHeader
         title="Komunitas"
-        subtitle="Mimpi yang dibagikan secara anonim oleh sesama pemimpi. Bersikaplah baik — seseorang mempercayakan malamnya pada kita."
+        subtitle="Dibagikan secara anonim — bersikaplah baik."
       />
 
       <div className="card p-4 mb-6 flex flex-wrap gap-3 items-center">

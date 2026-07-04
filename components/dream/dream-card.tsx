@@ -1,11 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { MOODS, emotionLabel } from "@/lib/constants";
 import { fileUrl } from "@/lib/client";
 import { truncate } from "@/lib/utils";
-import { ChevronRight, MoonStar } from "lucide-react";
+import { MoonStar } from "lucide-react";
 
 export interface DreamCardData {
   id: string;
@@ -20,11 +18,6 @@ export interface DreamCardData {
   analyses?: Array<{ dominantEmotion: string }>;
   visualizations?: Array<{ imagePath: string }>;
 }
-
-const MOOD_EMOJI: Record<string, string> = Object.fromEntries(MOODS.map((m) => [m.value, m.emoji]));
-const MOOD_TITLE: Record<string, string> = Object.fromEntries(
-  MOODS.map((m) => [m.value, `Bangun dengan perasaan ${m.label.toLowerCase()}`])
-);
 
 function shortDate(d: Date | string) {
   return new Date(d).toLocaleDateString("id-ID", { month: "short", day: "numeric" });
@@ -57,42 +50,37 @@ export function DreamThumb({
       className={`${className} shrink-0 rounded-xl grid place-items-center border border-base`}
       style={{ background: `linear-gradient(135deg, ${c}2e, ${c}0d)` }}
     >
-      <MoonStar className="size-4.5" style={{ color: c, opacity: 0.75 }} />
+      <MoonStar className="size-4.5" style={{ color: c, opacity: 0.7 }} />
     </span>
   );
 }
 
-// Deliberately minimal: date, title, two lines of text, one dominant
-// emotion, art thumbnail when it exists. Details live on the dream page.
+// Calm card: a thin emotion-colored accent down the left edge, date, title,
+// two lines of narrative, and art when it exists. No emoji, no badges —
+// the details live on the dream page.
 export function DreamCard({ dream }: { dream: DreamCardData }) {
   const top = topEmotion(dream);
-  const more = dream.emotions.length - 1;
+  const accent = top?.color ?? "#7f6ac1";
   const art = dream.visualizations?.[0]?.imagePath ?? null;
 
   return (
     <Link
       href={`/dreams/${dream.id}`}
-      className="card group relative block overflow-hidden p-5 transition-shadow hover:shadow-dreamy-lg"
+      className="card group relative block overflow-hidden pl-6 pr-5 py-5 transition-shadow hover:shadow-dreamy-lg"
     >
-      {top && (
-        <span
-          aria-hidden
-          className="absolute inset-x-0 top-0 h-[3px]"
-          style={{ background: `linear-gradient(90deg, ${top.color}dd, ${top.color}00 85%)` }}
-        />
-      )}
+      <span
+        aria-hidden
+        className="absolute inset-y-0 left-0 w-[3px]"
+        style={{ background: `linear-gradient(180deg, ${accent}, ${accent}55)` }}
+      />
 
       <div className="flex items-center justify-between gap-2 text-xs text-muted">
         <time>{shortDate(dream.dreamDate)}</time>
-        <span className="flex items-center gap-2">
-          {dream.isDraft && <span className="font-medium text-amber-600 dark:text-amber-400">Draf</span>}
-          {dream.archivedAt && !dream.isDraft && <span>Arsip</span>}
-          {dream.mood && (
-            <span className="text-sm leading-none" title={MOOD_TITLE[dream.mood]} aria-label={MOOD_TITLE[dream.mood]}>
-              {MOOD_EMOJI[dream.mood]}
-            </span>
-          )}
-        </span>
+        {dream.isDraft ? (
+          <span className="font-medium text-amber-600 dark:text-amber-400">Draf</span>
+        ) : dream.archivedAt ? (
+          <span>Arsip</span>
+        ) : null}
       </div>
 
       <div className="mt-2 flex items-start gap-3">
@@ -104,48 +92,37 @@ export function DreamCard({ dream }: { dream: DreamCardData }) {
             {truncate(dream.description, 160)}
           </p>
         </div>
-        {art && <DreamThumb art={art} color={top?.color} className="size-14" />}
+        {art && <DreamThumb art={art} color={accent} className="size-14" />}
       </div>
-
-      {top && (
-        <div className="mt-3.5 flex items-center gap-2">
-          <Badge color={top.color}>{emotionLabel(top.name)}</Badge>
-          {more > 0 && <span className="text-xs text-muted">+{more}</span>}
-        </div>
-      )}
     </Link>
   );
 }
 
-// Compact horizontal row (dashboard "recent", calendar day preview) —
-// thumbnail + title + emotion dot + date, like an inbox of dreams.
+// Compact horizontal row (dashboard "recent", calendar day preview):
+// a slim emotion-colored edge, thumbnail, title, date. No emotion label.
 export function DreamRow({ dream }: { dream: DreamCardData }) {
   const top = topEmotion(dream);
+  const accent = top?.color ?? "#7f6ac1";
   const art = dream.visualizations?.[0]?.imagePath ?? null;
 
   return (
     <Link
       href={`/dreams/${dream.id}`}
-      className="group flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-(--surface-2) transition-colors"
+      className="group relative flex items-center gap-3 rounded-xl pl-4 pr-3 py-2.5 hover:bg-(--surface-2) transition-colors"
     >
-      <DreamThumb art={art} color={top?.color} />
+      <span
+        aria-hidden
+        className="absolute inset-y-2 left-0 w-[2px] rounded-full"
+        style={{ backgroundColor: accent }}
+      />
+      <DreamThumb art={art} color={accent} />
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-body truncate group-hover:text-night-600 dark:group-hover:text-night-300 transition-colors">
           {dream.title ?? "Mimpi tanpa judul"}
           {dream.isDraft && <span className="ml-2 text-xs font-medium text-amber-600 dark:text-amber-400">Draf</span>}
         </p>
-        <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted">
-          {top && (
-            <>
-              <span aria-hidden className="size-1.5 rounded-full" style={{ backgroundColor: top.color }} />
-              <span style={{ color: top.color }}>{emotionLabel(top.name)}</span>
-              <span aria-hidden>·</span>
-            </>
-          )}
-          <time>{shortDate(dream.dreamDate)}</time>
-        </p>
+        <time className="mt-0.5 block text-xs text-muted">{shortDate(dream.dreamDate)}</time>
       </div>
-      <ChevronRight className="size-4 text-muted opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
     </Link>
   );
 }

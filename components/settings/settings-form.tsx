@@ -7,7 +7,7 @@ import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/components/ui/toast";
 import { api, ApiError } from "@/lib/client";
 import { formatDate } from "@/lib/utils";
-import { Bell, BrainCircuit, Moon, Palette, ShieldCheck, Trash2, User } from "lucide-react";
+import { Bell, BrainCircuit, Moon, Palette, ShieldCheck, Sun, Trash2, User } from "lucide-react";
 
 interface SettingsUser {
   fullName: string;
@@ -58,9 +58,11 @@ function Toggle({
 export function SettingsForm({
   user,
   stats,
+  aiMode,
 }: {
   user: SettingsUser;
   stats: { dreamCount: number; analysisCount: number; postCount: number; artCount: number };
+  aiMode?: { id: string; label: string };
 }) {
   const toast = useToast();
   const [busy, setBusy] = useState<string | null>(null);
@@ -189,20 +191,20 @@ export function SettingsForm({
         </h2>
         <div className="flex gap-3">
           {[
-            { value: "light", label: "Terang", icon: "☀️" },
-            { value: "dark", label: "Gelap", icon: "🌙" },
+            { value: "light", label: "Terang", Icon: Sun },
+            { value: "dark", label: "Gelap", Icon: Moon },
           ].map((t) => (
             <button
               key={t.value}
               onClick={() => setTheme(t.value)}
               aria-pressed={prefs.theme === t.value}
-              className={`flex-1 rounded-xl border px-4 py-3 text-sm font-medium transition-colors cursor-pointer ${
+              className={`flex-1 flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-colors cursor-pointer ${
                 prefs.theme === t.value
                   ? "border-night-500 bg-night-100 dark:bg-night-800 text-body"
                   : "border-base surface text-muted hover:text-body"
               }`}
             >
-              {t.icon} {t.label}
+              <t.Icon className="size-4" /> {t.label}
             </button>
           ))}
         </div>
@@ -251,6 +253,21 @@ export function SettingsForm({
         <h2 className="flex items-center gap-2 font-semibold text-body mb-2">
           <BrainCircuit className="size-4.5 text-night-500" /> Privasi & AI
         </h2>
+        {aiMode && (
+          <div className="mb-4 rounded-xl surface-2 p-4">
+            <p className="flex items-center gap-2 text-sm font-medium text-body">
+              <span
+                className={`size-2 rounded-full ${
+                  aiMode.id === "anthropic" ? "bg-emerald-500" : aiMode.id === "pollinations" ? "bg-sky-500" : "bg-amber-500"
+                }`}
+              />
+              AI aktif · {aiMode.label}
+            </p>
+            <p className="mt-1.5 text-xs text-muted leading-relaxed">
+              Teman AI dan analisis diproses di server (gratis). Visualisasi dibuat dari emosi dan simbol tiap mimpi.
+            </p>
+          </div>
+        )}
         <div className="divide-y divide-(--border)">
           <Toggle
             checked={prefs.aiMemoryEnabled}

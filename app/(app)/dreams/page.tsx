@@ -74,7 +74,7 @@ export default function DreamsPage() {
           <select name="mood" defaultValue={mood} aria-label="Filter suasana hati" className="input-base text-sm">
             <option value="">Mood</option>
             {MOODS.map((m) => (
-              <option key={m.value} value={m.value}>{m.emoji} {m.label}</option>
+              <option key={m.value} value={m.value}>{m.label}</option>
             ))}
           </select>
           <select name="sort" defaultValue={sort} aria-label="Urutkan" className="input-base text-sm">

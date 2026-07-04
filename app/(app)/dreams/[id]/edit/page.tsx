@@ -26,7 +26,7 @@ export default function EditDreamPage() {
 
   return (
     <>
-      <PageHeader title="Ubah mimpi" subtitle="Catatan asli tetap tersimpan berversi di analisismu." />
+      <PageHeader title="Ubah mimpi" />
       <DreamForm
         initial={{
           id: dream.id,

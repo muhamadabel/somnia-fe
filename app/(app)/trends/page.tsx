@@ -53,7 +53,7 @@ export default function TrendsPage() {
 
   return (
     <>
-      <PageHeader title="Tren Emosi" subtitle="Bagaimana perasaan mimpimu bergerak dari waktu ke waktu." />
+      <PageHeader title="Tren Emosi" />
 
       <div className="flex gap-2 mb-6" role="tablist" aria-label="Rentang waktu">
         {RANGES.map((r) => (
@@ -85,10 +85,7 @@ export default function TrendsPage() {
       ) : (
         <div className="grid gap-6 lg:grid-cols-3">
           <Card className="lg:col-span-2">
-            <CardHeader
-              title="Positivitas dari waktu ke waktu"
-              subtitle="50 = netral — di atasnya condong positif, di bawahnya lebih berat"
-            />
+            <CardHeader title="Positivitas dari waktu ke waktu" />
             <MoodScoreChart data={chartDaily} />
           </Card>
 
@@ -114,7 +111,7 @@ export default function TrendsPage() {
           </Card>
 
           <Card className="lg:col-span-1">
-            <CardHeader title="Frekuensi emosi" subtitle="Seberapa sering tiap emosi muncul" />
+            <CardHeader title="Frekuensi emosi" />
             {trends.frequency.length === 0 ? (
               <p className="text-sm text-muted py-6 text-center">Belum ada mimpi teranalisis di periode ini.</p>
             ) : (
@@ -123,7 +120,7 @@ export default function TrendsPage() {
           </Card>
 
           <Card>
-            <CardHeader title="Positif vs negatif" subtitle="Keseimbangan sinyal emosi" />
+            <CardHeader title="Positif vs negatif" />
             {positive + negative + neutral === 0 ? (
               <p className="text-sm text-muted py-6 text-center">Belum ada sinyal.</p>
             ) : (
@@ -139,7 +136,7 @@ export default function TrendsPage() {
           </Card>
 
           <Card>
-            <CardHeader title="Frekuensi mimpi" subtitle="Mimpi tercatat per hari" />
+            <CardHeader title="Frekuensi mimpi" />
             <DreamCountChart data={chartDaily} />
             <div className="mt-2 flex flex-wrap gap-1.5">
               {trends.frequency.slice(0, 5).map((f) => (

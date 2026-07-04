@@ -20,10 +20,7 @@ export default function ReportsPage() {
 
   return (
     <>
-      <PageHeader
-        title="Laporan Kesejahteraan"
-        subtitle="Refleksi berkala dari riwayat mimpimu — bukan penilaian medis."
-      />
+      <PageHeader title="Laporan Kesejahteraan" />
 
       <div className="card p-5 mb-6">
         <h2 className="font-semibold text-body mb-1">Buat laporan baru</h2>

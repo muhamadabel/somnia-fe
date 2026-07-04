@@ -52,10 +52,7 @@ export default function SymbolsPage() {
 
   return (
     <>
-      <PageHeader
-        title="Pustaka Simbol Mimpi"
-        subtitle="Apa makna citra yang berulang — berdasarkan riwayat mimpimu sendiri."
-      />
+      <PageHeader title="Pustaka Simbol Mimpi" />
 
       <form method="GET" className="card p-4 mb-4 flex flex-wrap gap-3">
         {view !== "all" && <input type="hidden" name="view" value={view} />}

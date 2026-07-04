@@ -23,12 +23,13 @@ interface ProfileResponse {
 
 export default function SettingsPage() {
   const { data, loading } = useApi<ProfileResponse>("/api/user/profile");
+  const { data: session } = useApi<{ aiMode?: { id: string; label: string } }>("/api/auth/session");
 
   if (loading || !data) return <PageSkeleton />;
 
   return (
     <div className="max-w-2xl">
-      <PageHeader title="Pengaturan" subtitle="Profil, privasi, notifikasi, dan tampilan." />
+      <PageHeader title="Pengaturan" />
       <SettingsForm
         user={{
           fullName: data.fullName,
@@ -45,6 +46,7 @@ export default function SettingsPage() {
           memberSince: data.createdAt,
         }}
         stats={data.stats}
+        aiMode={session?.aiMode}
       />
     </div>
   );

@@ -25,7 +25,7 @@ export default function GalleryPage() {
 
   return (
     <>
-      <PageHeader title="Galeri Visualisasi" subtitle="Semua karya seni dari mimpimu, dalam satu tempat." />
+      <PageHeader title="Galeri Visualisasi" />
 
       <form method="GET" className="card p-4 mb-6 flex gap-3">
         <div className="relative flex-1">

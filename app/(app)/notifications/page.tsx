@@ -10,7 +10,7 @@ export default function NotificationsPage() {
 
   return (
     <div className="max-w-2xl">
-      <PageHeader title="Notifikasi" subtitle="Laporan, aktivitas komunitas, dan pengingat." />
+      <PageHeader title="Notifikasi" />
       {loading || !data ? <PageSkeleton /> : <NotificationList initial={data} />}
     </div>
   );
