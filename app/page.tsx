@@ -16,8 +16,6 @@ import {
   ShieldCheck,
   Sparkles,
   MessagesSquare,
-  Search,
-  ArrowRight,
 } from "lucide-react";
 
 const FEATURES = [
@@ -29,13 +27,6 @@ const FEATURES = [
   { icon: Sparkles, title: "Pustaka Simbol", text: "Air yang berulang? Terbang? Gigi copot? Pelajari makna simbol pribadimu — dan di mana ia muncul." },
   { icon: MessagesSquare, title: "Teman Mimpi AI", text: "Teman yang benar-benar mengenal riwayat mimpimu — tanya tentang pola, bandingkan mimpi, renungkan lebih dalam." },
   { icon: HeartHandshake, title: "Komunitas Anonim", text: "Bagikan mimpi pilihan dengan nama samaran, beri reaksi, dan berdiskusi. Mimpi pribadi tetap pribadi, selalu." },
-];
-
-const FILTER_CHIPS = [
-  { label: "Mimpi Terbang", count: "128x terdeteksi" },
-  { label: "Tenggelam / Air", count: "84x terdeteksi" },
-  { label: "Gigi Copot", count: "42x terdeteksi" },
-  { label: "Terlambat Ujian", count: "31x terdeteksi" },
 ];
 
 interface FeedPost {
@@ -52,7 +43,6 @@ import { timeAgo, safeParseJson } from "@/lib/utils";
 
 export default function LandingPage() {
   const router = useRouter();
-  const [searchValue, setSearchValue] = useState("");
   const [recentDreams, setRecentDreams] = useState<FeedPost[]>([]);
 
   useEffect(() => {
@@ -120,48 +110,7 @@ export default function LandingPage() {
               Somnia mengubah catatan mimpi acak menjadi data diri terstruktur — mengungkap pola emosi bawah sadar, mendeteksi simbol berulang, dan memvisualisasikan memori malammu.
             </p>
 
-            {/* Search Input */}
-            <div className="mt-8 w-full max-w-lg relative">
-              <div className="relative flex items-center">
-                <span className="absolute left-4 text-slate-channel">
-                  <Search className="size-5" />
-                </span>
-                <input
-                  type="text"
-                  placeholder="Cari arti simbol atau mulai menulis mimpi..."
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  className="w-full bg-white border border-sea-fog rounded-3xl pl-12 pr-16 py-4 text-sm text-midnight-harbor shadow-sm hover:border-slate-channel/50 focus:outline-none focus:border-signal-blue focus:ring-4 focus:ring-signal-blue/15 transition-all placeholder:text-slate-channel/70"
-                />
-                <span className="absolute right-4 bg-ice-tint text-slate-channel font-semibold text-xs px-2.5 py-1 rounded-[5px] border border-sea-fog/30 pointer-events-none">
-                  ⌘K
-                </span>
-              </div>
-            </div>
 
-            {/* Filter Chips */}
-            <div className="mt-6 flex flex-wrap gap-2">
-              {FILTER_CHIPS.map((chip) => (
-                <button
-                  key={chip.label}
-                  onClick={() => setSearchValue(chip.label)}
-                  className="inline-flex items-center gap-1.5 bg-white border border-sea-fog hover:border-slate-channel/60 rounded-lg px-3 py-1.5 text-xs font-semibold text-midnight-harbor hover:bg-ice-tint/30 transition-all cursor-pointer"
-                >
-                  <Sparkles className="size-3 text-slate-channel" />
-                  {chip.label}
-                  <span className="text-[10px] text-slate-channel/70 font-normal">({chip.count})</span>
-                </button>
-              ))}
-            </div>
-
-            <div className="mt-8 flex items-center gap-3">
-              <Link
-                href="/register"
-                className="inline-flex items-center gap-2 bg-signal-blue hover:bg-signal-blue/90 text-white font-semibold rounded-3xl px-7 py-3.5 shadow-sm hover:shadow-md transition-all"
-              >
-                Mulai Jurnal <ArrowRight className="size-4" />
-              </Link>
-            </div>
           </div>
 
           {/* Right Column: Empty, illustration is in the background image */}
