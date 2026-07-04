@@ -64,11 +64,11 @@ export function Sidebar({
           className={cn(
             "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
             pathname.startsWith("/admin")
-              ? "bg-ice-tint text-signal-blue font-bold shadow-sm"
-              : "text-slate-channel hover:text-midnight-harbor hover:bg-ice-tint/50"
+              ? "bg-ice-tint text-signal-blue dark:bg-(--surface-2) dark:text-white font-bold shadow-sm"
+              : "text-muted hover:text-body hover:bg-(--surface-2)"
           )}
         >
-          <ShieldCheck className={cn("size-4.5 shrink-0", pathname.startsWith("/admin") ? "text-signal-blue" : "text-slate-channel")} />
+          <ShieldCheck className={cn("size-4.5 shrink-0", pathname.startsWith("/admin") ? "text-signal-blue dark:text-white" : "text-muted")} />
           Admin
         </Link>
       )}
@@ -83,11 +83,11 @@ export function Sidebar({
             className={cn(
               "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
               active
-                ? "bg-ice-tint text-signal-blue font-bold shadow-sm"
-                : "text-slate-channel hover:text-midnight-harbor hover:bg-ice-tint/50"
+                ? "bg-ice-tint text-signal-blue dark:bg-(--surface-2) dark:text-white font-bold shadow-sm"
+                : "text-muted hover:text-body hover:bg-(--surface-2)"
             )}
           >
-            <item.icon className={cn("size-4.5 shrink-0", active ? "text-signal-blue" : "text-slate-channel")} />
+            <item.icon className={cn("size-4.5 shrink-0", active ? "text-signal-blue dark:text-white" : "text-muted")} />
             {item.label}
           </Link>
         );
@@ -98,11 +98,11 @@ export function Sidebar({
         className={cn(
           "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
           pathname.startsWith("/notifications")
-            ? "bg-ice-tint text-signal-blue font-bold shadow-sm"
-            : "text-slate-channel hover:text-midnight-harbor hover:bg-ice-tint/50"
+            ? "bg-ice-tint text-signal-blue dark:bg-(--surface-2) dark:text-white font-bold shadow-sm"
+            : "text-muted hover:text-body hover:bg-(--surface-2)"
         )}
       >
-        <Bell className={cn("size-4.5 shrink-0", pathname.startsWith("/notifications") ? "text-signal-blue" : "text-slate-channel")} />
+        <Bell className={cn("size-4.5 shrink-0", pathname.startsWith("/notifications") ? "text-signal-blue dark:text-white" : "text-muted")} />
         Notifikasi
         {unread > 0 && (
           <span className="ml-auto rounded-full bg-active-teal text-white text-[11px] font-semibold px-2 py-0.5">
