@@ -94,15 +94,21 @@ export default function LoginPage() {
 
   return (
     <div>
-      {/* ── Interactive Switcher Tabs ── */}
-      <div className="flex rounded-xl bg-ice-tint p-1 mb-6" role="tablist">
+      {/* ── Interactive Switcher Tabs with Sliding Indicator ── */}
+      <div className="relative flex rounded-xl bg-ice-tint p-1 mb-6" role="tablist">
+        {/* Sliding Background Box */}
+        <div
+          className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-lg shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+            activeTab === "register" ? "left-[calc(50%+2px)]" : "left-1"
+          }`}
+        />
         <button
           onClick={() => handleTabChange("login")}
           role="tab"
           aria-selected={activeTab === "login"}
-          className={`flex-1 text-center py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
+          className={`relative z-10 flex-1 text-center py-2 rounded-lg text-sm font-semibold transition-colors duration-200 cursor-pointer ${
             activeTab === "login"
-              ? "bg-white text-signal-blue shadow-sm font-bold"
+              ? "text-signal-blue font-bold"
               : "text-slate-channel hover:text-midnight-harbor"
           }`}
         >
@@ -112,9 +118,9 @@ export default function LoginPage() {
           onClick={() => handleTabChange("register")}
           role="tab"
           aria-selected={activeTab === "register"}
-          className={`flex-1 text-center py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
+          className={`relative z-10 flex-1 text-center py-2 rounded-lg text-sm font-semibold transition-colors duration-200 cursor-pointer ${
             activeTab === "register"
-              ? "bg-white text-signal-blue shadow-sm font-bold"
+              ? "text-signal-blue font-bold"
               : "text-slate-channel hover:text-midnight-harbor"
           }`}
         >
