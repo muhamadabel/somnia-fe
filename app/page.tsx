@@ -20,255 +20,47 @@ import {
 
 const FEATURES = [
   {
-    icon: BookOpenText,
-    label: "PENCATATAN",
+    image: "/features/catat.png",
     title: "Catat Mimpi",
     text: "Tangkap mimpi begitu kamu bangun — judul, suasana hati, tidur, dan setiap detail yang memudar, tersimpan aman.",
-    bgClass: "bg-[#eef5fc] dark:bg-[#0d1f38]",
-    labelBgClass: "bg-white dark:bg-[#1e2f47]",
-    labelTextColor: "text-[#0b3658] dark:text-[#a5c2f4]",
-    titleColor: "text-[#0b3658] dark:text-white",
-    textColor: "text-[#486984] dark:text-[#c8d8e4]",
-    linkColor: "text-[#0b3658] dark:text-[#4e9ad9]",
-    gradStart: "#0b3658",
-    gradEnd: "#4e9ad9",
-    shapeId: "catat"
   },
   {
-    icon: BrainCircuit,
-    label: "ANALISIS AI",
+    image: "/features/analisis.png",
     title: "Analisis Mimpi AI",
     text: "Insight terstruktur untuk tiap entri: ringkasan, emosi dominan, simbol terdeteksi, dan refleksi mendalam.",
-    bgClass: "bg-[#f3effc] dark:bg-[#1a143b]",
-    labelBgClass: "bg-white dark:bg-[#282154]",
-    labelTextColor: "text-[#4a2ba3] dark:text-[#bca8ff]",
-    titleColor: "text-[#4a2ba3] dark:text-white",
-    textColor: "text-[#486984] dark:text-[#c8d8e4]",
-    linkColor: "text-[#4a2ba3] dark:text-[#7f00ff]",
-    gradStart: "#3b3086",
-    gradEnd: "#7f00ff",
-    shapeId: "analisis"
   },
   {
-    icon: Palette,
-    label: "KREATIVITAS",
+    image: "/features/visual.png",
     title: "Visualisasi Mimpi",
     text: "Tiap mimpi jadi karya seni unik yang dibentuk oleh emosi dan simbolnya. Buat ulang sampai terasa pas.",
-    bgClass: "bg-[#fcf4ec] dark:bg-[#2a1b10]",
-    labelBgClass: "bg-white dark:bg-[#3d2719]",
-    labelTextColor: "text-[#d35400] dark:text-[#ffb380]",
-    titleColor: "text-[#d35400] dark:text-white",
-    textColor: "text-[#486984] dark:text-[#c8d8e4]",
-    linkColor: "text-[#d35400] dark:text-[#f39c12]",
-    gradStart: "#e65c00",
-    gradEnd: "#f9d423",
-    shapeId: "visual"
   },
   {
-    icon: LineChart,
-    label: "STATISTIK",
+    image: "/features/tren.png",
     title: "Tren Emosi",
     text: "Amati cuaca batinmu selama berminggu-minggu — frekuensi emosi, keseimbangan positif, dan observasi lembut AI.",
-    bgClass: "bg-[#ecfcfb] dark:bg-[#0e2729]",
-    labelBgClass: "bg-white dark:bg-[#1a3d3f]",
-    labelTextColor: "text-[#008080] dark:text-[#80e5e5]",
-    titleColor: "text-[#008080] dark:text-white",
-    textColor: "text-[#486984] dark:text-[#c8d8e4]",
-    linkColor: "text-[#008080] dark:text-[#42b3b1]",
-    gradStart: "#0083b0",
-    gradEnd: "#42b3b1",
-    shapeId: "tren"
   },
   {
-    icon: CalendarDays,
-    label: "KRONOLOGI",
+    image: "/features/kalender.png",
     title: "Kalender Mimpi",
     text: "Jelajahi riwayat mimpimu secara kronologis, dengan penanda emosi di tiap malam kamu bermimpi.",
-    bgClass: "bg-[#f0f2ff] dark:bg-[#121636]",
-    labelBgClass: "bg-white dark:bg-[#202554]",
-    labelTextColor: "text-[#3f51b5] dark:text-[#a2b2ff]",
-    titleColor: "text-[#3f51b5] dark:text-white",
-    textColor: "text-[#486984] dark:text-[#c8d8e4]",
-    linkColor: "text-[#3f51b5] dark:text-[#8f94fb]",
-    gradStart: "#4e54c8",
-    gradEnd: "#8f94fb",
-    shapeId: "kalender"
   },
   {
-    icon: Sparkles,
-    label: "EKSPLORASI",
+    image: "/features/simbol.png",
     title: "Pustaka Simbol",
     text: "Air yang berulang? Terbang? Gigi copot? Pelajari makna simbol pribadimu — dan di mana ia muncul.",
-    bgClass: "bg-[#fcf9eb] dark:bg-[#2b2713]",
-    labelBgClass: "bg-white dark:bg-[#3d371d]",
-    labelTextColor: "text-[#b78a00] dark:text-[#ffd966]",
-    titleColor: "text-[#b78a00] dark:text-white",
-    textColor: "text-[#486984] dark:text-[#c8d8e4]",
-    linkColor: "text-[#b78a00] dark:text-[#f1c40f]",
-    gradStart: "#d38312",
-    gradEnd: "#a83279",
-    shapeId: "simbol"
   },
   {
-    icon: MessagesSquare,
-    label: "ASISTEN",
+    image: "/features/teman.png",
     title: "Teman Mimpi AI",
     text: "Teman yang benar-benar mengenal riwayat mimpimu — tanya tentang pola, bandingkan mimpi, renungkan lebih dalam.",
-    bgClass: "bg-[#edfbf3] dark:bg-[#0c2417]",
-    labelBgClass: "bg-white dark:bg-[#193d28]",
-    labelTextColor: "text-[#1b5e20] dark:text-[#8ee4af]",
-    titleColor: "text-[#1b5e20] dark:text-white",
-    textColor: "text-[#486984] dark:text-[#c8d8e4]",
-    linkColor: "text-[#1b5e20] dark:text-[#38ef7d]",
-    gradStart: "#11998e",
-    gradEnd: "#38ef7d",
-    shapeId: "teman"
   },
   {
-    icon: HeartHandshake,
-    label: "KOMUNITAS",
+    image: "/features/komunitas.png",
     title: "Komunitas Anonim",
     text: "Bagikan mimpi pilihan dengan nama samaran, beri reaksi, dan berdiskusi. Mimpi pribadi tetap pribadi, selalu.",
-    bgClass: "bg-[#fdf0f7] dark:bg-[#2e1222]",
-    labelBgClass: "bg-white dark:bg-[#471f37]",
-    labelTextColor: "text-[#c2185b] dark:text-[#ffa6cd]",
-    titleColor: "text-[#c2185b] dark:text-white",
-    textColor: "text-[#486984] dark:text-[#c8d8e4]",
-    linkColor: "text-[#c2185b] dark:text-[#ec407a]",
-    gradStart: "#ec008c",
-    gradEnd: "#fc6767",
-    shapeId: "komunitas"
   }
 ];
 
-function renderFeatureShape(shapeId: string, gradId: string, gradStart: string, gradEnd: string) {
-  switch (shapeId) {
-    case "catat":
-      return (
-        <svg viewBox="0 0 200 200" className="w-full h-full max-w-[130px] max-h-[130px] select-none pointer-events-none" aria-hidden>
-          <defs>
-            <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={gradStart} />
-              <stop offset="100%" stopColor={gradEnd} />
-            </linearGradient>
-          </defs>
-          <circle cx="100" cy="100" r="70" fill="white" className="dark:fill-slate-950" opacity="0.45" />
-          <path d="M70,50 C110,50 140,80 140,120 C140,150 120,175 90,185 C125,175 150,140 150,105 C150,65 115,35 75,35 C73,35 71,35 70,35.1 Z" fill={`url(#${gradId})`} />
-          <rect x="55" y="85" width="75" height="65" rx="10" fill={`url(#${gradId})`} opacity="0.85" transform="rotate(-10 90 115)" />
-          <line x1="70" y1="105" x2="115" y2="105" stroke="white" strokeWidth="3" strokeLinecap="round" transform="rotate(-10 90 115)" />
-          <line x1="70" y1="120" x2="100" y2="120" stroke="white" strokeWidth="3" strokeLinecap="round" transform="rotate(-10 90 115)" />
-        </svg>
-      );
-    case "analisis":
-      return (
-        <svg viewBox="0 0 200 200" className="w-full h-full max-w-[130px] max-h-[130px] select-none pointer-events-none" aria-hidden>
-          <defs>
-            <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={gradStart} />
-              <stop offset="100%" stopColor={gradEnd} />
-            </linearGradient>
-          </defs>
-          <circle cx="100" cy="100" r="70" fill="white" className="dark:fill-slate-950" opacity="0.45" />
-          <rect x="85" y="45" width="30" height="60" rx="8" fill={`url(#${gradId})`} opacity="0.4" />
-          <circle cx="100" cy="120" r="50" fill={`url(#${gradId})`} />
-          <circle cx="100" cy="120" r="28" fill="white" opacity="0.2" />
-        </svg>
-      );
-    case "visual":
-      return (
-        <svg viewBox="0 0 200 200" className="w-full h-full max-w-[130px] max-h-[130px] select-none pointer-events-none" aria-hidden>
-          <defs>
-            <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={gradStart} />
-              <stop offset="100%" stopColor={gradEnd} />
-            </linearGradient>
-          </defs>
-          <circle cx="100" cy="100" r="70" fill="white" className="dark:fill-slate-950" opacity="0.45" />
-          <circle cx="85" cy="100" r="45" fill={`url(#${gradId})`} opacity="0.35" />
-          <path d="M120,55 A45,45 0 0,1 120,145 Z" fill={`url(#${gradId})`} />
-        </svg>
-      );
-    case "tren":
-      return (
-        <svg viewBox="0 0 200 200" className="w-full h-full max-w-[130px] max-h-[130px] select-none pointer-events-none" aria-hidden>
-          <defs>
-            <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={gradStart} />
-              <stop offset="100%" stopColor={gradEnd} />
-            </linearGradient>
-          </defs>
-          <circle cx="100" cy="100" r="70" fill="white" className="dark:fill-slate-950" opacity="0.45" />
-          <rect x="65" y="100" width="16" height="50" rx="8" fill={`url(#${gradId})`} opacity="0.3" />
-          <rect x="92" y="70" width="16" height="80" rx="8" fill={`url(#${gradId})`} />
-          <rect x="119" y="85" width="16" height="65" rx="8" fill={`url(#${gradId})`} opacity="0.75" />
-        </svg>
-      );
-    case "kalender":
-      return (
-        <svg viewBox="0 0 200 200" className="w-full h-full max-w-[130px] max-h-[130px] select-none pointer-events-none" aria-hidden>
-          <defs>
-            <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={gradStart} />
-              <stop offset="100%" stopColor={gradEnd} />
-            </linearGradient>
-          </defs>
-          <circle cx="100" cy="100" r="70" fill="white" className="dark:fill-slate-950" opacity="0.45" />
-          <rect x="60" y="60" width="80" height="80" rx="16" fill={`url(#${gradId})`} opacity="0.2" />
-          <circle cx="80" cy="80" r="9" fill={`url(#${gradId})`} />
-          <circle cx="100" cy="80" r="9" fill={`url(#${gradId})`} opacity="0.6" />
-          <circle cx="120" cy="80" r="9" fill={`url(#${gradId})`} />
-          <circle cx="80" cy="100" r="9" fill={`url(#${gradId})`} opacity="0.4" />
-          <circle cx="100" cy="100" r="9" fill={`url(#${gradId})`} />
-          <circle cx="120" cy="100" r="9" fill={`url(#${gradId})`} opacity="0.7" />
-          <circle cx="80" cy="120" r="9" fill={`url(#${gradId})`} />
-          <circle cx="100" cy="120" r="9" fill={`url(#${gradId})`} opacity="0.5" />
-          <circle cx="120" cy="120" r="9" fill={`url(#${gradId})`} />
-        </svg>
-      );
-    case "simbol":
-      return (
-        <svg viewBox="0 0 200 200" className="w-full h-full max-w-[130px] max-h-[130px] select-none pointer-events-none" aria-hidden>
-          <defs>
-            <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={gradStart} />
-              <stop offset="100%" stopColor={gradEnd} />
-            </linearGradient>
-          </defs>
-          <circle cx="100" cy="100" r="70" fill="white" className="dark:fill-slate-950" opacity="0.45" />
-          <path d="M100,40 Q100,100 40,100 Q100,100 100,160 Q100,100 160,100 Q100,100 100,40 Z" fill={`url(#${gradId})`} />
-        </svg>
-      );
-    case "teman":
-      return (
-        <svg viewBox="0 0 200 200" className="w-full h-full max-w-[130px] max-h-[130px] select-none pointer-events-none" aria-hidden>
-          <defs>
-            <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={gradStart} />
-              <stop offset="100%" stopColor={gradEnd} />
-            </linearGradient>
-          </defs>
-          <circle cx="100" cy="100" r="70" fill="white" className="dark:fill-slate-950" opacity="0.45" />
-          <path d="M100,35 L65,80 H78 L55,120 H83 L45,165 H90 V175 H110 V165 H155 L117,120 H145 L122,80 H135 Z" fill={`url(#${gradId})`} />
-        </svg>
-      );
-    case "komunitas":
-      return (
-        <svg viewBox="0 0 200 200" className="w-full h-full max-w-[130px] max-h-[130px] select-none pointer-events-none" aria-hidden>
-          <defs>
-            <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={gradStart} />
-              <stop offset="100%" stopColor={gradEnd} />
-            </linearGradient>
-          </defs>
-          <circle cx="100" cy="100" r="70" fill="white" className="dark:fill-slate-950" opacity="0.45" />
-          <circle cx="85" cy="100" r="32" stroke={`url(#${gradId})`} strokeWidth="10" fill="none" opacity="0.5" />
-          <circle cx="115" cy="100" r="32" stroke={`url(#${gradId})`} strokeWidth="10" fill="none" />
-        </svg>
-      );
-    default:
-      return null;
-  }
-}
 
 interface FeedPost {
   id: string;
@@ -285,6 +77,14 @@ import { timeAgo, safeParseJson } from "@/lib/utils";
 export default function LandingPage() {
   const router = useRouter();
   const [recentDreams, setRecentDreams] = useState<FeedPost[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % FEATURES.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     if (hasToken()) {
@@ -444,58 +244,75 @@ export default function LandingPage() {
       </section>
 
       {/* ── Features List ── */}
-      <section className="max-w-6xl mx-auto px-6 pb-20">
-        <div className="grid gap-6 md:grid-cols-2">
-          {FEATURES.map((f, idx) => {
-            const gradientId = `shape-grad-${idx}`;
-            return (
-              <div 
-                key={f.title} 
-                className={`relative overflow-hidden ${f.bgClass} rounded-3xl p-6 sm:p-8 flex flex-row items-center justify-between border border-black/[0.03] dark:border-white/[0.03] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group min-h-[180px] sm:min-h-[220px]`}
-              >
-                {/* Left Side: Content */}
-                <div className="flex-1 flex flex-col items-start text-left pr-4 sm:pr-8 z-10">
-                  {/* Label Pill */}
-                  <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider ${f.labelBgClass} ${f.labelTextColor} shadow-sm mb-3.5`}>
-                    {f.label}
-                  </span>
-                  
-                  {/* Title */}
-                  <h3 className={`font-extrabold text-xl sm:text-2xl ${f.titleColor} tracking-tight mb-2`}>
-                    {f.title}
-                  </h3>
-                  
-                  {/* Description */}
-                  <p className={`text-xs sm:text-sm ${f.textColor} leading-relaxed max-w-sm mb-4`}>
-                    {f.text}
-                  </p>
-                  
-                  {/* Link */}
-                  <Link 
-                    href="/register" 
-                    className={`inline-flex items-center gap-1 text-xs sm:text-sm font-bold ${f.linkColor} hover:underline transition-colors mt-auto`}
-                  >
-                    Pelajari selengkapnya
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      fill="none" 
-                      viewBox="0 0 24 24" 
-                      strokeWidth={2.5} 
-                      stroke="currentColor" 
-                      className="size-3.5 transform group-hover:translate-x-1 transition-transform duration-300"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                    </svg>
-                  </Link>
-                </div>
+      <section className="max-w-6xl mx-auto px-6 pb-24">
+        {/* Carousel Container */}
+        <div className="relative overflow-hidden w-full max-w-4xl mx-auto min-h-[380px] flex items-center justify-center">
+          <div className="relative w-full h-[360px]">
+            {FEATURES.map((f, idx) => {
+              // Calculate index difference for a smooth horizontal sliding carousel
+              let offset = idx - activeIndex;
+              // Handle wrap-around index offsets
+              if (offset < -1) offset += FEATURES.length;
+              if (offset > FEATURES.length - 2) offset -= FEATURES.length;
 
-                {/* Right Side: Shape Graphic */}
-                <div className="w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] flex items-center justify-center shrink-0 relative z-0">
-                  {renderFeatureShape(f.shapeId, gradientId, f.gradStart, f.gradEnd)}
+              const isVisible = offset === 0 || offset === 1 || offset === -1;
+              const isCenter = offset === 0;
+
+              return (
+                <div
+                  key={f.title}
+                  className={`absolute top-0 left-1/2 -translate-x-1/2 w-[280px] sm:w-[320px] bg-white border border-sea-fog rounded-[28px] shadow-dreamy-lg overflow-hidden flex flex-col transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                    isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none scale-90"
+                  }`}
+                  style={{
+                    transform: `translate3d(calc(-50% + ${offset * 320}px), ${isCenter ? "0px" : "15px"}, 0) scale(${isCenter ? 1.02 : 0.92})`,
+                    zIndex: isCenter ? 20 : 10,
+                  }}
+                >
+                  {/* Top Half: Illustration placeholder */}
+                  <div className="h-44 sm:h-48 relative overflow-hidden bg-slate-50 flex items-center justify-center border-b border-sea-fog/50">
+                    <img 
+                      src={f.image} 
+                      alt={f.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      onError={(e) => {
+                        // Fallback placeholder with nice gradient if image hasn't been generated/saved yet
+                        e.currentTarget.style.display = "none";
+                        const parent = e.currentTarget.parentElement;
+                        if (parent) {
+                          parent.className = "h-44 sm:h-48 w-full bg-gradient-to-tr from-ice-tint via-sea-fog to-light-mist flex items-center justify-center text-signal-blue/40 font-bold text-lg border-b border-sea-fog/50";
+                          parent.innerText = "somnia";
+                        }
+                      }}
+                    />
+                  </div>
+                  {/* Bottom Half: Clean White Text layout */}
+                  <div className="p-6 flex-1 flex flex-col justify-start text-left bg-white">
+                    <h3 className="font-extrabold text-base sm:text-lg text-midnight-harbor tracking-tight mb-2">
+                      {f.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-channel leading-relaxed">
+                      {f.text}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Carousel Indicators / Dots */}
+        <div className="flex justify-center items-center gap-2 mt-4 select-none">
+          {FEATURES.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setActiveIndex(idx)}
+              className={`size-2 rounded-full transition-all duration-300 cursor-pointer ${
+                activeIndex === idx ? "bg-signal-blue w-4" : "bg-sea-fog hover:bg-slate-channel/50"
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
         </div>
       </section>
 
