@@ -160,10 +160,12 @@ export default function LandingPage() {
                         <h3 className="font-bold text-lg text-midnight-harbor line-clamp-1 mb-2 group-hover:text-signal-blue transition-colors">
                           {dream.title}
                         </h3>
-                        <p className="text-xs text-slate-channel font-semibold mb-3 flex items-center gap-1.5">
-                          <span className="inline-block size-2 rounded-full" style={{ backgroundColor: topEmotion?.color || "#cbd5e1" }} />
-                          Emosi: {emotionLabelStr}
-                        </p>
+                        {topEmotion && (
+                          <p className="text-xs text-slate-channel font-semibold mb-3 flex items-center gap-1.5">
+                            <span className="inline-block size-2 rounded-full" style={{ backgroundColor: topEmotion.color }} />
+                            Emosi: {topEmotion.name}
+                          </p>
+                        )}
                         <p className="text-sm text-slate-channel line-clamp-3 leading-relaxed mb-4">
                           {dream.content}
                         </p>
