@@ -13,6 +13,7 @@ import {
   CalendarDays,
   HeartHandshake,
   Images,
+  LayoutDashboard,
   LineChart,
   LogOut,
   Menu,
@@ -26,6 +27,7 @@ import {
 } from "lucide-react";
 
 const NAV = [
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dreams", label: "Mimpi", icon: BookOpenText },
   { href: "/calendar", label: "Kalender", icon: CalendarDays },
   { href: "/trends", label: "Tren Emosi", icon: LineChart },
