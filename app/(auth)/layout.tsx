@@ -36,7 +36,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <Link href="/" className="lg:hidden flex items-center mb-6">
           <span className="font-extrabold text-3xl tracking-tighter text-signal-blue lowercase">somnia</span>
         </Link>
-        <div className="card w-full max-w-md p-8 animate-fade-up bg-white border border-sea-fog rounded-2xl shadow-lg">{children}</div>
+        <div className=" w-full max-w-md p-8 animate-fade-up">{children}</div>
       </section>
     </main>
   );
