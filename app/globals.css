@@ -78,20 +78,22 @@
   --border: var(--color-sea-fog);
   --text: var(--color-midnight-harbor);
   --text-muted: var(--color-slate-channel);
+  --bg-overlay: rgba(230, 241, 250, 0.94);
   --shadow-dreamy: rgba(11, 54, 88, 0.04) 0px 4px 12px 0px;
   --shadow-dreamy-lg: rgba(11, 54, 88, 0.08) 0px 12px 48px 0px;
   color-scheme: light;
 }
 
 .dark {
-  --bg: #082c47;
-  --surface: #0c3f66;
-  --surface-2: #105385;
-  --border: #1b5e94;
-  --text: var(--color-canvas-white);
-  --text-muted: var(--color-pale-steel);
-  --shadow-dreamy: rgba(0, 0, 0, 0.2) 0px 4px 12px 0px;
-  --shadow-dreamy-lg: rgba(0, 0, 0, 0.4) 0px 12px 48px 0px;
+  --bg: #0a0e17;
+  --surface: #121b2d;
+  --surface-2: #1f2d47;
+  --border: #1e293b;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --bg-overlay: rgba(10, 14, 23, 0.96);
+  --shadow-dreamy: rgba(0, 0, 0, 0.3) 0px 4px 12px 0px;
+  --shadow-dreamy-lg: rgba(0, 0, 0, 0.5) 0px 12px 48px 0px;
   color-scheme: dark;
 }
 

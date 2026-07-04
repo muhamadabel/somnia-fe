@@ -64,7 +64,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div 
       className="flex min-h-screen flex-col lg:flex-row bg-base"
       style={{
-        backgroundImage: "linear-gradient(rgba(230, 241, 250, 0.94), rgba(230, 241, 250, 0.94)), url('/work-book.png')",
+        backgroundImage: "linear-gradient(var(--bg-overlay), var(--bg-overlay)), url('/work-book.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed"

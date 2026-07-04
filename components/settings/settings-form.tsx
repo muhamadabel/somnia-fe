@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
@@ -69,6 +69,11 @@ export function SettingsForm({
   const [prefs, setPrefs] = useState(user);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
+
+  useEffect(() => {
+    const activeTheme = localStorage.getItem("somnia_theme") || user.theme || "light";
+    setPrefs((p) => ({ ...p, theme: activeTheme }));
+  }, [user.theme]);
 
   async function saveProfile(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
