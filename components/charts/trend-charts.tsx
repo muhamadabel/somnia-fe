@@ -15,7 +15,18 @@ import {
   Line,
   ReferenceLine,
 } from "recharts";
-import { Smile, Meh, Frown, Sun, Cloud, CloudRain, CloudSun, Moon, Star, Wind } from "lucide-react";
+import {
+  TbMoodHappy,
+  TbMoodSmile,
+  TbMoodNeutral,
+  TbMoodSad,
+  TbMoodCry,
+  TbSun,
+  TbCloud,
+  TbCloudRain,
+  TbMoon,
+  TbStar
+} from "react-icons/tb";
 
 const tooltipStyle = {
   backgroundColor: "var(--surface)",
@@ -30,22 +41,22 @@ const CustomYAxisTick = (props: any) => {
   const { x, y, payload } = props;
   const val = payload.value;
 
-  let Icon = Meh;
+  let Icon = TbMoodNeutral;
   let label = "Neutral";
   
-  if (val === 100) { Icon = Smile; label = "Happy"; }
-  else if (val === 75) { Icon = Smile; label = "Calm"; }
-  else if (val === 50) { Icon = Meh; label = "Neutral"; }
-  else if (val === 25) { Icon = Frown; label = "Sad"; }
-  else if (val === 0) { Icon = Frown; label = "Down"; }
+  if (val === 100) { Icon = TbMoodHappy; label = "Happy"; }
+  else if (val === 75) { Icon = TbMoodSmile; label = "Calm"; }
+  else if (val === 50) { Icon = TbMoodNeutral; label = "Neutral"; }
+  else if (val === 25) { Icon = TbMoodSad; label = "Sad"; }
+  else if (val === 0) { Icon = TbMoodCry; label = "Down"; }
   else return null; // Only render at these specific intervals
 
   return (
     <g transform={`translate(${x},${y})`}>
-      <foreignObject x={-75} y={-12} width={70} height={24}>
-        <div className="flex items-center justify-end gap-1.5 h-full text-[#3b82f6]">
-          <Icon className="size-4.5" />
-          <span className="text-[10px] font-semibold">{label}</span>
+      <foreignObject x={-85} y={-12} width={80} height={24}>
+        <div className="flex items-center justify-end gap-2 h-full text-[#3b82f6]">
+          <Icon size={20} strokeWidth={2} />
+          <span className="text-[11px] font-semibold">{label}</span>
         </div>
       </foreignObject>
     </g>
@@ -57,15 +68,15 @@ const CustomXAxisTick = (props: any) => {
   const { x, y, payload, index } = props;
   
   // Deterministic weather icon picking based on index for visual effect
-  const weatherIcons = [Sun, Cloud, CloudSun, CloudRain, Sun, Star, Moon, Wind];
+  const weatherIcons = [TbSun, TbCloud, TbCloudRain, TbSun, TbStar, TbMoon, TbCloud];
   const WeatherIcon = weatherIcons[index % weatherIcons.length];
 
   return (
     <g transform={`translate(${x},${y})`}>
-      <foreignObject x={-20} y={4} width={40} height={40}>
-        <div className="flex flex-col items-center justify-center gap-1 text-[#3b82f6]">
-          <WeatherIcon className="size-4.5" />
-          <span className="text-[10px] font-bold text-midnight-harbor">{payload.value.substring(0, 3)}</span>
+      <foreignObject x={-20} y={6} width={40} height={40}>
+        <div className="flex flex-col items-center justify-center gap-1.5 text-[#3b82f6]">
+          <WeatherIcon size={18} strokeWidth={2} />
+          <span className="text-[11px] font-bold text-midnight-harbor">{payload.value.substring(0, 3)}</span>
         </div>
       </foreignObject>
     </g>
@@ -77,15 +88,22 @@ const CustomLineDot = (props: any) => {
   const { cx, cy, payload } = props;
   if (!cx || !cy || payload.score === null) return null;
   
-  let Icon = Meh;
-  if (payload.score >= 75) Icon = Smile;
-  else if (payload.score <= 25) Icon = Frown;
+  let Icon = TbMoodNeutral;
+  if (payload.score >= 87.5) Icon = TbMoodHappy;
+  else if (payload.score >= 62.5) Icon = TbMoodSmile;
+  else if (payload.score >= 37.5) Icon = TbMoodNeutral;
+  else if (payload.score >= 12.5) Icon = TbMoodSad;
+  else Icon = TbMoodCry;
 
   return (
-    <svg x={cx - 12} y={cy - 12} width={24} height={24} viewBox="0 0 24 24" fill="white" className="text-[#3b82f6] shadow-sm rounded-full bg-white">
-      <circle cx="12" cy="12" r="11" fill="white" stroke="#3b82f6" strokeWidth="1.5" />
-      <Icon className="size-4" x="4" y="4" color="#3b82f6" strokeWidth={2.5} />
-    </svg>
+    <g transform={`translate(${cx},${cy})`}>
+      <circle cx="0" cy="0" r="14" fill="white" stroke="#3b82f6" strokeWidth="1.5" />
+      <foreignObject x={-10} y={-10} width={20} height={20}>
+        <div className="flex items-center justify-center w-full h-full text-[#3b82f6]">
+          <Icon size={18} strokeWidth={2} />
+        </div>
+      </foreignObject>
+    </g>
   );
 };
 
@@ -105,7 +123,7 @@ export function MoodScoreChart({
   return (
     <ResponsiveContainer width="100%" height={height}>
       <ComposedChart data={chartData} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#bfdbfe" vertical={false} />
         
         <XAxis 
           dataKey="label" 
@@ -136,7 +154,7 @@ export function MoodScoreChart({
         
         <ReferenceLine y={50} stroke="#3b82f6" strokeWidth={1.5} />
         
-        <Bar dataKey="barRange" radius={[6, 6, 6, 6]} barSize={16}>
+        <Bar dataKey="barRange" radius={[8, 8, 8, 8]} barSize={24}>
           {chartData.map((entry, index) => (
             <Cell 
               key={`cell-${index}`} 
