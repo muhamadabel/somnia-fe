@@ -1,16 +1,28 @@
-import { notFound } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+"use client";
+
+import { useParams } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { DreamForm } from "@/components/dream/dream-form";
+import { PageSkeleton } from "@/components/ui/skeleton";
+import { useApi } from "@/lib/use-api";
 
-export const metadata = { title: "Ubah Mimpi" };
+interface DreamEdit {
+  id: string;
+  title: string | null;
+  description: string;
+  notes: string | null;
+  mood: string | null;
+  sleepDuration: number | null;
+  dreamDate: string;
+  isDraft: boolean;
+  imagePath: string | null;
+}
 
-export default async function EditDreamPage({ params }: { params: Promise<{ id: string }> }) {
-  const user = (await getCurrentUser())!;
-  const { id } = await params;
-  const dream = await db.dream.findFirst({ where: { id, userId: user.id, deletedAt: null } });
-  if (!dream) notFound();
+export default function EditDreamPage() {
+  const { id } = useParams<{ id: string }>();
+  const { data: dream, loading } = useApi<DreamEdit>(`/api/dreams/${id}`, [id]);
+
+  if (loading || !dream) return <PageSkeleton />;
 
   return (
     <>
@@ -23,7 +35,7 @@ export default async function EditDreamPage({ params }: { params: Promise<{ id: 
           notes: dream.notes ?? "",
           mood: dream.mood ?? "",
           sleepDuration: dream.sleepDuration?.toString() ?? "",
-          dreamDate: dream.dreamDate.toISOString().slice(0, 10),
+          dreamDate: dream.dreamDate.slice(0, 10),
           isDraft: dream.isDraft,
           imagePath: dream.imagePath,
         }}

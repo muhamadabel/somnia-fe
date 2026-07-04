@@ -1,63 +1,65 @@
-import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+"use client";
+
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { ModerationActions } from "@/components/admin/moderation-actions";
 import { formatDateTime, timeAgo, truncate } from "@/lib/utils";
+import { useApi } from "@/lib/use-api";
 import { Activity, Flag, ShieldCheck, Users } from "lucide-react";
-import Link from "next/link";
-
-export const metadata = { title: "Administrasi" };
 
 const STATUS_LABEL: Record<string, string> = { open: "terbuka", resolved: "diselesaikan", dismissed: "diabaikan" };
 
-export default async function AdminPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | undefined>>;
-}) {
-  const user = (await getCurrentUser())!;
-  if (user.role !== "admin") redirect("/dashboard");
-  const sp = await searchParams;
-  const tab = sp.tab ?? "moderation";
+interface AdminReport {
+  id: string;
+  status: string;
+  reason: string;
+  createdAt: string;
+  reporter: { anonName: string };
+  post: { id: string; title: string; content: string } | null;
+  comment: { id: string; content: string; postId: string } | null;
+}
+interface AdminUser {
+  id: string;
+  fullName: string;
+  email: string;
+  role: string;
+  status: string;
+  createdAt: string;
+  _count: { dreams: number; posts: number };
+}
+interface AdminLog {
+  id: string;
+  event: string;
+  detail: string | null;
+  createdAt: string;
+  user: { email: string } | null;
+}
+interface AdminOverview {
+  stats: { userCount: number; dreamCount: number; postCount: number; openReports: number };
+  reports: AdminReport[];
+  users: AdminUser[];
+  logs: AdminLog[];
+}
 
-  const [userCount, dreamCount, postCount, openReports] = await Promise.all([
-    db.user.count(),
-    db.dream.count({ where: { deletedAt: null } }),
-    db.communityPost.count({ where: { deletedAt: null } }),
-    db.contentReport.count({ where: { status: "open" } }),
-  ]);
+export default function AdminPage() {
+  const router = useRouter();
+  const sp = useSearchParams();
+  const tab = sp.get("tab") ?? "moderation";
 
-  const reports =
-    tab === "moderation"
-      ? await db.contentReport.findMany({
-          orderBy: [{ status: "asc" }, { createdAt: "desc" }],
-          take: 30,
-          include: {
-            post: { select: { id: true, title: true, content: true } },
-            comment: { select: { id: true, content: true, postId: true } },
-            reporter: { select: { anonName: true } },
-          },
-        })
-      : [];
+  const { data, loading, error } = useApi<AdminOverview>(`/api/admin/overview?tab=${tab}`, [tab]);
 
-  const users =
-    tab === "users"
-      ? await db.user.findMany({
-          orderBy: { createdAt: "desc" },
-          take: 50,
-          select: {
-            id: true, fullName: true, email: true, role: true, status: true, createdAt: true,
-            _count: { select: { dreams: true, posts: true } },
-          },
-        })
-      : [];
+  useEffect(() => {
+    if (error) router.replace("/dashboard");
+  }, [error, router]);
 
-  const logs =
-    tab === "audit"
-      ? await db.auditLog.findMany({ orderBy: { createdAt: "desc" }, take: 50, include: { user: { select: { email: true } } } })
-      : [];
+  if (loading || !data) return <PageSkeleton />;
+
+  const { stats, reports, users, logs } = data;
+  const openReports = stats.openReports;
 
   return (
     <>
@@ -65,10 +67,10 @@ export default async function AdminPage({
 
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 mb-6">
         {[
-          { icon: Users, label: "Pengguna", value: userCount },
-          { icon: Activity, label: "Mimpi", value: dreamCount },
-          { icon: ShieldCheck, label: "Postingan komunitas", value: postCount },
-          { icon: Flag, label: "Laporan terbuka", value: openReports },
+          { icon: Users, label: "Pengguna", value: stats.userCount },
+          { icon: Activity, label: "Mimpi", value: stats.dreamCount },
+          { icon: ShieldCheck, label: "Postingan komunitas", value: stats.postCount },
+          { icon: Flag, label: "Laporan terbuka", value: stats.openReports },
         ].map((s) => (
           <div key={s.label} className="card p-4 flex items-center gap-3">
             <span className="rounded-xl surface-2 p-2.5 text-night-500">

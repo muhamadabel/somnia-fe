@@ -1,15 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { api, ApiError } from "@/lib/client";
+import { setToken } from "@/lib/session";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +27,7 @@ export default function RegisterPage() {
     setError(null);
     setFieldErrors({});
     try {
-      await api("/api/auth/register", {
+      const { data } = await api<{ token: string }>("/api/auth/register", {
         method: "POST",
         json: {
           fullName: form.get("fullName"),
@@ -36,9 +35,10 @@ export default function RegisterPage() {
           password,
         },
       });
+      setToken(data.token);
       toast("success", "Akun dibuat — selamat datang!");
-      router.push("/onboarding");
-      router.refresh();
+      window.location.href = "/onboarding";
+      return;
     } catch (err) {
       if (err instanceof ApiError) {
         setError(err.fieldErrors.fullName || err.fieldErrors.email || err.fieldErrors.password ? null : err.message);

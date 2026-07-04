@@ -1,14 +1,16 @@
+"use client";
+
 import Link from "next/link";
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { getStreak, getTrends } from "@/lib/services/trends";
 import { PageHeader } from "@/components/layout/page-header";
-import { DreamRow } from "@/components/dream/dream-card";
+import { DreamRow, type DreamCardData } from "@/components/dream/dream-card";
 import { Card, CardHeader } from "@/components/ui/card";
 import { EmotionDot } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { MoodScoreChart } from "@/components/charts/trend-charts";
 import { emotionLabel } from "@/lib/constants";
+import { useApi } from "@/lib/use-api";
+import type { TrendData } from "@/lib/api-types";
 import {
   BookOpenText,
   CalendarDays,
@@ -21,38 +23,24 @@ import {
   Sparkles,
 } from "lucide-react";
 
-export const metadata = { title: "Beranda" };
+interface DashboardData {
+  user: { fullName: string; reminderEnabled: boolean; reminderTime: string };
+  totalDreams: number;
+  recentDreams: DreamCardData[];
+  streak: number;
+  trends: TrendData;
+  latestReport: { id: string; title: string; generatedAt: string } | null;
+}
 
-export default async function DashboardPage() {
-  const user = (await getCurrentUser())!;
+export default function DashboardPage() {
+  const { data, loading } = useApi<DashboardData>("/api/dashboard");
+  if (loading || !data) return <PageSkeleton />;
 
-  const [totalDreams, recentDreams, streak, trends, latestReport] = await Promise.all([
-    db.dream.count({ where: { userId: user.id, deletedAt: null, isDraft: false } }),
-    db.dream.findMany({
-      where: { userId: user.id, deletedAt: null, archivedAt: null },
-      orderBy: { dreamDate: "desc" },
-      take: 5,
-      include: {
-        emotions: { include: { emotion: true } },
-        symbols: { include: { symbol: true } },
-        visualizations: {
-          where: { deletedAt: null },
-          orderBy: { createdAt: "desc" },
-          take: 1,
-          select: { imagePath: true },
-        },
-      },
-    }),
-    getStreak(user.id),
-    getTrends(user.id, 7),
-    db.report.findFirst({ where: { userId: user.id }, orderBy: { generatedAt: "desc" } }),
-  ]);
-
+  const { user, totalDreams, recentDreams, streak, trends, latestReport } = data;
   const firstName = user.fullName.split(" ")[0];
   const hour = new Date().getHours();
   const greeting = hour < 11 ? "Selamat pagi" : hour < 15 ? "Selamat siang" : hour < 19 ? "Selamat sore" : "Selamat malam";
 
-  // ── First-time empty state (docs/03 step 4: no analytics yet) ────────
   if (totalDreams === 0) {
     return (
       <>
@@ -90,7 +78,6 @@ export default async function DashboardPage() {
   }
 
   const dreamsThisWeek = trends.daily.reduce((a, d) => a + d.count, 0);
-
   const stats = [
     { icon: BookOpenText, tint: "#9a8cd2", value: String(totalDreams), label: "mimpi tercatat" },
     { icon: Flame, tint: "#de7f45", value: String(streak), label: "hari beruntun" },
@@ -112,7 +99,6 @@ export default async function DashboardPage() {
         }
       />
 
-      {/* ── Stat cards ── */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
           <Card key={s.label} className="flex items-center gap-3.5">
@@ -153,7 +139,6 @@ export default async function DashboardPage() {
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-5">
-        {/* ── Recent dreams (inbox-style rows with art thumbs) ── */}
         <section className="lg:col-span-2">
           <Card className="p-2.5">
             <div className="flex items-center justify-between px-3 pt-2 pb-1.5">
@@ -169,7 +154,6 @@ export default async function DashboardPage() {
             </div>
           </Card>
 
-          {/* Quick actions as tiles */}
           <div className="mt-4 grid grid-cols-3 gap-3">
             {[
               { href: "/dreams/new", icon: PenLine, label: "Catat", tint: "#9a8cd2" },
@@ -190,7 +174,6 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        {/* ── Right: weekly trend + insight ── */}
         <div className="lg:col-span-3 space-y-6">
           <Card>
             <CardHeader

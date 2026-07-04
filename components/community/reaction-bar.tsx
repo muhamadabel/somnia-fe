@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/toast";
 import { api } from "@/lib/client";
@@ -18,7 +17,6 @@ export function ReactionBar({
   mine: string[];
   compact?: boolean;
 }) {
-  const router = useRouter();
   const toast = useToast();
   const [state, setState] = useState({ counts, mine: new Set(mine) });
 
@@ -38,10 +36,8 @@ export function ReactionBar({
     });
     try {
       await api(`/api/community/posts/${postId}/reactions`, { method: "POST", json: { type } });
-      router.refresh();
     } catch {
       toast("error", "Gagal menyimpan reaksi.");
-      router.refresh();
     }
   }
 

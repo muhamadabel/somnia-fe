@@ -1,15 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { api, ApiError } from "@/lib/client";
+import { setToken } from "@/lib/session";
 
 export default function LoginPage() {
-  const router = useRouter();
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,13 +21,14 @@ export default function LoginPage() {
     setFieldErrors({});
     const form = new FormData(e.currentTarget);
     try {
-      const { data } = await api<{ onboarded: boolean }>("/api/auth/login", {
+      const { data } = await api<{ token: string; onboarded: boolean }>("/api/auth/login", {
         method: "POST",
         json: { email: form.get("email"), password: form.get("password") },
       });
+      setToken(data.token);
       toast("success", "Selamat datang kembali!");
-      router.push(data.onboarded ? "/dashboard" : "/onboarding");
-      router.refresh();
+      window.location.href = data.onboarded ? "/dashboard" : "/onboarding";
+      return;
     } catch (err) {
       if (err instanceof ApiError) {
         setError(err.message);

@@ -1,28 +1,27 @@
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { aiModeLabel } from "@/lib/ai";
+"use client";
+
 import { CompanionChat } from "@/components/companion/companion-chat";
+import { PageSkeleton } from "@/components/ui/skeleton";
+import { useApi } from "@/lib/use-api";
 
-export const metadata = { title: "Teman AI" };
+interface Conversation {
+  id: string;
+  title: string;
+  updatedAt: string;
+}
 
-export default async function CompanionPage() {
-  const user = (await getCurrentUser())!;
-  const conversations = await db.conversation.findMany({
-    where: { userId: user.id },
-    orderBy: { updatedAt: "desc" },
-    take: 30,
-    select: { id: true, title: true, updatedAt: true },
-  });
+export default function CompanionPage() {
+  const { data: conversations, loading } = useApi<Conversation[]>("/api/conversations");
+  const { data: session } = useApi<{ aiMode?: { id: string; label: string } }>("/api/auth/session");
+  const { data: profile } = useApi<{ aiMemoryEnabled: boolean }>("/api/user/profile");
+
+  if (loading || !conversations) return <PageSkeleton />;
 
   return (
     <CompanionChat
-      initialConversations={conversations.map((c) => ({
-        id: c.id,
-        title: c.title,
-        updatedAt: c.updatedAt.toISOString(),
-      }))}
-      aiMode={aiModeLabel()}
-      memoryEnabled={user.aiMemoryEnabled}
+      initialConversations={conversations}
+      aiMode={session?.aiMode ?? { id: "local", label: "AI" }}
+      memoryEnabled={profile?.aiMemoryEnabled ?? true}
     />
   );
 }

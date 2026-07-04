@@ -1,47 +1,52 @@
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { useParams } from "next/navigation";
 import { Badge, EmotionDot } from "@/components/ui/badge";
 import { BookmarkButton } from "@/components/symbol/bookmark-button";
-import { DreamCard } from "@/components/dream/dream-card";
+import { DreamCard, type DreamCardData } from "@/components/dream/dream-card";
+import { PageSkeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 import { EMOTION_COLOR, CATEGORY_LABEL, emotionLabel } from "@/lib/constants";
 import { symbolLabel } from "@/lib/ai/lexicon";
 import { parseJsonArray } from "@/lib/utils";
+import { useApi } from "@/lib/use-api";
 import { ArrowLeft } from "lucide-react";
 
-export const metadata = { title: "Simbol" };
+interface SymbolData {
+  symbol: {
+    id: string;
+    name: string;
+    slug: string;
+    category: string;
+    description: string;
+    interpretation: string;
+    relatedEmotions: string;
+    bookmarked: boolean;
+  };
+  related: DreamCardData[];
+}
 
-export default async function SymbolDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const user = (await getCurrentUser())!;
-  const { slug } = await params;
+export default function SymbolDetailPage() {
+  const { slug } = useParams<{ slug: string }>();
+  const { data, loading, error } = useApi<SymbolData>(`/api/symbols/${slug}`, [slug]);
 
-  const symbol = await db.symbol.findUnique({
-    where: { slug },
-    include: { bookmarks: { where: { userId: user.id } } },
-  });
-  if (!symbol) notFound();
+  if (loading) return <PageSkeleton />;
+  if (error || !data) {
+    return (
+      <EmptyState
+        title="Simbol tidak ditemukan"
+        message="Simbol ini tidak ada atau tautannya keliru."
+        action={
+          <Link href="/symbols" className="inline-flex items-center gap-2 bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-xl px-5 py-2.5 transition-colors">
+            Pustaka simbol
+          </Link>
+        }
+      />
+    );
+  }
 
-  const related = await db.dream.findMany({
-    where: {
-      userId: user.id,
-      deletedAt: null,
-      symbols: { some: { symbolId: symbol.id } },
-    },
-    include: {
-      emotions: { include: { emotion: true } },
-      symbols: { include: { symbol: true } },
-      visualizations: {
-        where: { deletedAt: null },
-        orderBy: { createdAt: "desc" },
-        take: 1,
-        select: { imagePath: true },
-      },
-    },
-    orderBy: { dreamDate: "desc" },
-    take: 9,
-  });
-
+  const { symbol, related } = data;
   const relatedEmotions = parseJsonArray(symbol.relatedEmotions);
 
   return (
@@ -65,7 +70,7 @@ export default async function SymbolDetailPage({ params }: { params: Promise<{ s
               ))}
             </div>
           </div>
-          <BookmarkButton symbolId={symbol.id} bookmarked={symbol.bookmarks.length > 0} />
+          <BookmarkButton symbolId={symbol.id} bookmarked={symbol.bookmarked} />
         </div>
 
         <p className="mt-4 text-sm text-muted">{symbol.description}</p>
@@ -83,9 +88,7 @@ export default async function SymbolDetailPage({ params }: { params: Promise<{ s
         Di mimpimu {related.length > 0 && <span className="text-muted font-normal text-sm">({related.length})</span>}
       </h2>
       {related.length === 0 ? (
-        <p className="text-sm text-muted">
-          Simbol ini belum muncul di mimpimu yang teranalisis.
-        </p>
+        <p className="text-sm text-muted">Simbol ini belum muncul di mimpimu yang teranalisis.</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {related.map((d) => (

@@ -23,7 +23,8 @@ export function CommentForm({ postId }: { postId: string }) {
       await api(`/api/community/posts/${postId}/comments`, { method: "POST", json: { content } });
       setContent("");
       toast("success", "Komentar terkirim.");
-      router.refresh();
+      window.location.reload();
+      return;
     } catch (err) {
       toast("error", err instanceof ApiError ? err.message : "Gagal mengirim komentar.");
     } finally {
@@ -130,8 +131,12 @@ export function DeleteContentButton({
       });
       toast("success", commentId ? "Komentar dihapus." : "Postingan dihapus.");
       setConfirm(false);
-      if (redirectTo) router.push(redirectTo);
-      router.refresh();
+      if (redirectTo) {
+        window.location.href = redirectTo;
+      } else {
+        window.location.reload();
+      }
+      return;
     } catch (err) {
       toast("error", err instanceof ApiError ? err.message : "Gagal menghapus.");
       setBusy(false);

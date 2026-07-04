@@ -1,22 +1,37 @@
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { useParams } from "next/navigation";
 import { Badge, EmotionDot } from "@/components/ui/badge";
 import { PrintButton } from "@/components/report/generate-report";
-import type { ReportContent } from "@/lib/services/reports";
+import { PageSkeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
+import type { ReportContent, ReportRow } from "@/lib/api-types";
 import { safeParseJson, formatDate } from "@/lib/utils";
 import { EMOTION_COLOR, emotionLabel } from "@/lib/constants";
 import { symbolLabel } from "@/lib/ai/lexicon";
+import { useApi } from "@/lib/use-api";
 import { ArrowLeft, Flame, Moon, ScrollText, Sparkles } from "lucide-react";
 
-export const metadata = { title: "Laporan" };
+export default function ReportDetailPage() {
+  const { id } = useParams<{ id: string }>();
+  const { data: report, loading, error } = useApi<ReportRow>(`/api/reports/${id}`, [id]);
+  const { data: profile } = useApi<{ fullName: string }>("/api/user/profile");
 
-export default async function ReportDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const user = (await getCurrentUser())!;
-  const { id } = await params;
-  const report = await db.report.findFirst({ where: { id, userId: user.id } });
-  if (!report) notFound();
+  if (loading) return <PageSkeleton />;
+  if (error || !report) {
+    return (
+      <EmptyState
+        title="Laporan tidak ditemukan"
+        message="Laporan ini tidak ada atau tautannya keliru."
+        action={
+          <Link href="/reports" className="inline-flex items-center gap-2 bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-xl px-5 py-2.5 transition-colors">
+            Semua laporan
+          </Link>
+        }
+      />
+    );
+  }
 
   const c = safeParseJson<ReportContent>(report.content, {
     stats: { dreamCount: 0, analyzedCount: 0, avgSleep: null, streak: 0, positiveRatio: null },
@@ -49,7 +64,7 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
           </h1>
           <p className="mt-2 text-sm text-muted">
             {formatDate(report.periodStart, { month: "long" })} – {formatDate(report.periodEnd, { month: "long" })} ·
-            disiapkan untuk {user.fullName}
+            disiapkan untuk {profile?.fullName ?? "kamu"}
           </p>
         </header>
 

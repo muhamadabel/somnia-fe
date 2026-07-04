@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/toast";
 import { api } from "@/lib/client";
@@ -8,7 +7,6 @@ import { Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function BookmarkButton({ symbolId, bookmarked }: { symbolId: string; bookmarked: boolean }) {
-  const router = useRouter();
   const toast = useToast();
   const [state, setState] = useState(bookmarked);
   const [busy, setBusy] = useState(false);
@@ -20,7 +18,6 @@ export function BookmarkButton({ symbolId, bookmarked }: { symbolId: string; boo
     try {
       const { data } = await api<{ bookmarked: boolean }>(`/api/symbols/${symbolId}/bookmark`, { method: "POST" });
       setState(data.bookmarked);
-      router.refresh();
     } catch {
       toast("error", "Gagal memperbarui simpanan.");
     } finally {

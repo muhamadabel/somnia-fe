@@ -1,10 +1,12 @@
+"use client";
+
 import Link from "next/link";
-import { getCurrentUser } from "@/lib/auth";
-import { getTrends } from "@/lib/services/trends";
+import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Badge, EmotionDot } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import {
   DreamCountChart,
   EmotionFrequencyChart,
@@ -13,8 +15,8 @@ import {
 } from "@/components/charts/trend-charts";
 import { LineChart, PenLine, Sparkles } from "lucide-react";
 import { emotionLabel } from "@/lib/constants";
-
-export const metadata = { title: "Tren Emosi" };
+import { useApi } from "@/lib/use-api";
+import type { TrendData } from "@/lib/api-types";
 
 const RANGES = [
   { days: 7, label: "Minggu" },
@@ -23,21 +25,17 @@ const RANGES = [
   { days: 365, label: "Tahun" },
 ];
 
-export default async function TrendsPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | undefined>>;
-}) {
-  const user = (await getCurrentUser())!;
-  const sp = await searchParams;
-  const range = RANGES.find((r) => r.days === Number(sp.range))?.days ?? 30;
-  const trends = await getTrends(user.id, range);
+export default function TrendsPage() {
+  const sp = useSearchParams();
+  const range = RANGES.find((r) => r.days === Number(sp.get("range")))?.days ?? 30;
+  const { data: trends, loading } = useApi<TrendData>(`/api/trends?range=${range}`, [range]);
+
+  if (loading || !trends) return <PageSkeleton />;
 
   const positive = trends.frequency.filter((f) => f.tone === "positive").reduce((a, f) => a + f.count, 0);
   const negative = trends.frequency.filter((f) => f.tone === "negative").reduce((a, f) => a + f.count, 0);
   const neutral = trends.frequency.filter((f) => f.tone === "neutral").reduce((a, f) => a + f.count, 0);
 
-  // Group daily buckets for long ranges so charts stay readable
   const chartDaily =
     range <= 31
       ? trends.daily

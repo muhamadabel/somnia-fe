@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/client";
@@ -30,7 +29,6 @@ const STEPS = [
 ];
 
 export default function OnboardingPage() {
-  const router = useRouter();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const current = STEPS[step];
@@ -43,8 +41,7 @@ export default function OnboardingPage() {
     } catch {
       // non-blocking — proceed anyway
     }
-    router.push("/dashboard");
-    router.refresh();
+    window.location.href = "/dashboard";
   }
 
   return (

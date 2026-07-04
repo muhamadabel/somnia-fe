@@ -1,62 +1,35 @@
+"use client";
+
 import Link from "next/link";
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
-import { DreamCard } from "@/components/dream/dream-card";
+import { DreamCard, type DreamCardData } from "@/components/dream/dream-card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { EMOTIONS, MOODS } from "@/lib/constants";
+import { useApi } from "@/lib/use-api";
 import { PenLine, Search } from "lucide-react";
-import type { Prisma } from "@prisma/client";
 
-export const metadata = { title: "Mimpi" };
+export default function DreamsPage() {
+  const sp = useSearchParams();
+  const q = sp.get("q")?.trim() ?? "";
+  const emotion = sp.get("emotion") ?? "";
+  const mood = sp.get("mood") ?? "";
+  const status = sp.get("status") ?? "active";
+  const sort = sp.get("sort") ?? "newest";
+  const page = Math.max(1, parseInt(sp.get("page") ?? "1", 10) || 1);
 
-const PAGE_SIZE = 12;
+  const query = new URLSearchParams();
+  if (q) query.set("q", q);
+  if (emotion) query.set("emotion", emotion);
+  if (mood) query.set("mood", mood);
+  if (status) query.set("status", status);
+  if (sort) query.set("sort", sort);
+  query.set("page", String(page));
 
-export default async function DreamsPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | undefined>>;
-}) {
-  const user = (await getCurrentUser())!;
-  const sp = await searchParams;
-  const q = sp.q?.trim() ?? "";
-  const emotion = sp.emotion ?? "";
-  const mood = sp.mood ?? "";
-  const status = sp.status ?? "active";
-  const sort = sp.sort ?? "newest";
-  const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
-
-  const where: Prisma.DreamWhereInput = {
-    userId: user.id,
-    deletedAt: null,
-    ...(status === "active" ? { isDraft: false, archivedAt: null } : {}),
-    ...(status === "drafts" ? { isDraft: true } : {}),
-    ...(status === "archived" ? { archivedAt: { not: null } } : {}),
-    ...(q ? { OR: [{ title: { contains: q } }, { description: { contains: q } }] } : {}),
-    ...(mood ? { mood } : {}),
-    ...(emotion ? { emotions: { some: { emotion: { name: emotion } } } } : {}),
-  };
-
-  const [total, dreams] = await Promise.all([
-    db.dream.count({ where }),
-    db.dream.findMany({
-      where,
-      orderBy: sort === "oldest" ? { dreamDate: "asc" } : { dreamDate: "desc" },
-      skip: (page - 1) * PAGE_SIZE,
-      take: PAGE_SIZE,
-      include: {
-        emotions: { include: { emotion: true } },
-        symbols: { include: { symbol: true } },
-        visualizations: {
-          where: { deletedAt: null },
-          orderBy: { createdAt: "desc" },
-          take: 1,
-          select: { imagePath: true },
-        },
-      },
-    }),
-  ]);
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const { data: dreams, meta, loading } = useApi<DreamCardData[]>(`/api/dreams?${query}`, [query.toString()]);
+  const total = (meta.total as number) ?? 0;
+  const totalPages = (meta.totalPages as number) ?? 1;
 
   const filterLink = (patch: Record<string, string>) => {
     const params = new URLSearchParams();
@@ -81,19 +54,11 @@ export default async function DreamsPage({
         }
       />
 
-      {/* ── Filter ── */}
       <form method="GET" className="card p-4 mb-6 space-y-3">
         <div className="flex gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted" aria-hidden />
-            <input
-              type="search"
-              name="q"
-              defaultValue={q}
-              placeholder="Cari mimpi…"
-              aria-label="Cari mimpi"
-              className="input-base pl-9"
-            />
+            <input type="search" name="q" defaultValue={q} placeholder="Cari mimpi…" aria-label="Cari mimpi" className="input-base pl-9" />
           </div>
           <button type="submit" className="bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-xl px-5 cursor-pointer transition-colors">
             Terapkan
@@ -120,7 +85,6 @@ export default async function DreamsPage({
         {status !== "active" && <input type="hidden" name="status" value={status} />}
       </form>
 
-      {/* ── Status tabs ── */}
       <div className="flex gap-2 mb-5" role="tablist" aria-label="Status mimpi">
         {[
           { key: "active", label: "Jurnal" },
@@ -141,7 +105,9 @@ export default async function DreamsPage({
         ))}
       </div>
 
-      {dreams.length === 0 ? (
+      {loading ? (
+        <PageSkeleton />
+      ) : !dreams || dreams.length === 0 ? (
         <EmptyState
           title={q || emotion || mood ? "Tidak ada mimpi yang cocok" : status === "drafts" ? "Belum ada draf" : status === "archived" ? "Belum ada arsip" : "Belum ada mimpi"}
           message={
@@ -163,7 +129,6 @@ export default async function DreamsPage({
         </div>
       )}
 
-      {/* ── Pagination ── */}
       {totalPages > 1 && (
         <nav className="mt-8 flex items-center justify-center gap-2" aria-label="Paginasi">
           {page > 1 && (
@@ -171,9 +136,7 @@ export default async function DreamsPage({
               ← Sebelumnya
             </Link>
           )}
-          <span className="text-sm text-muted px-2">
-            Halaman {page} dari {totalPages}
-          </span>
+          <span className="text-sm text-muted px-2">Halaman {page} dari {totalPages}</span>
           {page < totalPages && (
             <Link href={filterLink({ page: String(page + 1) })} className="surface border-base rounded-xl px-4 py-2 text-sm text-body hover:bg-(--surface-2)">
               Berikutnya →

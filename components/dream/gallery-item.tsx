@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/toast";
-import { api, ApiError } from "@/lib/client";
+import { api, ApiError, fileUrl } from "@/lib/client";
 import { formatDate } from "@/lib/utils";
 import { Download, Trash2 } from "lucide-react";
 
@@ -22,7 +22,8 @@ export function GalleryItem({
     try {
       await api(`/api/visualizations/${viz.id}`, { method: "DELETE" });
       toast("success", "Karya seni dihapus.");
-      router.refresh();
+      window.location.reload();
+      return;
     } catch (err) {
       toast("error", err instanceof ApiError ? err.message : "Gagal menghapus.");
       setBusy(false);
@@ -34,7 +35,7 @@ export function GalleryItem({
       <Link href={`/dreams/${viz.dreamId}`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={`/api/files/${viz.imagePath}`}
+          src={fileUrl(viz.imagePath)}
           alt={viz.prompt}
           loading="lazy"
           className="aspect-[4/3] w-full object-cover group-hover:scale-[1.02] transition-transform"
@@ -49,7 +50,7 @@ export function GalleryItem({
         </div>
         <div className="flex shrink-0 gap-0.5">
           <a
-            href={`/api/files/${viz.imagePath}`}
+            href={fileUrl(viz.imagePath)}
             download={`dream-art-${viz.id}.svg`}
             className="p-1.5 rounded-lg text-muted hover:text-body hover:bg-(--surface-2)"
             aria-label="Unduh karya seni"

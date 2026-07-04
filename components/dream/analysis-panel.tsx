@@ -71,9 +71,9 @@ export function AnalysisPanel({
     try {
       await api(`/api/dreams/${dreamId}/analysis`, { method: "POST" });
       toast("success", "Analisis siap.");
-      setSelected(0);
-      router.replace(`/dreams/${dreamId}`, { scroll: false });
-      router.refresh();
+      // Reload the page data so the new analysis version appears.
+      window.location.href = `/dreams/${dreamId}`;
+      return;
     } catch (err) {
       setError(
         err instanceof ApiError

@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { APP_NAME } from "@/lib/constants";
+import { hasToken } from "@/lib/session";
 import { Stars } from "@/components/layout/stars";
 import {
   BookOpenText,
@@ -27,9 +30,11 @@ const FEATURES = [
   { icon: HeartHandshake, title: "Komunitas Anonim", text: "Bagikan mimpi pilihan dengan nama samaran, beri reaksi, dan berdiskusi. Mimpi pribadi tetap pribadi, selalu." },
 ];
 
-export default async function LandingPage() {
-  const user = await getCurrentUser();
-  if (user) redirect("/dashboard");
+export default function LandingPage() {
+  const router = useRouter();
+  useEffect(() => {
+    if (hasToken()) router.replace("/dashboard");
+  }, [router]);
 
   return (
     <main className="min-h-screen bg-base">

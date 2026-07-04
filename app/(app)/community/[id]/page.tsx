@@ -1,50 +1,56 @@
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { useParams } from "next/navigation";
 import { Badge, EmotionDot } from "@/components/ui/badge";
 import { ReactionBar } from "@/components/community/reaction-bar";
-import {
-  CommentForm,
-  DeleteContentButton,
-  ReportButton,
-} from "@/components/community/post-interactions";
+import { CommentForm, DeleteContentButton, ReportButton } from "@/components/community/post-interactions";
+import { PageSkeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 import { safeParseJson, timeAgo } from "@/lib/utils";
 import { emotionLabel } from "@/lib/constants";
 import { symbolLabel } from "@/lib/ai/lexicon";
+import { useApi } from "@/lib/use-api";
 import { ArrowLeft } from "lucide-react";
-
-export const metadata = { title: "Mimpi Dibagikan" };
 
 interface PostMeta {
   emotions: Array<{ name: string; color: string }>;
   symbols: string[];
   mood: string | null;
 }
+interface PostDetail {
+  id: string;
+  title: string;
+  content: string;
+  meta: string;
+  createdAt: string;
+  user: { anonName: string };
+  comments: Array<{ id: string; content: string; createdAt: string; user: { anonName: string }; mine: boolean }>;
+  reactionCounts: Record<string, number>;
+  myReactions: string[];
+  mine: boolean;
+}
 
-export default async function CommunityPostPage({ params }: { params: Promise<{ id: string }> }) {
-  const user = (await getCurrentUser())!;
-  const { id } = await params;
+export default function CommunityPostPage() {
+  const { id } = useParams<{ id: string }>();
+  const { data: post, loading, error } = useApi<PostDetail>(`/api/community/posts/${id}`, [id]);
 
-  const post = await db.communityPost.findFirst({
-    where: { id, deletedAt: null },
-    include: {
-      user: { select: { anonName: true } },
-      comments: {
-        where: { deletedAt: null },
-        orderBy: { createdAt: "asc" },
-        include: { user: { select: { anonName: true } } },
-      },
-      reactions: true,
-    },
-  });
-  if (!post) notFound();
+  if (loading) return <PageSkeleton />;
+  if (error || !post) {
+    return (
+      <EmptyState
+        title="Postingan tidak ditemukan"
+        message="Postingan ini mungkin sudah dihapus."
+        action={
+          <Link href="/community" className="inline-flex items-center gap-2 bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-xl px-5 py-2.5 transition-colors">
+            Feed komunitas
+          </Link>
+        }
+      />
+    );
+  }
 
   const meta = safeParseJson<PostMeta>(post.meta, { emotions: [], symbols: [], mood: null });
-  const counts: Record<string, number> = {};
-  for (const r of post.reactions) counts[r.type] = (counts[r.type] ?? 0) + 1;
-  const mine = post.reactions.filter((r) => r.userId === user.id).map((r) => r.type);
-  const isOwner = post.userId === user.id;
 
   return (
     <div className="max-w-3xl">
@@ -60,13 +66,13 @@ export default async function CommunityPostPage({ params }: { params: Promise<{ 
             </span>
             <div>
               <p className="font-medium text-body text-sm">
-                {post.user.anonName} {isOwner && <Badge className="ml-1">kamu</Badge>}
+                {post.user.anonName} {post.mine && <Badge className="ml-1">kamu</Badge>}
               </p>
               <time>{timeAgo(post.createdAt)}</time>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            {isOwner ? (
+            {post.mine ? (
               <DeleteContentButton postId={post.id} redirectTo="/community" />
             ) : (
               <ReportButton postId={post.id} />
@@ -93,11 +99,10 @@ export default async function CommunityPostPage({ params }: { params: Promise<{ 
         )}
 
         <div className="mt-5 pt-4 border-t border-base">
-          <ReactionBar postId={post.id} counts={counts} mine={mine} />
+          <ReactionBar postId={post.id} counts={post.reactionCounts} mine={post.myReactions} />
         </div>
       </article>
 
-      {/* ── Comments ── */}
       <section className="mt-6">
         <h2 className="font-semibold text-body mb-3">
           Komentar <span className="text-muted font-normal text-sm">({post.comments.length})</span>
@@ -105,9 +110,7 @@ export default async function CommunityPostPage({ params }: { params: Promise<{ 
         <div className="card p-5 space-y-5">
           <CommentForm postId={post.id} />
           {post.comments.length === 0 ? (
-            <p className="text-sm text-muted text-center py-4">
-              Belum ada komentar — sampaikan kata baik pertama.
-            </p>
+            <p className="text-sm text-muted text-center py-4">Belum ada komentar — sampaikan kata baik pertama.</p>
           ) : (
             <ul className="space-y-4">
               {post.comments.map((c) => (
@@ -122,11 +125,7 @@ export default async function CommunityPostPage({ params }: { params: Promise<{ 
                     </div>
                     <p className="mt-1 text-sm text-body leading-relaxed whitespace-pre-line">{c.content}</p>
                     <div className="mt-1.5 flex gap-3">
-                      {c.userId === user.id || user.role === "admin" ? (
-                        <DeleteContentButton commentId={c.id} />
-                      ) : (
-                        <ReportButton commentId={c.id} />
-                      )}
+                      {c.mine ? <DeleteContentButton commentId={c.id} /> : <ReportButton commentId={c.id} />}
                     </div>
                   </div>
                 </li>

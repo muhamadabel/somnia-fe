@@ -1,38 +1,50 @@
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+"use client";
+
 import { PageHeader } from "@/components/layout/page-header";
 import { SettingsForm } from "@/components/settings/settings-form";
+import { PageSkeleton } from "@/components/ui/skeleton";
+import { useApi } from "@/lib/use-api";
 
-export const metadata = { title: "Pengaturan" };
+interface ProfileResponse {
+  fullName: string;
+  email: string;
+  anonName: string;
+  timezone: string;
+  language: string;
+  theme: string;
+  reminderEnabled: boolean;
+  reminderTime: string;
+  weeklyDigest: boolean;
+  communityAlerts: boolean;
+  aiMemoryEnabled: boolean;
+  createdAt: string;
+  stats: { dreamCount: number; analysisCount: number; postCount: number; artCount: number };
+}
 
-export default async function SettingsPage() {
-  const user = (await getCurrentUser())!;
-  const [dreamCount, analysisCount, postCount, streakDreams] = await Promise.all([
-    db.dream.count({ where: { userId: user.id, deletedAt: null, isDraft: false } }),
-    db.analysis.count({ where: { dream: { userId: user.id, deletedAt: null } } }),
-    db.communityPost.count({ where: { userId: user.id, deletedAt: null } }),
-    db.visualization.count({ where: { deletedAt: null, dream: { userId: user.id } } }),
-  ]);
+export default function SettingsPage() {
+  const { data, loading } = useApi<ProfileResponse>("/api/user/profile");
+
+  if (loading || !data) return <PageSkeleton />;
 
   return (
     <div className="max-w-2xl">
       <PageHeader title="Pengaturan" subtitle="Profil, privasi, notifikasi, dan tampilan." />
       <SettingsForm
         user={{
-          fullName: user.fullName,
-          email: user.email,
-          anonName: user.anonName,
-          timezone: user.timezone,
-          language: user.language,
-          theme: user.theme,
-          reminderEnabled: user.reminderEnabled,
-          reminderTime: user.reminderTime,
-          weeklyDigest: user.weeklyDigest,
-          communityAlerts: user.communityAlerts,
-          aiMemoryEnabled: user.aiMemoryEnabled,
-          memberSince: user.createdAt.toISOString(),
+          fullName: data.fullName,
+          email: data.email,
+          anonName: data.anonName,
+          timezone: data.timezone,
+          language: data.language,
+          theme: data.theme,
+          reminderEnabled: data.reminderEnabled,
+          reminderTime: data.reminderTime,
+          weeklyDigest: data.weeklyDigest,
+          communityAlerts: data.communityAlerts,
+          aiMemoryEnabled: data.aiMemoryEnabled,
+          memberSince: data.createdAt,
         }}
-        stats={{ dreamCount, analysisCount, postCount, artCount: streakDreams }}
+        stats={data.stats}
       />
     </div>
   );

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { APP_NAME } from "@/lib/constants";
 import { api } from "@/lib/client";
+import { clearToken } from "@/lib/session";
 import {
   Bell,
   BookOpenText,
@@ -52,8 +53,8 @@ export function Sidebar({
 
   async function logout() {
     await api("/api/auth/logout", { method: "POST" }).catch(() => {});
-    router.push("/login");
-    router.refresh();
+    clearToken();
+    window.location.href = "/login";
   }
 
   const nav = (

@@ -1,36 +1,74 @@
-# 🌙 Somnia — Penganalisis Jurnal Mimpi
+# 🌙 Somnia — Penganalisis Jurnal Mimpi (Frontend)
 
-Platform **jurnal mimpi bertenaga AI** untuk refleksi diri. Catat mimpi, dapatkan analisis AI (emosi, simbol, tema, refleksi), ubah mimpi jadi **karya seni AI**, pantau tren emosi, terima laporan kesejahteraan, ngobrol dengan **Teman AI yang mengingat seluruh riwayat mimpimu**, dan bagikan mimpi secara anonim ke komunitas.
+Antarmuka **jurnal mimpi bertenaga AI** untuk refleksi diri: catat mimpi, dapatkan analisis AI (emosi, simbol, tema, refleksi), ubah mimpi jadi **karya seni AI**, pantau tren emosi, terima laporan kesejahteraan, ngobrol dengan **Teman AI yang mengingat seluruh riwayat mimpimu**, dan bagikan mimpi secara anonim ke komunitas.
 
-**Seluruh antarmuka & keluaran AI berbahasa Indonesia.** Aplikasi ini utuh (frontend + backend jadi satu app Next.js).
+**Seluruh antarmuka & keluaran AI berbahasa Indonesia.**
 
-- 🖥️ **Repo ini (aplikasi lengkap, bisa langsung jalan):** frontend + API + database + AI
-- 🗄️ **Repo backend (kode server + panduan Supabase):** https://github.com/muhamadabel/somnia-be-
+Ini adalah **frontend saja** — sebuah SPA Next.js yang memanggil backend lewat HTTP. Backend (data + AI) ada di repo terpisah.
+
+- 🖥️ **Repo ini — Frontend (SPA):** https://github.com/muhamadabel/somnia-fe
+- 🗄️ **Repo Backend (API + database + AI):** https://github.com/muhamadabel/somnia-be-
 
 > **Disclaimer** — Somnia adalah alat refleksi diri, bukan perangkat medis. Insight AI bersifat reflektif & edukatif, bukan diagnosis, dan tak menggantikan bantuan profesional kesehatan mental.
 
 ---
 
-## 🚀 Menjalankan (lokal, tanpa setup apa pun)
+## 🧩 Arsitektur (dua aplikasi terpisah)
 
-Butuh **Node.js 18.18+** (diuji di Node 24).
-
-```bash
-npm install        # pasang dependensi
-npm run setup      # prisma generate + buat database SQLite + isi data demo
-npm run dev        # buka http://localhost:3000
+```
+┌────────────────────────┐        HTTPS + Bearer token       ┌────────────────────────┐
+│   Frontend (repo ini)  │  ──────────────────────────────▶  │   Backend (somnia-be)  │
+│   Next.js SPA           │   fetch(NEXT_PUBLIC_API_URL/...)  │   Next.js API + Prisma │
+│   Deploy: Vercel (gratis)│  ◀──────────────────────────────  │   Deploy: server temanku│
+└────────────────────────┘        JSON envelope + gambar      └────────────────────────┘
 ```
 
-Selesai — tanpa layanan eksternal, tanpa API key, tanpa server database. Database memakai file SQLite (`prisma/dev.db`) sehingga langsung jalan.
+- Frontend **tidak** punya database atau AI — semua lewat API backend.
+- Login/daftar mengembalikan **token**, disimpan di `localStorage`, dikirim sebagai `Authorization: Bearer <token>` di tiap permintaan.
+- Gambar (seni mimpi/upload) juga diambil dari backend (`/api/files/...`).
+- Satu-satunya konfigurasi yang dibutuhkan frontend: **`NEXT_PUBLIC_API_URL`** (alamat backend).
 
-### Akun demo (sudah terisi)
+---
 
-| Peran | Email | Kata sandi | Isinya |
-|-------|-------|------------|--------|
-| User  | `demo@somnia.app`  | `dream1234` | 19 mimpi selama ~6 minggu + analisis, seni mimpi, laporan, percakapan AI, komunitas |
-| Admin | `admin@somnia.app` | `admin1234` | Semua di atas + `/admin` (antrean moderasi, pengguna, jejak audit) |
+## 🚀 Menjalankan lokal
 
-Skrip lain: `npm run build` / `npm start` (produksi), `npm run db:reset` (hapus + isi ulang).
+Butuh **Node.js 18.18+** dan **backend yang sudah jalan** (lihat repo `somnia-be-`).
+
+```bash
+npm install
+cp .env.example .env.local      # lalu isi NEXT_PUBLIC_API_URL
+npm run dev                     # buka http://localhost:3000
+```
+
+Isi `.env.local`:
+
+```env
+# Arahkan ke backend yang sedang berjalan:
+NEXT_PUBLIC_API_URL="http://localhost:3001"      # kalau backend lokal di port 3001
+# atau backend produksi temanku:
+# NEXT_PUBLIC_API_URL="https://be-somnia.hallojanu.xyz"
+```
+
+> Frontend dan backend jalan di port berbeda (mis. FE 3000, BE 3001). Backend harus mengizinkan origin frontend lewat `FRONTEND_URL` (CORS) — lihat README backend.
+
+Skrip: `npm run dev` (pengembangan), `npm run build` + `npm start` (produksi), `npm run lint`.
+
+---
+
+## ☁️ Deploy ke Vercel (gratis)
+
+1. Push repo ini ke GitHub (sudah).
+2. Di [vercel.com](https://vercel.com) → **New Project** → impor `somnia-fe`.
+3. **Environment Variables** → tambahkan:
+   | Name | Value |
+   |------|-------|
+   | `NEXT_PUBLIC_API_URL` | `https://be-somnia.hallojanu.xyz` (URL backend, tanpa `/` di akhir) |
+4. **Deploy**. Vercel mendeteksi Next.js otomatis (build `next build`).
+5. Setelah dapat domain frontend (mis. `https://somnia.vercel.app` atau domain kustom), **beri tahu backend**: set `FRONTEND_URL` di backend = domain itu, supaya CORS mengizinkannya.
+
+> `NEXT_PUBLIC_API_URL` "dibakar" saat build. Kalau alamat backend berubah, ubah env di Vercel lalu **redeploy**.
+
+Panduan langkah demi langkah ada di [`DEPLOY.md`](DEPLOY.md).
 
 ---
 
@@ -39,7 +77,7 @@ Skrip lain: `npm run build` / `npm start` (produksi), `npm run db:reset` (hapus 
 | Fitur | Keterangan |
 |-------|-----------|
 | 📝 Catat Mimpi | CRUD + draf, arsip, mood emoji, durasi tidur, lampiran gambar |
-| 🧠 Analisis AI | Ringkasan, emosi + alasan, simbol + alasan, tema, refleksi, deteksi pola lintas mimpi, analisis berversi |
+| 🧠 Analisis AI | Ringkasan, emosi + alasan, simbol + alasan, tema, refleksi, pola lintas mimpi |
 | 🎨 Visualisasi Mimpi | **Gambar AI asli** dari emosi & simbol mimpi (bukan upload) |
 | 📈 Tren Emosi | Grafik positivitas, frekuensi emosi, keseimbangan positif/negatif |
 | 📅 Kalender | Riwayat mimpi kronologis dengan penanda emosi |
@@ -51,31 +89,15 @@ Skrip lain: `npm run build` / `npm start` (produksi), `npm run db:reset` (hapus 
 
 ---
 
-## 🤖 Mode AI — gratis secara default, tanpa API key
-
-Subsistem AI bersifat **provider-agnostic**. Secara default semua **gratis tanpa key**:
-
-| Fitur | Default gratis | Cara kerja |
-|-------|----------------|------------|
-| **Teman AI** | LLM gratis via **Pollinations.ai** | Seluruh riwayat mimpi dikirim ke prompt → "ingat semua" |
-| **Visualisasi** | Gambar AI via **Pollinations Flux** | Emosi + simbol → prompt → gambar diffusion asli |
-| **Analisis & laporan** | Mesin lokal bawaan (instan, andal) | Deteksi emosi/simbol berbasis kamus + refleksi Indonesia |
-
-Setiap panggilan gratis punya **fallback otomatis**: jika Pollinations tak terjangkau, Teman AI memakai mesin lokal dan gambar memakai seni SVG prosedural bawaan — jadi tak pernah error, bahkan offline (`AI_MODE=local`).
-
-Isi `ANTHROPIC_API_KEY` di `.env` untuk mengarahkan **semuanya** ke **Claude**. Mode aktif selalu terlihat di sidebar & tiap kartu analisis.
-
----
-
-## 🧱 Teknologi
+## 🧱 Teknologi (frontend)
 
 | Pilihan | Alasan |
 |---------|--------|
-| **Next.js 15 (App Router) + TypeScript** | Satu codebase untuk UI + API, server components, deploy mudah |
-| **Prisma ORM + SQLite** | Nol-setup untuk demo; **pindah ke PostgreSQL/Supabase cukup ubah 2 baris** di `schema.prisma` |
+| **Next.js 15 (App Router) + TypeScript** | Semua halaman client component, di-deploy sebagai SPA |
 | **Tailwind CSS v4** | Design token konsisten, dark mode, tema "langit malam" |
 | **Recharts** | Grafik yang mudah dibaca non-teknis |
-| **Auth sesi cookie httpOnly + bcrypt** | Mandiri, aman, siap-OAuth |
+| **lucide-react** | Ikon |
+| **Auth Bearer token (localStorage)** | Cocok untuk frontend & backend beda origin |
 
 ---
 
@@ -83,43 +105,26 @@ Isi `ANTHROPIC_API_KEY` di `.env` untuk mengarahkan **semuanya** ke **Claude**. 
 
 ```
 app/
-  (auth)/        login, register
+  (auth)/        login, register        (setToken → localStorage)
   (app)/         halaman terproteksi (dashboard, dreams, calendar, dst.)
-  api/           30 route handler (backend)
-components/       UI kit + komponen fitur
+  onboarding/    perkenalan
+  layout.tsx     root (tema), (app)/layout.tsx = penjaga sesi + sidebar
+components/       UI kit + komponen fitur (semua client)
 lib/
-  db, auth, api, validation, constants, utils
-  services/      analysis, reports, trends, storage
-  ai/            subsistem AI (pollinations, anthropic, local, image, art)
-prisma/          schema (19 model) + seed
+  client.ts      pembungkus fetch → API backend (Bearer token, fileUrl)
+  session.ts     simpan/ambil/hapus token di localStorage
+  use-api.ts     hook pemuat data (data/loading/error/reload)
+  api-types.ts   tipe respons API (aman untuk client)
+  constants, utils
+  ai/lexicon.ts  label simbol/emosi Indonesia (data murni, dipakai UI)
 docs/            dokumen spesifikasi (00–16)
 ```
 
 ---
 
-## ☁️ Deploy / jalankan di server sendiri
+## 🔒 Catatan keamanan
 
-📘 **Panduan lengkap ada di [`DEPLOY.md`](DEPLOY.md)** — cara menjalankan di komputer/laptop sendiri sebagai server, dari jaringan lokal sampai diakses dari internet.
-
-Karena aplikasi ini **mandiri** (SQLite + penyimpanan lokal + AI gratis), di server dengan disk permanen tinggal:
-
-```bash
-npm install
-npm run setup          # buat DB + data demo
-# edit .env → isi SESSION_SECRET
-npm run build && npm start   # http://localhost:3000
-```
-
-Biar tetap nyala: pakai `pm2` (lihat [DEPLOY.md](DEPLOY.md)). Untuk diakses dari HP lain di WiFi yang sama: `http://<IP-server>:3000`. Untuk dari internet: **Cloudflare Tunnel** (gratis).
-
-**Opsional — PostgreSQL/Supabase:** kalau mau database server-grade, panduannya di [repo backend](https://github.com/muhamadabel/somnia-be-#-setup-database-di-supabase).
-
----
-
-## 🔒 Keamanan & privasi
-
-- Kata sandi di-hash **bcrypt**; sesi = token acak di cookie **httpOnly/SameSite**, bisa dicabut server-side.
-- **Kepemilikan divalidasi** di setiap akses — pengguna hanya bisa mengakses datanya sendiri.
-- **Rate limiting**, **soft delete**, komunitas **anonim** (nama samaran), pengguna mengontrol memori AI.
-- Upload divalidasi (tipe + ukuran), disimpan di luar web-root, dilayani hanya ke sesi terautentikasi.
-- File `.env` (berisi `SESSION_SECRET`) & database lokal tidak ikut ke Git.
+- Token disimpan di `localStorage` dan dikirim sebagai header `Authorization: Bearer`.
+- Respons `401` otomatis menghapus token dan mengarahkan ke `/login`.
+- File `.env.local` (berisi `NEXT_PUBLIC_API_URL`) tidak ikut ke Git.
+- Semua validasi kepemilikan, rate limiting, hashing kata sandi, dan penyimpanan file ada di **backend**.

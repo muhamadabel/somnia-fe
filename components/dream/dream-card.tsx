@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { MOODS, emotionLabel } from "@/lib/constants";
+import { fileUrl } from "@/lib/client";
 import { truncate } from "@/lib/utils";
 import { ChevronRight, MoonStar } from "lucide-react";
 
@@ -44,7 +47,7 @@ export function DreamThumb({
   if (art) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img src={`/api/files/${art}`} alt="" aria-hidden className={`${className} shrink-0 rounded-xl object-cover border border-base`} />
+      <img src={fileUrl(art)} alt="" aria-hidden className={`${className} shrink-0 rounded-xl object-cover border border-base`} />
     );
   }
   const c = color ?? "#7f6ac1";

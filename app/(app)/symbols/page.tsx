@@ -1,44 +1,40 @@
+"use client";
+
 import Link from "next/link";
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
 import { BookmarkButton } from "@/components/symbol/bookmark-button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { SYMBOL_CATEGORIES, CATEGORY_LABEL } from "@/lib/constants";
 import { symbolLabel } from "@/lib/ai/lexicon";
 import { truncate } from "@/lib/utils";
+import { useApi } from "@/lib/use-api";
 import { Search, Sparkles } from "lucide-react";
 
-export const metadata = { title: "Pustaka Simbol" };
+interface SymbolItem {
+  id: string;
+  name: string;
+  slug: string;
+  category: string;
+  interpretation: string;
+  dreamCount: number;
+  bookmarked: boolean;
+}
 
-export default async function SymbolsPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | undefined>>;
-}) {
-  const user = (await getCurrentUser())!;
-  const sp = await searchParams;
-  const q = sp.q?.trim() ?? "";
-  const category = sp.category ?? "";
-  const view = sp.view ?? "all"; // all | mine | bookmarked
+export default function SymbolsPage() {
+  const sp = useSearchParams();
+  const q = sp.get("q")?.trim() ?? "";
+  const category = sp.get("category") ?? "";
+  const view = sp.get("view") ?? "all";
 
-  const symbols = await db.symbol.findMany({
-    where: {
-      ...(q ? { OR: [{ name: { contains: q } }, { description: { contains: q } }] } : {}),
-      ...(category ? { category } : {}),
-      ...(view === "mine" ? { dreams: { some: { dream: { userId: user.id, deletedAt: null } } } } : {}),
-      ...(view === "bookmarked" ? { bookmarks: { some: { userId: user.id } } } : {}),
-    },
-    include: {
-      bookmarks: { where: { userId: user.id } },
-      _count: { select: { dreams: { where: { dream: { userId: user.id, deletedAt: null } } } } },
-    },
-    orderBy: { name: "asc" },
-  });
+  const query = new URLSearchParams();
+  if (q) query.set("q", q);
+  if (category) query.set("category", category);
+  if (view !== "all") query.set("view", view);
 
-  // user's symbols first, then alphabetical
-  const sorted = [...symbols].sort((a, b) => b._count.dreams - a._count.dreams || a.name.localeCompare(b.name));
+  const { data: symbols, loading } = useApi<SymbolItem[]>(`/api/symbols?${query}`, [query.toString()]);
 
   const tabs = [
     { key: "all", label: "Semua simbol" },
@@ -94,7 +90,9 @@ export default async function SymbolsPage({
         ))}
       </div>
 
-      {sorted.length === 0 ? (
+      {loading ? (
+        <PageSkeleton />
+      ) : !symbols || symbols.length === 0 ? (
         <EmptyState
           icon={<Sparkles className="size-8" />}
           title="Simbol tidak ditemukan"
@@ -108,7 +106,7 @@ export default async function SymbolsPage({
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {sorted.map((s) => (
+          {symbols.map((s) => (
             <Link key={s.id} href={`/symbols/${s.slug}`} className="card p-5 hover:shadow-dreamy-lg transition-shadow relative group">
               <div className="flex items-start justify-between gap-2">
                 <div>
@@ -117,12 +115,10 @@ export default async function SymbolsPage({
                   </h3>
                   <div className="mt-1.5 flex items-center gap-1.5">
                     <Badge>{CATEGORY_LABEL[s.category] ?? s.category}</Badge>
-                    {s._count.dreams > 0 && (
-                      <Badge color="#7f6ac1">{s._count.dreams} mimpimu</Badge>
-                    )}
+                    {s.dreamCount > 0 && <Badge color="#7f6ac1">{s.dreamCount} mimpimu</Badge>}
                   </div>
                 </div>
-                <BookmarkButton symbolId={s.id} bookmarked={s.bookmarks.length > 0} />
+                <BookmarkButton symbolId={s.id} bookmarked={s.bookmarked} />
               </div>
               <p className="mt-3 text-sm text-muted leading-relaxed">{truncate(s.interpretation, 140)}</p>
             </Link>

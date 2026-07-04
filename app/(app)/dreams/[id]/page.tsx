@@ -1,39 +1,57 @@
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { Suspense } from "react";
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { useParams } from "next/navigation";
 import { AnalysisPanel, type AnalysisData } from "@/components/dream/analysis-panel";
-import { VisualizationPanel } from "@/components/dream/visualization-panel";
+import { VisualizationPanel, type VisualizationData } from "@/components/dream/visualization-panel";
 import { DreamActions } from "@/components/dream/dream-actions";
 import { Badge, EmotionDot } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { MOOD_LABEL, emotionLabel } from "@/lib/constants";
 import { symbolLabel } from "@/lib/ai/lexicon";
+import { fileUrl } from "@/lib/client";
+import { useApi } from "@/lib/use-api";
 import { formatDate } from "@/lib/utils";
 import { ArrowLeft, BedDouble, CalendarDays, FileEdit } from "lucide-react";
 
-export const metadata = { title: "Mimpi" };
+interface DreamDetail {
+  id: string;
+  title: string | null;
+  description: string;
+  notes: string | null;
+  mood: string | null;
+  sleepDuration: number | null;
+  dreamDate: string;
+  createdAt: string;
+  isDraft: boolean;
+  archivedAt: string | null;
+  imagePath: string | null;
+  emotions: Array<{ intensity: number; emotion: { name: string; color: string } }>;
+  symbols: Array<{ symbol: { name: string; slug: string; interpretation: string } }>;
+  analyses: AnalysisData[];
+  visualizations: VisualizationData[];
+  post: { id: string } | null;
+}
 
-export default async function DreamDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const user = (await getCurrentUser())!;
-  const { id } = await params;
+export default function DreamDetailPage() {
+  const { id } = useParams<{ id: string }>();
+  const { data: dream, loading, error } = useApi<DreamDetail>(`/api/dreams/${id}`, [id]);
 
-  const dream = await db.dream.findFirst({
-    where: { id, userId: user.id, deletedAt: null },
-    include: {
-      emotions: { include: { emotion: true }, orderBy: { intensity: "desc" } },
-      symbols: { include: { symbol: true }, orderBy: { confidence: "desc" } },
-      analyses: { orderBy: { version: "desc" } },
-      visualizations: { where: { deletedAt: null }, orderBy: { createdAt: "desc" } },
-      post: { select: { id: true } },
-    },
-  });
-  if (!dream) notFound();
-
-  const analyses: AnalysisData[] = dream.analyses.map((a) => ({
-    ...a,
-    generatedAt: a.generatedAt.toISOString(),
-  }));
+  if (loading) return <PageSkeleton />;
+  if (error || !dream) {
+    return (
+      <EmptyState
+        title="Mimpi tidak ditemukan"
+        message="Mimpi ini mungkin sudah dihapus atau tautannya tidak valid."
+        action={
+          <Link href="/dreams" className="inline-flex items-center gap-2 bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-xl px-5 py-2.5 transition-colors">
+            Semua mimpi
+          </Link>
+        }
+      />
+    );
+  }
 
   return (
     <>
@@ -73,7 +91,6 @@ export default async function DreamDetailPage({ params }: { params: Promise<{ id
       </div>
 
       <div className="grid gap-6 lg:grid-cols-5">
-        {/* ── Left: dream content ── */}
         <div className="lg:col-span-2 space-y-6">
           <div className="card p-6">
             <h2 className="text-xs font-semibold uppercase tracking-wide text-muted mb-3">Isi mimpi</h2>
@@ -81,11 +98,7 @@ export default async function DreamDetailPage({ params }: { params: Promise<{ id
 
             {dream.imagePath && (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src={`/api/files/${dream.imagePath}`}
-                alt="Lampiran mimpi"
-                className="mt-4 w-full rounded-xl border border-base"
-              />
+              <img src={fileUrl(dream.imagePath)} alt="Lampiran mimpi" className="mt-4 w-full rounded-xl border border-base" />
             )}
 
             {dream.notes && (
@@ -116,22 +129,11 @@ export default async function DreamDetailPage({ params }: { params: Promise<{ id
             </p>
           </div>
 
-          <VisualizationPanel
-            dreamId={dream.id}
-            visualizations={dream.visualizations.map((v) => ({
-              id: v.id,
-              imagePath: v.imagePath,
-              prompt: v.prompt,
-              createdAt: v.createdAt.toISOString(),
-            }))}
-          />
+          <VisualizationPanel dreamId={dream.id} visualizations={dream.visualizations} />
         </div>
 
-        {/* ── Right: AI analysis ── */}
         <div className="lg:col-span-3">
-          <Suspense>
-            <AnalysisPanel dreamId={dream.id} analyses={analyses} isDraft={dream.isDraft} />
-          </Suspense>
+          <AnalysisPanel dreamId={dream.id} analyses={dream.analyses} isDraft={dream.isDraft} />
         </div>
       </div>
     </>

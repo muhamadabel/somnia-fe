@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
-import { api, ApiError } from "@/lib/client";
+import { api, ApiError, fileUrl } from "@/lib/client";
 import { MAX_DREAM_LENGTH, MOODS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { BedDouble, CalendarDays, ImagePlus, Sparkles, X } from "lucide-react";
@@ -85,8 +85,8 @@ export function DreamForm({ initial }: { initial?: Partial<DreamFormValues> }) {
       }
 
       toast("success", asDraft ? "Draf tersimpan." : editing ? "Mimpi diperbarui." : "Mimpi tercatat ✨");
-      router.push(`/dreams/${dreamId}${asDraft ? "" : "?analyze=1"}`);
-      router.refresh();
+      window.location.href = `/dreams/${dreamId}${asDraft ? "" : "?analyze=1"}`;
+      return;
     } catch (err) {
       if (err instanceof ApiError) {
         setFieldErrors(err.fieldErrors);
@@ -231,7 +231,7 @@ export function DreamForm({ initial }: { initial?: Partial<DreamFormValues> }) {
           {preview ? (
             <div className="flex items-center gap-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={`/api/files/${initial!.imagePath}`} alt="Lampiran mimpi saat ini" className="h-20 rounded-xl object-cover border border-base" />
+              <img src={fileUrl(initial!.imagePath!)} alt="Lampiran mimpi saat ini" className="h-20 rounded-xl object-cover border border-base" />
               <Button type="button" variant="ghost" size="sm" onClick={() => setRemoveImage(true)}>
                 <X className="size-4" /> Hapus
               </Button>

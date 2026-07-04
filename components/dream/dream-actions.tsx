@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
@@ -23,7 +22,6 @@ export function DreamActions({
   shared: boolean;
   isDraft: boolean;
 }) {
-  const router = useRouter();
   const toast = useToast();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
@@ -34,8 +32,8 @@ export function DreamActions({
     try {
       await api(`/api/dreams/${dreamId}`, { method: "DELETE" });
       toast("success", "Mimpi dipindahkan ke sampah.");
-      router.push("/dreams");
-      router.refresh();
+      window.location.href = "/dreams";
+      return;
     } catch (err) {
       toast("error", err instanceof ApiError ? err.message : "Gagal menghapus.");
       setBusy(false);
@@ -47,7 +45,7 @@ export function DreamActions({
     try {
       const { message } = await api(`/api/dreams/${dreamId}/archive`, { method: "POST" });
       toast("success", message);
-      router.refresh();
+      window.location.reload();
     } catch (err) {
       toast("error", err instanceof ApiError ? err.message : "Tindakan gagal.");
     } finally {
@@ -70,7 +68,7 @@ export function DreamActions({
       });
       toast("success", "Mimpi dibagikan ke komunitas (anonim).");
       setShareOpen(false);
-      router.refresh();
+      window.location.reload();
     } catch (err) {
       toast("error", err instanceof ApiError ? err.message : "Gagal membagikan.");
     } finally {

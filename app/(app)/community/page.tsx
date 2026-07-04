@@ -1,60 +1,48 @@
+"use client";
+
 import Link from "next/link";
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { ReactionBar } from "@/components/community/reaction-bar";
 import { safeParseJson, timeAgo, truncate } from "@/lib/utils";
 import { emotionLabel } from "@/lib/constants";
 import { symbolLabel } from "@/lib/ai/lexicon";
+import { useApi } from "@/lib/use-api";
 import { HeartHandshake, MessageCircle, Search } from "lucide-react";
-import type { Prisma } from "@prisma/client";
-
-export const metadata = { title: "Komunitas" };
-
-const PAGE_SIZE = 10;
 
 interface PostMeta {
   emotions: Array<{ name: string; color: string }>;
   symbols: string[];
   mood: string | null;
 }
+interface FeedPost {
+  id: string;
+  title: string;
+  content: string;
+  meta: string;
+  createdAt: string;
+  user: { anonName: string };
+  reactionCounts: Record<string, number>;
+  myReactions: string[];
+  commentCount: number;
+}
 
-export default async function CommunityPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | undefined>>;
-}) {
-  const user = (await getCurrentUser())!;
-  const sp = await searchParams;
-  const q = sp.q?.trim() ?? "";
-  const sort = sp.sort ?? "recent";
-  const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
+export default function CommunityPage() {
+  const sp = useSearchParams();
+  const q = sp.get("q")?.trim() ?? "";
+  const sort = sp.get("sort") ?? "recent";
+  const page = Math.max(1, parseInt(sp.get("page") ?? "1", 10) || 1);
 
-  const where: Prisma.CommunityPostWhereInput = {
-    deletedAt: null,
-    ...(q ? { OR: [{ title: { contains: q } }, { content: { contains: q } }] } : {}),
-  };
+  const query = new URLSearchParams();
+  if (q) query.set("q", q);
+  if (sort !== "recent") query.set("sort", sort);
+  query.set("page", String(page));
 
-  const [total, posts] = await Promise.all([
-    db.communityPost.count({ where }),
-    db.communityPost.findMany({
-      where,
-      orderBy:
-        sort === "top"
-          ? [{ reactions: { _count: "desc" } }, { createdAt: "desc" }]
-          : { createdAt: "desc" },
-      skip: (page - 1) * PAGE_SIZE,
-      take: PAGE_SIZE,
-      include: {
-        user: { select: { anonName: true } },
-        reactions: true,
-        _count: { select: { comments: { where: { deletedAt: null } } } },
-      },
-    }),
-  ]);
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const { data: posts, meta, loading } = useApi<FeedPost[]>(`/api/community/posts?${query}`, [query.toString()]);
+  const totalPages = (meta.totalPages as number) ?? 1;
 
   const link = (patch: Record<string, string>) => {
     const params = new URLSearchParams();
@@ -92,7 +80,9 @@ export default async function CommunityPage({
         </div>
       </div>
 
-      {posts.length === 0 ? (
+      {loading ? (
+        <PageSkeleton />
+      ) : !posts || posts.length === 0 ? (
         <EmptyState
           icon={<HeartHandshake className="size-8" />}
           title={q ? "Tidak ada postingan yang cocok" : "Belum ada mimpi dibagikan"}
@@ -107,9 +97,6 @@ export default async function CommunityPage({
         <div className="space-y-4 max-w-3xl">
           {posts.map((post) => {
             const meta = safeParseJson<PostMeta>(post.meta, { emotions: [], symbols: [], mood: null });
-            const counts: Record<string, number> = {};
-            for (const r of post.reactions) counts[r.type] = (counts[r.type] ?? 0) + 1;
-            const mine = post.reactions.filter((r) => r.userId === user.id).map((r) => r.type);
             return (
               <article key={post.id} className="card p-5 hover:shadow-dreamy-lg transition-shadow">
                 <Link href={`/community/${post.id}`} className="block group">
@@ -137,9 +124,9 @@ export default async function CommunityPage({
                   )}
                 </Link>
                 <div className="mt-4 flex items-center justify-between gap-3">
-                  <ReactionBar postId={post.id} counts={counts} mine={mine} />
+                  <ReactionBar postId={post.id} counts={post.reactionCounts} mine={post.myReactions} />
                   <Link href={`/community/${post.id}`} className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-body">
-                    <MessageCircle className="size-3.5" /> {post._count.comments} komentar
+                    <MessageCircle className="size-3.5" /> {post.commentCount} komentar
                   </Link>
                 </div>
               </article>

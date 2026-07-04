@@ -1,75 +1,64 @@
+"use client";
+
 import Link from "next/link";
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmotionDot } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
-import { DreamRow } from "@/components/dream/dream-card";
+import { DreamRow, type DreamCardData } from "@/components/dream/dream-card";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { EMOTIONS, emotionLabel } from "@/lib/constants";
+import { useApi } from "@/lib/use-api";
 import { ChevronLeft, ChevronRight, MoonStar } from "lucide-react";
-
-export const metadata = { title: "Kalender" };
 
 function monthLabel(y: number, m: number) {
   return new Date(y, m - 1, 1).toLocaleDateString("id-ID", { month: "long", year: "numeric" });
 }
 
-export default async function CalendarPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | undefined>>;
-}) {
-  const user = (await getCurrentUser())!;
-  const sp = await searchParams;
+function topEmotion(d: DreamCardData) {
+  return [...d.emotions].sort((a, b) => b.intensity - a.intensity)[0]?.emotion;
+}
+function dayKey(iso: string) {
+  return iso.slice(0, 10);
+}
+
+export default function CalendarPage() {
+  const sp = useSearchParams();
 
   const now = new Date();
-  const [yStr, mStr] = (sp.month ?? `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`).split("-");
+  const [yStr, mStr] = (sp.get("month") ?? `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`).split("-");
   const year = parseInt(yStr, 10) || now.getFullYear();
   const month = Math.min(12, Math.max(1, parseInt(mStr, 10) || now.getMonth() + 1));
-  const emotionFilter = sp.emotion ?? "";
-  const view = sp.view === "week" ? "week" : "month";
-  const selectedDay = sp.day;
+  const emotionFilter = sp.get("emotion") ?? "";
+  const view = sp.get("view") === "week" ? "week" : "month";
+  const selectedDay = sp.get("day") ?? undefined;
 
   const monthStart = new Date(year, month - 1, 1);
   const monthEnd = new Date(year, month, 0, 23, 59, 59);
-
   const weekStart = new Date();
   weekStart.setDate(weekStart.getDate() - 6);
   weekStart.setHours(0, 0, 0, 0);
-
   const rangeStart = view === "week" ? weekStart : monthStart;
   const rangeEnd = view === "week" ? new Date() : monthEnd;
 
-  const dreams = await db.dream.findMany({
-    where: {
-      userId: user.id,
-      deletedAt: null,
-      isDraft: false,
-      dreamDate: { gte: rangeStart, lte: rangeEnd },
-      ...(emotionFilter ? { emotions: { some: { emotion: { name: emotionFilter } } } } : {}),
-    },
-    include: {
-      emotions: { include: { emotion: true }, orderBy: { intensity: "desc" } },
-      visualizations: {
-        where: { deletedAt: null },
-        orderBy: { createdAt: "desc" },
-        take: 1,
-        select: { imagePath: true },
-      },
-    },
-    orderBy: { dreamDate: "asc" },
-  });
+  const fromStr = new Date(rangeStart.getTime() - rangeStart.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const toStr = new Date(rangeEnd.getTime() - rangeEnd.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const query = new URLSearchParams({ from: fromStr, to: toStr, limit: "100" });
+  if (emotionFilter) query.set("emotion", emotionFilter);
+
+  const { data, loading } = useApi<DreamCardData[]>(`/api/dreams?${query}`, [query.toString()]);
+  const dreams = data ?? [];
 
   // Emotion legend: only the emotions that actually occur in this range.
   const legend = new Map<string, string>();
   for (const d of dreams) {
-    const top = d.emotions[0]?.emotion;
+    const top = topEmotion(d);
     if (top && !legend.has(top.name)) legend.set(top.name, top.color);
   }
 
-  const byDay = new Map<string, typeof dreams>();
+  const byDay = new Map<string, DreamCardData[]>();
   for (const d of dreams) {
-    const key = d.dreamDate.toISOString().slice(0, 10);
+    const key = dayKey(String(d.dreamDate));
     if (!byDay.has(key)) byDay.set(key, []);
     byDay.get(key)!.push(d);
   }
@@ -103,6 +92,8 @@ export default async function CalendarPage({
 
   const todayKey = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
   const dayDreams = selectedDay ? (byDay.get(selectedDay) ?? []) : [];
+
+  if (loading) return <PageSkeleton />;
 
   return (
     <>

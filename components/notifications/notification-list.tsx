@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
@@ -28,7 +27,6 @@ const ICONS: Record<string, React.ReactNode> = {
 };
 
 export function NotificationList({ initial }: { initial: NotificationItem[] }) {
-  const router = useRouter();
   const toast = useToast();
   const [items, setItems] = useState(initial);
   const unread = items.filter((n) => !n.readAt).length;
@@ -36,23 +34,19 @@ export function NotificationList({ initial }: { initial: NotificationItem[] }) {
   async function markAll() {
     setItems((it) => it.map((n) => ({ ...n, readAt: n.readAt ?? new Date().toISOString() })));
     await api("/api/notifications", { method: "POST" }).catch(() => {});
-    router.refresh();
   }
 
   async function markOne(id: string) {
     setItems((it) => it.map((n) => (n.id === id ? { ...n, readAt: n.readAt ?? new Date().toISOString() } : n)));
     await api(`/api/notifications/${id}`, { method: "POST" }).catch(() => {});
-    router.refresh();
   }
 
   async function remove(id: string) {
     setItems((it) => it.filter((n) => n.id !== id));
     try {
       await api(`/api/notifications/${id}`, { method: "DELETE" });
-      router.refresh();
     } catch {
       toast("error", "Gagal menghapus notifikasi.");
-      router.refresh();
     }
   }
 

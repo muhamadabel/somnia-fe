@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Fraunces } from "next/font/google";
 import { ToastProvider } from "@/components/ui/toast";
-import { getCurrentUser } from "@/lib/auth";
+import { ThemeApplier } from "@/components/layout/theme-applier";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import "./globals.css";
 
@@ -15,13 +15,12 @@ export const metadata: Metadata = {
   icons: { icon: "/icon.svg" },
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const user = await getCurrentUser();
-  // Dreamy night look by default; signed-in users can switch in Settings.
-  const dark = user ? user.theme === "dark" : true;
+// Dreamy night look by default; ThemeApplier switches to light if chosen.
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${jakarta.variable} ${fraunces.variable} ${dark ? "dark" : ""}`}>
+    <html lang="id" className={`${jakarta.variable} ${fraunces.variable} dark`} suppressHydrationWarning>
       <body className="min-h-screen antialiased">
+        <ThemeApplier />
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

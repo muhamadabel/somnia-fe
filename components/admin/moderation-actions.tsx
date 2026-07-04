@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
@@ -8,7 +7,6 @@ import { api, ApiError } from "@/lib/client";
 import { Check, Trash2 } from "lucide-react";
 
 export function ModerationActions({ reportId }: { reportId: string }) {
-  const router = useRouter();
   const toast = useToast();
   const [busy, setBusy] = useState<string | null>(null);
 
@@ -17,7 +15,7 @@ export function ModerationActions({ reportId }: { reportId: string }) {
     try {
       const { message } = await api(`/api/admin/reports/${reportId}`, { method: "POST", json: { action } });
       toast("success", message);
-      router.refresh();
+      window.location.reload();
     } catch (err) {
       toast("error", err instanceof ApiError ? err.message : "Tindakan gagal.");
       setBusy(null);

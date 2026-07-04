@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
-import { api, ApiError } from "@/lib/client";
+import { api, ApiError, fileUrl } from "@/lib/client";
 import { formatDate } from "@/lib/utils";
 import { Download, Palette, RefreshCw, Trash2 } from "lucide-react";
 
@@ -33,8 +33,8 @@ export function VisualizationPanel({
     try {
       await api(`/api/dreams/${dreamId}/visualization`, { method: "POST" });
       toast("success", "Karya seni mimpi baru dibuat.");
-      setCurrent(0);
-      router.refresh();
+      window.location.reload();
+      return;
     } catch (err) {
       toast("error", err instanceof ApiError ? err.message : "Gagal membuat karya seni saat ini.");
     } finally {
@@ -46,8 +46,8 @@ export function VisualizationPanel({
     try {
       await api(`/api/visualizations/${id}`, { method: "DELETE" });
       toast("success", "Karya seni dihapus.");
-      setCurrent(0);
-      router.refresh();
+      window.location.reload();
+      return;
     } catch (err) {
       toast("error", err instanceof ApiError ? err.message : "Gagal menghapus.");
     }
@@ -77,7 +77,7 @@ export function VisualizationPanel({
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`/api/files/${v.imagePath}`}
+            src={fileUrl(v.imagePath)}
             alt={v.prompt}
             className="w-full rounded-xl border border-base"
           />
@@ -94,13 +94,13 @@ export function VisualizationPanel({
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={`/api/files/${viz.imagePath}`} alt="" className="h-12 w-16 object-cover rounded-md" />
+                  <img src={fileUrl(viz.imagePath)} alt="" className="h-12 w-16 object-cover rounded-md" />
                 </button>
               ))}
             </div>
             <div className="flex items-center gap-1">
               <a
-                href={`/api/files/${v.imagePath}`}
+                href={fileUrl(v.imagePath)}
                 download={`dream-art-${formatDate(v.createdAt).replace(/[ ,]+/g, "-")}.svg`}
                 className="p-2 rounded-lg text-muted hover:text-body hover:bg-(--surface-2)"
                 aria-label="Unduh karya seni"

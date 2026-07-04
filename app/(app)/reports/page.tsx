@@ -1,23 +1,22 @@
+"use client";
+
 import Link from "next/link";
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
 import { PageHeader } from "@/components/layout/page-header";
 import { GenerateReportButtons } from "@/components/report/generate-report";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Badge } from "@/components/ui/badge";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/utils";
+import { useApi } from "@/lib/use-api";
+import type { ReportRow } from "@/lib/api-types";
 import { ScrollText } from "lucide-react";
-
-export const metadata = { title: "Laporan" };
 
 const PERIOD_LABEL: Record<string, string> = { weekly: "Mingguan", monthly: "Bulanan", yearly: "Tahunan" };
 
-export default async function ReportsPage() {
-  const user = (await getCurrentUser())!;
-  const [reports, dreamCount] = await Promise.all([
-    db.report.findMany({ where: { userId: user.id }, orderBy: { generatedAt: "desc" }, take: 30 }),
-    db.dream.count({ where: { userId: user.id, deletedAt: null, isDraft: false } }),
-  ]);
+export default function ReportsPage() {
+  const { data: reports, loading } = useApi<ReportRow[]>("/api/reports");
+  const { data: profile } = useApi<{ stats: { dreamCount: number } }>("/api/user/profile");
+  const dreamCount = profile?.stats.dreamCount ?? 0;
 
   return (
     <>
@@ -40,7 +39,9 @@ export default async function ReportsPage() {
         )}
       </div>
 
-      {reports.length === 0 ? (
+      {loading ? (
+        <PageSkeleton />
+      ) : !reports || reports.length === 0 ? (
         <EmptyState
           icon={<ScrollText className="size-8" />}
           title="Belum ada laporan"

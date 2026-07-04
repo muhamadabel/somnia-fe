@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
@@ -63,7 +62,6 @@ export function SettingsForm({
   user: SettingsUser;
   stats: { dreamCount: number; analysisCount: number; postCount: number; artCount: number };
 }) {
-  const router = useRouter();
   const toast = useToast();
   const [busy, setBusy] = useState<string | null>(null);
   const [prefs, setPrefs] = useState(user);
@@ -80,7 +78,8 @@ export function SettingsForm({
         json: { fullName: form.get("fullName"), timezone: form.get("timezone"), language: form.get("language") },
       });
       toast("success", "Profil diperbarui.");
-      router.refresh();
+      window.location.reload();
+      return;
     } catch (err) {
       toast("error", err instanceof ApiError ? err.message : "Gagal menyimpan profil.");
     } finally {
@@ -103,7 +102,6 @@ export function SettingsForm({
           aiMemoryEnabled: next.aiMemoryEnabled,
         },
       });
-      router.refresh();
     } catch {
       toast("error", "Gagal menyimpan preferensi.");
       setPrefs(prefs);
@@ -115,7 +113,7 @@ export function SettingsForm({
     document.documentElement.classList.toggle("dark", theme === "dark");
     try {
       await api("/api/user/profile", { method: "PATCH", json: { theme } });
-      router.refresh();
+      localStorage.setItem("somnia_theme", theme);
     } catch {
       toast("error", "Gagal menyimpan tema.");
     }
@@ -144,9 +142,11 @@ export function SettingsForm({
     setBusy("delete");
     try {
       await api("/api/user/profile", { method: "DELETE", json: { confirm: deleteConfirm } });
+      const { clearToken } = await import("@/lib/session");
+      clearToken();
       toast("success", "Akun dihapus. Jaga dirimu baik-baik. 🌙");
-      router.push("/");
-      router.refresh();
+      window.location.href = "/";
+      return;
     } catch (err) {
       toast("error", err instanceof ApiError ? err.message : "Gagal menghapus akun.");
       setBusy(null);
