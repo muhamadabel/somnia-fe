@@ -213,16 +213,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Privacy Panel ── */}
-      <section className="max-w-4xl mx-auto px-6 pb-20">
-        <div className="card p-8 text-center bg-white border border-sea-fog rounded-2xl">
-          <ShieldCheck className="size-10 text-active-teal mx-auto" />
-          <h2 className="mt-4 text-2xl font-extrabold text-midnight-harbor tracking-tight">Privasi Penuh Sejak Awal</h2>
-          <p className="mt-3 text-sm text-slate-channel max-w-xl mx-auto leading-relaxed">
-            Mimpi adalah bagian terdalam dari privasi manusia. Catatanmu terenkripsi secara aman, aktivitas di komunitas sepenuhnya anonim menggunakan nama samaran acak, dan kamu memegang kendali penuh atas penggunaan kecerdasan buatan.
-          </p>
-        </div>
-      </section>
+
 
       {/* ── Dark CTA Banner (Full Bleed contrast section) ── */}
       <section 
@@ -247,23 +238,7 @@ export default function LandingPage() {
               Mulai Jurnal
             </Link>
           </div>
-          {/* Avatar Stack Social Proof */}
-          <div className="pt-6 flex flex-col items-center gap-3">
-            <div className="flex -space-x-2">
-              <div className="size-8 rounded-full border-2 border-midnight-harbor bg-slate-400 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="avatar" className="object-cover size-full" />
-              </div>
-              <div className="size-8 rounded-full border-2 border-midnight-harbor bg-slate-400 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" alt="avatar" className="object-cover size-full" />
-              </div>
-              <div className="size-8 rounded-full border-2 border-midnight-harbor bg-slate-400 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" alt="avatar" className="object-cover size-full" />
-              </div>
-            </div>
-            <p className="text-xs text-sea-fog/80">
-              <span className="font-bold text-white">+463 pemimpi</span> bergabung minggu lalu
-            </p>
-          </div>
+
         </div>
       </section>
 

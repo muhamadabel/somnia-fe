@@ -7,7 +7,7 @@ import { clearToken, getToken } from "@/lib/session";
 
 // Base URL of the backend API, e.g. https://be-somnia.hallojanu.xyz
 // Empty string = same-origin (useful for local all-in-one dev).
-export const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+export const API_BASE = "";
 
 export interface ApiEnvelope<T> {
   success: boolean;

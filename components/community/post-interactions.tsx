@@ -9,7 +9,7 @@ import { useToast } from "@/components/ui/toast";
 import { api, ApiError } from "@/lib/client";
 import { Flag, SendHorizontal, Trash2 } from "lucide-react";
 
-export function CommentForm({ postId }: { postId: string }) {
+export function CommentForm({ postId, onSuccess }: { postId: string; onSuccess?: () => void }) {
   const router = useRouter();
   const toast = useToast();
   const [content, setContent] = useState("");
@@ -23,7 +23,11 @@ export function CommentForm({ postId }: { postId: string }) {
       await api(`/api/community/posts/${postId}/comments`, { method: "POST", json: { content } });
       setContent("");
       toast("success", "Komentar terkirim.");
-      window.location.reload();
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        window.location.reload();
+      }
       return;
     } catch (err) {
       toast("error", err instanceof ApiError ? err.message : "Gagal mengirim komentar.");

@@ -7,6 +7,14 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   poweredByHeader: false,
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${process.env.NEXT_PUBLIC_API_URL || "https://be-somnia.hallojanu.xyz"}/api/:path*`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

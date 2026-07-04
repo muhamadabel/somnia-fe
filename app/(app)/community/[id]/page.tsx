@@ -33,7 +33,7 @@ interface PostDetail {
 
 export default function CommunityPostPage() {
   const { id } = useParams<{ id: string }>();
-  const { data: post, loading, error } = useApi<PostDetail>(`/api/community/posts/${id}`, [id]);
+  const { data: post, loading, error, reload } = useApi<PostDetail>(`/api/community/posts/${id}`, [id]);
 
   if (loading) return <PageSkeleton />;
   if (error || !post) {
@@ -108,7 +108,7 @@ export default function CommunityPostPage() {
           Komentar <span className="text-muted font-normal text-sm">({post.comments.length})</span>
         </h2>
         <div className="card p-5 space-y-5">
-          <CommentForm postId={post.id} />
+          <CommentForm postId={post.id} onSuccess={reload} />
           {post.comments.length === 0 ? (
             <p className="text-sm text-muted text-center py-4">Belum ada komentar — sampaikan kata baik pertama.</p>
           ) : (
