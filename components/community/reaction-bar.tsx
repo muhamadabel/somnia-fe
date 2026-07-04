@@ -5,6 +5,16 @@ import { useToast } from "@/components/ui/toast";
 import { api } from "@/lib/client";
 import { REACTION_TYPES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { Heart, Sparkles, Lightbulb, UserRoundCheck } from "lucide-react";
+
+
+// Pemetaan tipe reaksi ke komponen Lucide
+const REACTION_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  heart: Heart,
+  hug: UserRoundCheck,
+  sparkle: Sparkles,
+  insight: Lightbulb,
+};
 
 export function ReactionBar({
   postId,
@@ -47,6 +57,9 @@ export function ReactionBar({
         const active = state.mine.has(r.type);
         const count = state.counts[r.type] ?? 0;
         if (compact && count === 0 && !active) return null;
+        
+        const IconComponent = REACTION_ICONS[r.type] || Heart;
+
         return (
           <button
             key={r.type}
@@ -55,17 +68,23 @@ export function ReactionBar({
             aria-label={`${r.label} (${count})`}
             title={r.label}
             className={cn(
-              "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer border",
+              "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all cursor-pointer border select-none",
               active
-                ? "bg-night-100 dark:bg-night-800 border-night-400 text-body"
+                ? "bg-night-100/80 dark:bg-night-900/80 border-night-400 text-night-600 dark:text-night-300 shadow-dreamy"
                 : "surface border-base text-muted hover:text-body hover:border-night-300"
             )}
           >
-            <span aria-hidden>{r.emoji}</span>
-            {count > 0 && count}
+            <IconComponent
+              className={cn(
+                "size-3.5 transition-transform duration-200",
+                active ? "fill-current scale-110" : "scale-100"
+              )}
+            />
+            {count > 0 && <span className="font-semibold">{count}</span>}
           </button>
         );
       })}
     </div>
   );
 }
+
