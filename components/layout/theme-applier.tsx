@@ -6,8 +6,8 @@ import { useEffect } from "react";
 // user chose light (stored in localStorage), remove the `dark` class.
 export function ThemeApplier() {
   useEffect(() => {
-    const theme = window.localStorage.getItem("somnia_theme");
-    document.documentElement.classList.toggle("dark", theme !== "light");
+    const theme = window.localStorage.getItem("somnia_theme") || "light";
+    document.documentElement.classList.toggle("dark", theme === "dark");
   }, []);
   return null;
 }

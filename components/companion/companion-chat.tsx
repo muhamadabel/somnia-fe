@@ -180,8 +180,8 @@ export function CompanionChat({
                 }}
                 aria-label="Hapus percakapan"
                 className={cn(
-                  "opacity-0 group-hover:opacity-100 p-1.5 rounded-lg cursor-pointer transition-opacity",
-                  activeId === c.id ? "text-white/80 hover:text-white" : "text-muted hover:text-red-500"
+                  "p-1.5 rounded-lg cursor-pointer transition-opacity text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20",
+                  activeId === c.id && "text-white/80 hover:text-white hover:bg-white/10"
                 )}
               >
                 <Trash2 className="size-3.5" />

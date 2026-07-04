@@ -40,8 +40,10 @@ export default function LoginPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-body">Selamat datang kembali</h1>
-      <p className="text-sm text-muted mt-1">Masuk untuk melanjutkan jurnal mimpimu.</p>
+      <h1 className="text-2xl font-extrabold tracking-tight text-midnight-harbor">Selamat datang kembali</h1>
+      <p className="text-sm text-slate-channel mt-1.5">
+        Masuk untuk melanjutkan jurnal mimpimu, menjelajahi alam bawah sadar, dan berdiskusi dengan Teman AI tentang arti mimpimu.
+      </p>
 
       <form onSubmit={onSubmit} className="mt-6 space-y-4" noValidate>
         <Input
@@ -63,7 +65,7 @@ export default function LoginPage() {
           error={fieldErrors.password}
         />
         {error && (
-          <p className="text-sm text-red-600 dark:text-red-400 surface-2 rounded-lg px-3 py-2" role="alert">
+          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2" role="alert">
             {error}
           </p>
         )}
@@ -72,13 +74,13 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <div className="mt-5 rounded-xl surface-2 p-3 text-xs text-muted leading-relaxed">
-        <span className="font-medium text-body">Akun demo:</span> demo@somnia.app · dream1234
+      <div className="mt-5 rounded-xl bg-ice-tint border border-sea-fog/50 p-3 text-xs text-slate-channel leading-relaxed">
+        <span className="font-bold text-midnight-harbor">Akun demo:</span> demo@somnia.app · dream1234
       </div>
 
-      <p className="mt-5 text-sm text-muted text-center">
+      <p className="mt-6 text-sm text-slate-channel text-center">
         Baru di sini?{" "}
-        <Link href="/register" className="text-night-600 dark:text-night-300 font-medium hover:underline">
+        <Link href="/register" className="text-signal-blue font-bold hover:underline">
           Buat akun
         </Link>
       </p>

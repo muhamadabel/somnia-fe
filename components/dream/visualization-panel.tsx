@@ -126,7 +126,7 @@ export function VisualizationPanel({
               </a>
               <button
                 onClick={() => remove(v.id)}
-                className="p-2 rounded-lg text-muted hover:text-red-500 hover:bg-(--surface-2) cursor-pointer"
+                className="p-2 rounded-lg text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 cursor-pointer"
                 aria-label="Hapus karya seni"
                 title="Hapus"
               >

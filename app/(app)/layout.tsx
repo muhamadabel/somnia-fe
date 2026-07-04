@@ -61,7 +61,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col lg:flex-row bg-base">
+    <div 
+      className="flex min-h-screen flex-col lg:flex-row bg-base"
+      style={{
+        backgroundImage: "linear-gradient(rgba(230, 241, 250, 0.94), rgba(230, 241, 250, 0.94)), url('/work-book.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed"
+      }}
+    >
       <Sidebar
         user={{ fullName: session.user.fullName, email: session.user.email, role: session.user.role }}
         aiMode={session.aiMode ?? { id: "local", label: "AI" }}

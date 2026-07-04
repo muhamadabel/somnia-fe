@@ -70,11 +70,11 @@ export function Sidebar({
             className={cn(
               "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
               active
-                ? "bg-night-600 text-white shadow-dreamy"
-                : "text-muted hover:text-body hover:bg-(--surface-2)"
+                ? "bg-ice-tint text-signal-blue font-bold shadow-sm"
+                : "text-slate-channel hover:text-midnight-harbor hover:bg-ice-tint/50"
             )}
           >
-            <item.icon className="size-4.5 shrink-0" />
+            <item.icon className={cn("size-4.5 shrink-0", active ? "text-signal-blue" : "text-slate-channel")} />
             {item.label}
           </Link>
         );
@@ -85,14 +85,14 @@ export function Sidebar({
         className={cn(
           "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
           pathname.startsWith("/notifications")
-            ? "bg-night-600 text-white shadow-dreamy"
-            : "text-muted hover:text-body hover:bg-(--surface-2)"
+            ? "bg-ice-tint text-signal-blue font-bold shadow-sm"
+            : "text-slate-channel hover:text-midnight-harbor hover:bg-ice-tint/50"
         )}
       >
-        <Bell className="size-4.5 shrink-0" />
+        <Bell className={cn("size-4.5 shrink-0", pathname.startsWith("/notifications") ? "text-signal-blue" : "text-slate-channel")} />
         Notifikasi
         {unread > 0 && (
-          <span className="ml-auto rounded-full bg-dusk-500 text-white text-[11px] font-semibold px-2 py-0.5">
+          <span className="ml-auto rounded-full bg-active-teal text-white text-[11px] font-semibold px-2 py-0.5">
             {unread > 9 ? "9+" : unread}
           </span>
         )}
@@ -104,11 +104,11 @@ export function Sidebar({
           className={cn(
             "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
             pathname.startsWith("/admin")
-              ? "bg-night-600 text-white shadow-dreamy"
-              : "text-muted hover:text-body hover:bg-(--surface-2)"
+              ? "bg-ice-tint text-signal-blue font-bold shadow-sm"
+              : "text-slate-channel hover:text-midnight-harbor hover:bg-ice-tint/50"
           )}
         >
-          <ShieldCheck className="size-4.5 shrink-0" />
+          <ShieldCheck className={cn("size-4.5 shrink-0", pathname.startsWith("/admin") ? "text-signal-blue" : "text-slate-channel")} />
           Admin
         </Link>
       )}
@@ -117,19 +117,6 @@ export function Sidebar({
 
   const footer = (
     <div className="mt-auto space-y-3">
-      <div
-        className="flex items-center gap-2 rounded-xl surface-2 px-3 py-2 text-xs text-muted"
-        title={
-          aiMode.id === "anthropic"
-            ? "Fitur AI ditenagai oleh Claude."
-            : aiMode.id === "pollinations"
-              ? "AI gratis tanpa kunci (Pollinations) — membaca seluruh riwayat mimpimu, dengan cadangan mesin lokal saat offline."
-              : "Mesin lokal bawaan menggerakkan semua fitur AI, sepenuhnya offline."
-        }
-      >
-        <span className={cn("size-2 rounded-full", aiMode.id === "anthropic" ? "bg-emerald-500" : aiMode.id === "pollinations" ? "bg-sky-500" : "bg-amber-500")} />
-        AI: {aiMode.label}
-      </div>
       <div className="flex items-center gap-3 px-1">
         <Link
           href="/settings"
@@ -148,7 +135,7 @@ export function Sidebar({
         <Link href="/settings" aria-label="Pengaturan" className="p-2 rounded-lg text-muted hover:text-body hover:bg-(--surface-2)">
           <Settings className="size-4.5" />
         </Link>
-        <button onClick={logout} aria-label="Keluar" className="p-2 rounded-lg text-muted hover:text-red-500 hover:bg-(--surface-2) cursor-pointer">
+        <button onClick={logout} aria-label="Keluar" className="p-2 rounded-lg text-muted hover:text-rose-500 hover:bg-(--surface-2) cursor-pointer">
           <LogOut className="size-4.5" />
         </button>
       </div>
@@ -159,8 +146,8 @@ export function Sidebar({
     <>
       {/* Mobile top bar */}
       <header className="lg:hidden sticky top-0 z-40 surface border-b border-base flex items-center justify-between px-4 py-3">
-        <Link href="/dashboard" className="flex items-center gap-2 font-semibold text-body">
-          <MoonStar className="size-5 text-night-500" /> {APP_NAME}
+        <Link href="/dashboard" className="flex items-center px-2 py-1">
+          <span className="font-extrabold text-2xl tracking-tighter text-signal-blue lowercase">somnia</span>
         </Link>
         <button
           onClick={() => setOpen(true)}
@@ -177,9 +164,7 @@ export function Sidebar({
           <div className="absolute inset-0 bg-night-950/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
           <div className="absolute left-0 top-0 bottom-0 w-72 surface border-r border-base p-4 flex flex-col animate-fade-in">
             <div className="flex items-center justify-between mb-5">
-              <span className="flex items-center gap-2 font-semibold text-body">
-                <MoonStar className="size-5 text-night-500" /> {APP_NAME}
-              </span>
+              <span className="font-extrabold text-2xl tracking-tighter text-signal-blue lowercase px-2">somnia</span>
               <button onClick={() => setOpen(false)} aria-label="Close menu" className="p-2 text-muted hover:text-body cursor-pointer">
                 <X className="size-5" />
               </button>
@@ -192,8 +177,8 @@ export function Sidebar({
 
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex w-64 shrink-0 flex-col surface border-r border-base p-4 sticky top-0 h-screen overflow-y-auto">
-        <Link href="/dashboard" className="flex items-center gap-2 font-semibold text-lg text-body px-2 mb-6">
-          <MoonStar className="size-6 text-night-500" /> {APP_NAME}
+        <Link href="/dashboard" className="flex items-center px-2 mb-6">
+          <span className="font-extrabold text-2xl tracking-tighter text-signal-blue lowercase">somnia</span>
         </Link>
         {nav}
         {footer}

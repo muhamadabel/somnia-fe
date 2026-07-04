@@ -3,34 +3,45 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* ── Somnia palette: calm night-sky lavender ── */
-  --color-night-50: #f6f5fc;
-  --color-night-100: #edebf8;
-  --color-night-200: #d9d5f0;
-  --color-night-300: #bcb4e3;
-  --color-night-400: #9a8cd2;
-  --color-night-500: #7f6ac1;
-  --color-night-600: #6d51ae;
-  --color-night-700: #5e4394;
-  --color-night-800: #4e3979;
-  --color-night-900: #423264;
-  --color-night-950: #171126;
+  /* ── Cord.com Maritime-Monochrome Palette ── */
+  --color-midnight-harbor: #0b3658;
+  --color-signal-blue: #4e9ad9;
+  --color-slate-channel: #486984;
+  --color-pale-steel: #688dac;
+  --color-sea-fog: #dde7ee;
+  --color-ice-tint: #e6f1fa;
+  --color-light-mist: #c8d8e4;
+  --color-canvas-white: #ffffff;
+  --color-active-teal: #42b3b1;
 
-  --color-dusk-50: #fdf7f2;
-  --color-dusk-100: #fbeee2;
-  --color-dusk-200: #f6d9c0;
-  --color-dusk-300: #efbd94;
-  --color-dusk-400: #e69a66;
-  --color-dusk-500: #de7f45;
-  --color-dusk-600: #cf673a;
+  /* ── Map existing theme variables for compatibility ── */
+  --color-night-50: var(--color-canvas-white);
+  --color-night-100: var(--color-ice-tint);
+  --color-night-200: var(--color-sea-fog);
+  --color-night-300: var(--color-pale-steel);
+  --color-night-400: var(--color-slate-channel);
+  --color-night-500: var(--color-signal-blue);
+  --color-night-600: var(--color-signal-blue);
+  --color-night-700: var(--color-midnight-harbor);
+  --color-night-800: var(--color-midnight-harbor);
+  --color-night-900: var(--color-midnight-harbor);
+  --color-night-950: var(--color-midnight-harbor);
 
-  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-fraunces), Georgia, serif;
+  --color-dusk-50: var(--color-ice-tint);
+  --color-dusk-100: var(--color-ice-tint);
+  --color-dusk-200: var(--color-light-mist);
+  --color-dusk-300: var(--color-pale-steel);
+  --color-dusk-400: var(--color-slate-channel);
+  --color-dusk-500: var(--color-active-teal);
+  --color-dusk-600: var(--color-active-teal);
 
-  --radius-xl2: 1.25rem;
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-figtree), Georgia, serif;
 
-  --shadow-dreamy: 0 4px 24px -6px rgb(94 67 148 / 0.14), 0 2px 8px -4px rgb(94 67 148 / 0.08);
-  --shadow-dreamy-lg: 0 12px 40px -8px rgb(94 67 148 / 0.22), 0 4px 12px -6px rgb(94 67 148 / 0.1);
+  --radius-xl2: 20px;
+
+  --shadow-dreamy: rgba(11, 54, 88, 0.04) 0px 4px 12px 0px;
+  --shadow-dreamy-lg: rgba(11, 54, 88, 0.08) 0px 12px 48px 0px;
 
   --animate-fade-up: fade-up 0.5s ease both;
   --animate-fade-in: fade-in 0.4s ease both;
@@ -61,24 +72,29 @@
 }
 
 :root {
-  --bg: #faf9fe;
-  --surface: #ffffff;
-  --surface-2: #f3f1fb;
-  --border: #e6e2f4;
-  --text: #2b2440;
-  --text-muted: #6f6790;
+  --bg: var(--color-canvas-white);
+  --surface: var(--color-canvas-white);
+  --surface-2: var(--color-ice-tint);
+  --border: var(--color-sea-fog);
+  --text: var(--color-midnight-harbor);
+  --text-muted: var(--color-slate-channel);
+  --shadow-dreamy: rgba(11, 54, 88, 0.04) 0px 4px 12px 0px;
+  --shadow-dreamy-lg: rgba(11, 54, 88, 0.08) 0px 12px 48px 0px;
   color-scheme: light;
 }
 
 .dark {
-  --bg: #0d0b17;
-  --surface: #151125;
-  --surface-2: #1e1834;
-  --border: #2a2347;
-  --text: #ece9f8;
-  --text-muted: #9d94c4;
+  --bg: #082c47;
+  --surface: #0c3f66;
+  --surface-2: #105385;
+  --border: #1b5e94;
+  --text: var(--color-canvas-white);
+  --text-muted: var(--color-pale-steel);
+  --shadow-dreamy: rgba(0, 0, 0, 0.2) 0px 4px 12px 0px;
+  --shadow-dreamy-lg: rgba(0, 0, 0, 0.4) 0px 12px 48px 0px;
   color-scheme: dark;
 }
+
 
 @layer base {
   html {
@@ -91,12 +107,12 @@
     -webkit-font-smoothing: antialiased;
   }
   ::selection {
-    background: #7f6ac1;
+    background: var(--color-signal-blue);
     color: #fff;
   }
   /* Accessible focus indicators (docs/05 accessibility) */
   :focus-visible {
-    outline: 2px solid #7f6ac1;
+    outline: 2px solid var(--color-signal-blue);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -125,17 +141,17 @@
 @utility card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 1.25rem;
-  box-shadow: 0 4px 24px -6px rgb(94 67 148 / 0.1), 0 2px 8px -4px rgb(94 67 148 / 0.06);
+  border-radius: 20px;
+  box-shadow: var(--shadow-dreamy-lg);
 }
 
 @utility input-base {
   width: 100%;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 0.85rem;
-  padding: 0.625rem 0.875rem;
-  font-size: 0.925rem;
+  border-radius: 24px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
   color: var(--text);
   transition: border-color 0.15s, box-shadow 0.15s;
   &::placeholder {
@@ -144,18 +160,18 @@
   }
   &:focus {
     outline: none;
-    border-color: #9a8cd2;
-    box-shadow: 0 0 0 3px rgb(127 106 193 / 0.18);
+    border-color: var(--color-signal-blue);
+    box-shadow: 0 0 0 3px rgba(78, 154, 217, 0.18);
   }
 }
 
-/* Night-sky hero backdrop */
+/* Maritime command deck backdrop */
 .night-sky {
   background:
-    radial-gradient(1200px 600px at 70% -10%, rgba(127, 106, 193, 0.35), transparent 60%),
-    radial-gradient(900px 500px at 15% 10%, rgba(222, 127, 69, 0.16), transparent 55%),
-    linear-gradient(180deg, #171126 0%, #241d3f 55%, #2f2752 100%);
+    radial-gradient(1200px 600px at 70% -10%, rgba(78, 154, 217, 0.25), transparent 60%),
+    linear-gradient(180deg, #0b3658 0%, #07253d 100%);
 }
+
 
 /* Print: hide chrome, show report content only (docs/03 export PDF) */
 @media print {

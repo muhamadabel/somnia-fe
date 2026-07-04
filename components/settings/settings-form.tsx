@@ -171,10 +171,7 @@ export function SettingsForm({
             <Input label="Nama" name="fullName" defaultValue={user.fullName} required minLength={2} maxLength={60} />
             <Input label="Email" value={user.email} disabled hint="Perubahan email butuh bantuan dukungan." />
             <Input label="Zona waktu" name="timezone" defaultValue={user.timezone} />
-            <Select label="Bahasa" name="language" defaultValue={user.language} hint="Bahasa antarmuka.">
-              <option value="id">Bahasa Indonesia</option>
-              <option value="en">English</option>
-            </Select>
+            <input type="hidden" name="language" value="id" />
           </div>
           <div className="rounded-xl surface-2 px-4 py-3 text-xs text-muted">
             Nama samaran komunitas: <span className="font-medium text-body">{user.anonName}</span> — ini satu-satunya
@@ -304,8 +301,8 @@ export function SettingsForm({
       </section>
 
       {/* ── Danger zone ── */}
-      <section className="card p-6 border-red-200 dark:border-red-900/50">
-        <h2 className="flex items-center gap-2 font-semibold text-red-600 dark:text-red-400 mb-2">
+      <section className="card p-6 border-rose-200 dark:border-rose-900/50">
+        <h2 className="flex items-center gap-2 font-semibold text-rose-600 dark:text-rose-400 mb-2">
           <Trash2 className="size-4.5" /> Zona berbahaya
         </h2>
         <p className="text-sm text-muted mb-4">

@@ -95,7 +95,7 @@ export function DreamActions({
           </Button>
         </>
       )}
-      <Button variant="ghost" size="md" className="hover:text-red-500" onClick={() => setConfirmDelete(true)} disabled={busy}>
+      <Button variant="ghost" size="md" className="text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20" onClick={() => setConfirmDelete(true)} disabled={busy}>
         <Trash2 className="size-4" /> Hapus
       </Button>
 

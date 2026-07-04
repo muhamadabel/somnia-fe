@@ -71,8 +71,8 @@ export function NotificationList({ initial }: { initial: NotificationItem[] }) {
       <ul className="space-y-2">
         {items.map((n) => {
           const inner = (
-            <div className="flex gap-3 flex-1 min-w-0">
-              <span className={cn("shrink-0 rounded-xl p-2.5 mt-0.5", n.readAt ? "surface-2 text-muted" : "bg-night-100 dark:bg-night-800 text-night-600 dark:text-night-300")}>
+            <div className="flex gap-3 flex-1 min-w-0 items-center">
+              <span className={cn("shrink-0 rounded-xl p-2.5", n.readAt ? "surface-2 text-muted" : "bg-night-100 dark:bg-night-800 text-night-600 dark:text-night-300")}>
                 {ICONS[n.type] ?? ICONS.system}
               </span>
               <div className="min-w-0">
@@ -83,7 +83,7 @@ export function NotificationList({ initial }: { initial: NotificationItem[] }) {
             </div>
           );
           return (
-            <li key={n.id} className={cn("card p-4 flex items-start gap-2", !n.readAt && "border-night-300 dark:border-night-600")}>
+            <li key={n.id} className={cn("card p-4 flex items-center gap-2", !n.readAt && "border-night-300 dark:border-night-600")}>
               {n.link ? (
                 <Link href={n.link} onClick={() => markOne(n.id)} className="flex flex-1 min-w-0">
                   {inner}
@@ -96,7 +96,7 @@ export function NotificationList({ initial }: { initial: NotificationItem[] }) {
               <button
                 onClick={() => remove(n.id)}
                 aria-label="Hapus notifikasi"
-                className="p-1.5 rounded-lg text-muted hover:text-red-500 hover:bg-(--surface-2) cursor-pointer shrink-0"
+                className="p-1.5 rounded-lg text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 cursor-pointer shrink-0"
               >
                 <Trash2 className="size-4" />
               </button>

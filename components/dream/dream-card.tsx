@@ -66,14 +66,8 @@ export function DreamCard({ dream }: { dream: DreamCardData }) {
   return (
     <Link
       href={`/dreams/${dream.id}`}
-      className="card group relative block overflow-hidden pl-6 pr-5 py-5 transition-shadow hover:shadow-dreamy-lg"
+      className="card group relative block overflow-hidden px-5 py-5 transition-shadow hover:shadow-dreamy-lg"
     >
-      <span
-        aria-hidden
-        className="absolute inset-y-0 left-0 w-[3px]"
-        style={{ background: `linear-gradient(180deg, ${accent}, ${accent}55)` }}
-      />
-
       <div className="flex items-center justify-between gap-2 text-xs text-muted">
         <time>{shortDate(dream.dreamDate)}</time>
         {dream.isDraft ? (
@@ -108,13 +102,8 @@ export function DreamRow({ dream }: { dream: DreamCardData }) {
   return (
     <Link
       href={`/dreams/${dream.id}`}
-      className="group relative flex items-center gap-3 rounded-xl pl-4 pr-3 py-2.5 hover:bg-(--surface-2) transition-colors"
+      className="group relative flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-(--surface-2) transition-colors"
     >
-      <span
-        aria-hidden
-        className="absolute inset-y-2 left-0 w-[2px] rounded-full"
-        style={{ backgroundColor: accent }}
-      />
       <DreamThumb art={art} color={accent} />
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-body truncate group-hover:text-night-600 dark:group-hover:text-night-300 transition-colors">

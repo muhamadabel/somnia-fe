@@ -50,8 +50,8 @@ export default function RegisterPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-body">Mulai jurnal mimpimu</h1>
-      <p className="text-sm text-muted mt-1">Gratis, pribadi, dan milikmu seorang.</p>
+      <h1 className="text-2xl font-extrabold tracking-tight text-midnight-harbor">Mulai jurnal mimpimu</h1>
+      <p className="text-sm text-slate-channel mt-1.5">Pribadi, dan milikmu seorang.</p>
 
       <form onSubmit={onSubmit} className="mt-6 space-y-4" noValidate>
         <Input label="Nama" name="fullName" placeholder="Namamu" required autoComplete="name" error={fieldErrors.fullName} />
@@ -76,7 +76,7 @@ export default function RegisterPage() {
           error={fieldErrors.confirm}
         />
         {error && (
-          <p className="text-sm text-red-600 dark:text-red-400 surface-2 rounded-lg px-3 py-2" role="alert">
+          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2" role="alert">
             {error}
           </p>
         )}
@@ -85,9 +85,9 @@ export default function RegisterPage() {
         </Button>
       </form>
 
-      <p className="mt-5 text-sm text-muted text-center">
+      <p className="mt-6 text-sm text-slate-channel text-center">
         Sudah punya akun?{" "}
-        <Link href="/login" className="text-night-600 dark:text-night-300 font-medium hover:underline">
+        <Link href="/login" className="text-signal-blue font-bold hover:underline">
           Masuk
         </Link>
       </p>

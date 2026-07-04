@@ -60,7 +60,7 @@ export function GalleryItem({
           <button
             onClick={remove}
             disabled={busy}
-            className="p-1.5 rounded-lg text-muted hover:text-red-500 hover:bg-(--surface-2) cursor-pointer"
+            className="p-1.5 rounded-lg text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 cursor-pointer"
             aria-label="Hapus karya seni"
           >
             <Trash2 className="size-4" />

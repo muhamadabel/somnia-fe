@@ -33,16 +33,18 @@ export function CommentForm({ postId }: { postId: string }) {
   }
 
   return (
-    <form onSubmit={submit} className="flex gap-2 items-start">
-      <Textarea
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="Sampaikan tanggapan yang baik dan penuh perhatian…"
-        aria-label="Tulis komentar"
-        maxLength={1000}
-        className="min-h-16 flex-1"
-      />
-      <Button type="submit" loading={busy} disabled={!content.trim()} aria-label="Kirim komentar">
+    <form onSubmit={submit} className="flex gap-2 items-start w-full">
+      <div className="flex-1">
+        <Textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="Sampaikan tanggapan yang baik dan penuh perhatian…"
+          aria-label="Tulis komentar"
+          maxLength={1000}
+          className="min-h-16 w-full"
+        />
+      </div>
+      <Button type="submit" loading={busy} disabled={!content.trim()} aria-label="Kirim komentar" className="mt-0.5">
         <SendHorizontal className="size-4" />
       </Button>
     </form>
@@ -77,7 +79,7 @@ export function ReportButton({ postId, commentId }: { postId?: string; commentId
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1 text-xs text-muted hover:text-red-500 cursor-pointer"
+        className="inline-flex items-center gap-1 text-xs text-muted hover:text-rose-500 cursor-pointer"
         aria-label="Laporkan konten"
       >
         <Flag className="size-3.5" /> Laporkan
@@ -147,7 +149,7 @@ export function DeleteContentButton({
     <>
       <button
         onClick={() => setConfirm(true)}
-        className="inline-flex items-center gap-1 text-xs text-muted hover:text-red-500 cursor-pointer"
+        className="inline-flex items-center gap-1 text-xs text-rose-500 hover:text-rose-600 cursor-pointer"
         aria-label="Hapus"
       >
         <Trash2 className="size-3.5" /> Hapus
