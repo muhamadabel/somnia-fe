@@ -64,7 +64,7 @@ export function SegmentedControl({
       role="tablist"
       aria-label={ariaLabel}
       className={cn(
-        "relative flex rounded-full bg-transparent border border-sea-fog/60 dark:border-night-800/60 p-1",
+        "relative flex rounded-full bg-transparent border border-sea-fog/60 dark:border-night-800/60 p-1 w-64",
         className
       )}
     >
@@ -78,7 +78,7 @@ export function SegmentedControl({
       {options.map((option, index) => {
         const isSelected = value === option.value;
         const baseClasses = cn(
-          "relative z-10 flex-1 flex items-center justify-center py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-signal-blue",
+          "relative z-10 flex-1 flex items-center justify-center py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-signal-blue px-6",
           isSelected ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
         );
 
