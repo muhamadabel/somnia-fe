@@ -105,19 +105,6 @@ export default function LoginPage() {
 
   return (
     <div>
-      {/* ── Close Button ── */}
-      <div className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 flex items-center gap-2 group">
-        <span className="text-[10px] font-medium text-slate-channel bg-sea-fog/50 backdrop-blur-sm px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-          Tekan ESC untuk keluar
-        </span>
-        <button
-          onClick={() => window.location.href = "/"}
-          className="flex items-center justify-center size-10 rounded-full border-2 border-signal-blue text-signal-blue bg-white hover:bg-ice-tint hover:shadow-md transition-all cursor-pointer"
-          aria-label="Tutup dan kembali ke beranda"
-        >
-          <X className="size-5" />
-        </button>
-      </div>
 
       {/* ── Interactive Switcher Tabs with Sliding Indicator ── */}
       <div className="relative flex rounded-full bg-ice-tint p-1 mb-6" role="tablist">
