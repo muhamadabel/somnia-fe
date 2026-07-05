@@ -224,17 +224,17 @@ export default function LandingPage() {
       </section>
 
       {/* ── How it works ── */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
+      <section className="max-w-6xl mx-auto px-6 py-20 overflow-hidden">
         <h2 className="text-center text-3xl font-extrabold text-midnight-harbor tracking-tight mb-12">
           Dari ingatan yang memudar jadi insight yang bertahan
         </h2>
-        <div className="grid gap-8 sm:grid-cols-3">
+        <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-6 -mx-6 px-6 sm:mx-0 sm:px-0 sm:grid sm:gap-8 sm:grid-cols-3 sm:overflow-visible sm:pb-0">
           {[
             { n: "01", t: "Catat Seketika", d: "Tulis mimpi begitu terbangun sebelum ia menguap — lengkap dengan suasana hati, kualitas tidur, dan parameter mimpi." },
             { n: "02", t: "Analisis Mendalam AI", d: "AI mendeteksi nuansa emosi, simbol psikoanalisis, dan mengekstrak tema utama untuk dihubungkan dalam peta mimpi." },
             { n: "03", t: "Kenali Pola Jiwamu", d: "Mimpi yang menumpuk membentuk garis tren emosi, membantu mengenali stres bawah sadar dan perkembangan batinmu." },
           ].map((s) => (
-            <div key={s.n} className="card p-6 bg-white border border-sea-fog rounded-2xl">
+            <div key={s.n} className="card p-6 bg-white border border-sea-fog rounded-2xl snap-center shrink-0 w-[280px] sm:w-auto flex-1">
               <span className="text-signal-blue font-extrabold text-sm">{s.n}</span>
               <h3 className="mt-3 font-bold text-lg text-midnight-harbor">{s.t}</h3>
               <p className="mt-2 text-sm text-slate-channel leading-relaxed">{s.d}</p>
