@@ -140,7 +140,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <>
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <PageHeader
         title={`${greeting}, ${firstName}`}
         action={
@@ -251,6 +251,6 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }
