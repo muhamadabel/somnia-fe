@@ -171,9 +171,9 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-6 -mx-6 px-6 sm:mx-0 sm:px-0 md:grid md:gap-8 md:grid-cols-3 md:overflow-visible md:pb-0">
             {recentDreams.length === 0 ? (
-              <div className="col-span-full text-center py-12 bg-white border border-sea-fog rounded-2xl p-6">
+              <div className="col-span-full w-full text-center py-12 bg-white border border-sea-fog rounded-2xl p-6">
                 <HeartHandshake className="size-8 text-night-400 mx-auto" />
                 <p className="mt-3 text-sm text-slate-channel">Belum ada mimpi terbaru yang dibagikan ke komunitas saat ini.</p>
               </div>
@@ -188,7 +188,7 @@ export default function LandingPage() {
                   <div 
                     key={dream.id} 
                     onClick={() => router.push(hasToken() ? `/community/${dream.id}` : "/login")}
-                    className="card overflow-hidden bg-white border border-sea-fog rounded-2xl flex flex-col cursor-pointer hover:shadow-md transition-shadow group"
+                    className="card overflow-hidden bg-white border border-sea-fog rounded-2xl flex flex-col cursor-pointer hover:shadow-md transition-shadow group snap-center shrink-0 w-[280px] md:w-auto flex-1"
                   >
                     {/* Full-bleed gradient dream imagery placeholder */}
                     <div className="h-40 bg-gradient-to-tr from-ice-tint via-sea-fog to-light-mist relative flex items-end p-4 rounded-t-2xl transition-all group-hover:opacity-90">
