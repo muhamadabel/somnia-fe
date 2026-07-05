@@ -35,7 +35,7 @@ interface FeedPost {
 export default function CommunityPage() {
   const sp = useSearchParams();
   const q = sp.get("q")?.trim() ?? "";
-  const sort = sp.get("sort") ?? "recent";
+  const sort = sp.get("sort") ?? "top";
   const page = Math.max(1, parseInt(sp.get("page") ?? "1", 10) || 1);
 
   const query = new URLSearchParams();
@@ -49,7 +49,7 @@ export default function CommunityPage() {
   const link = (patch: Record<string, string>) => {
     const params = new URLSearchParams();
     const merged = { q, sort, page: "", ...patch };
-    for (const [k, v] of Object.entries(merged)) if (v && v !== "recent") params.set(k, v);
+    for (const [k, v] of Object.entries(merged)) if (v && v !== "top") params.set(k, v);
     const s = params.toString();
     return `/community${s ? `?${s}` : ""}`;
   };
@@ -69,7 +69,7 @@ export default function CommunityPage() {
             placeholder="Cari mimpi yang dibagikan…" 
             aria-label="Cari komunitas" 
           />
-          {sort !== "recent" && <input type="hidden" name="sort" value={sort} />}
+          {sort !== "top" && <input type="hidden" name="sort" value={sort} />}
           <button 
             type="submit" 
             className="bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-full px-5 cursor-pointer transition-colors"
@@ -83,8 +83,8 @@ export default function CommunityPage() {
           value={sort}
           className="w-full sm:w-64 shrink-0"
           options={[
-            { value: "recent", label: "Terbaru", href: link({ sort: "recent" }) },
             { value: "top", label: "Paling disukai", href: link({ sort: "top" }) },
+            { value: "recent", label: "Terbaru", href: link({ sort: "recent" }) },
           ]}
         />
       </div>
