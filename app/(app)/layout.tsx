@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Sidebar } from "@/components/layout/sidebar";
 import { api } from "@/lib/client";
 import { hasToken } from "@/lib/session";
+import { prefetchRoute } from "@/lib/prefetch";
 import { MoonStar } from "lucide-react";
 
 interface SessionData {
@@ -37,6 +38,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           return;
         }
         setSession(data);
+        // Warm cache for dashboard — the first page user lands on
+        prefetchRoute("/dashboard");
         // Notifications count is best-effort.
         api<Array<{ readAt: string | null }>>("/api/notifications")
           .then(({ data }) => alive && setUnread(data.filter((n) => !n.readAt).length))

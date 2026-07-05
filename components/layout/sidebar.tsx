@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { APP_NAME } from "@/lib/constants";
 import { api } from "@/lib/client";
 import { clearToken } from "@/lib/session";
+import { prefetchRoute } from "@/lib/prefetch";
 import { UserAvatar } from "@/components/layout/avatar";
 import {
   Bell,
@@ -81,6 +82,7 @@ export function Sidebar({
           <Link
             key={item.href}
             href={item.href}
+            onMouseEnter={() => prefetchRoute(item.href)}
             onClick={() => setOpen(false)}
             aria-current={active ? "page" : undefined}
             className={cn(
@@ -97,6 +99,7 @@ export function Sidebar({
       })}
       <Link
         href="/notifications"
+        onMouseEnter={() => prefetchRoute("/notifications")}
         onClick={() => setOpen(false)}
         className={cn(
           "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
