@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { api, ApiError } from "@/lib/client";
 import { setToken } from "@/lib/session";
+import { X } from "lucide-react";
 
 export default function LoginPage() {
   const toast = useToast();
@@ -21,6 +22,16 @@ export default function LoginPage() {
         setActiveTab("register");
       }
     }
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        window.location.href = "/";
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   const handleTabChange = (tab: "login" | "register") => {
@@ -94,6 +105,20 @@ export default function LoginPage() {
 
   return (
     <div>
+      {/* ── Close Button ── */}
+      <div className="fixed top-6 right-6 z-50 flex items-center gap-2 group">
+        <span className="text-[10px] font-medium text-slate-channel bg-sea-fog/50 backdrop-blur-sm px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+          Tekan ESC untuk keluar
+        </span>
+        <button
+          onClick={() => window.location.href = "/"}
+          className="flex items-center justify-center size-10 rounded-full border-2 border-signal-blue text-signal-blue bg-white hover:bg-ice-tint hover:shadow-md transition-all cursor-pointer"
+          aria-label="Tutup dan kembali ke beranda"
+        >
+          <X className="size-5" />
+        </button>
+      </div>
+
       {/* ── Interactive Switcher Tabs with Sliding Indicator ── */}
       <div className="relative flex rounded-full bg-ice-tint p-1 mb-6" role="tablist">
         {/* Sliding Background Box */}
