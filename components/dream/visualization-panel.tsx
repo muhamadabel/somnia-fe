@@ -69,7 +69,7 @@ export function VisualizationPanel({
   const v = visualizations[Math.min(current, Math.max(0, visualizations.length - 1))];
 
   return (
-    <div className="bg-white bg-[url('/canvas.png')] bg-cover bg-center bg-no-repeat rounded-[28px] p-6 shadow-[0_2px_12px_rgba(20,30,40,0.03)] border border-slate-100 h-full flex flex-col justify-center min-h-[160px]">
+    <div className="bg-white bg-[url('/canvas.png')] bg-cover bg-center bg-no-repeat rounded-[28px] p-6 shadow-[0_2px_12px_rgba(20,30,40,0.03)] border border-slate-100 flex flex-col">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-2">
           <Palette className="size-5 text-[#3b82f6]" />
