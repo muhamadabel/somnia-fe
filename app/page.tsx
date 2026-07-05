@@ -471,7 +471,7 @@ export default function LandingPage() {
             {APP_NAME} adalah alat refleksi diri dan eksplorasi batin. Insight AI bersifat reflektif dan edukatif — bukan diagnosis klinis psikologis dan tidak pernah dimaksudkan untuk menggantikan penanganan profesional medis atau kesehatan mental.
           </p>
           <div className="text-xs font-semibold text-slate-channel/80">
-            {`© ${new Date().getFullYear()} ${APP_NAME} — Penganalisis Jurnal Mimpi`}
+            © 2026 Somnia — kurakuraninja
           </div>
         </div>
       </footer>
