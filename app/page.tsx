@@ -78,6 +78,8 @@ export default function LandingPage() {
   const router = useRouter();
   const [recentDreams, setRecentDreams] = useState<FeedPost[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [worksActiveIndex, setWorksActiveIndex] = useState(0);
+  const [dreamsActiveIndex, setDreamsActiveIndex] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -85,6 +87,21 @@ export default function LandingPage() {
     }, 3500);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setWorksActiveIndex((prev) => (prev + 1) % 3);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (recentDreams.length === 0) return;
+    const timer = setInterval(() => {
+      setDreamsActiveIndex((prev) => (prev + 1) % recentDreams.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [recentDreams]);
 
   useEffect(() => {
     if (hasToken()) {
@@ -171,9 +188,10 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-6 -mx-6 px-6 sm:mx-0 sm:px-0 md:grid md:gap-8 md:grid-cols-3 md:overflow-visible md:pb-0">
+          {/* Desktop View */}
+          <div className="hidden md:grid gap-8 md:grid-cols-3">
             {recentDreams.length === 0 ? (
-              <div className="col-span-full w-full text-center py-12 bg-white border border-sea-fog rounded-2xl p-6">
+              <div className="col-span-full text-center py-12 bg-white border border-sea-fog rounded-2xl p-6">
                 <HeartHandshake className="size-8 text-night-400 mx-auto" />
                 <p className="mt-3 text-sm text-slate-channel">Belum ada mimpi terbaru yang dibagikan ke komunitas saat ini.</p>
               </div>
@@ -181,14 +199,12 @@ export default function LandingPage() {
               recentDreams.map((dream) => {
                 const parsedMeta = safeParseJson<{ emotions?: { name: string; color: string }[] }>(dream.meta, {});
                 const topEmotion = parsedMeta?.emotions?.[0];
-                // fallback colors if not available
-                const emotionLabelStr = topEmotion ? topEmotion.name : "Tidak terdeteksi";
                 
                 return (
                   <div 
                     key={dream.id} 
                     onClick={() => router.push(hasToken() ? `/community/${dream.id}` : "/login")}
-                    className="card overflow-hidden bg-white border border-sea-fog rounded-2xl flex flex-col cursor-pointer hover:shadow-md transition-shadow group snap-center shrink-0 w-[280px] md:w-auto flex-1"
+                    className="card overflow-hidden bg-white border border-sea-fog rounded-2xl flex flex-col cursor-pointer hover:shadow-md transition-shadow group"
                   >
                     {/* Full-bleed gradient dream imagery placeholder */}
                     <div className="h-40 bg-gradient-to-tr from-ice-tint via-sea-fog to-light-mist relative flex items-end p-4 rounded-t-2xl transition-all group-hover:opacity-90">
@@ -220,6 +236,69 @@ export default function LandingPage() {
               })
             )}
           </div>
+
+          {/* Mobile Carousel View */}
+          <div className="md:hidden relative w-full h-[360px] flex items-center justify-center">
+            {recentDreams.length === 0 ? (
+              <div className="w-full text-center py-12 bg-white border border-sea-fog rounded-2xl p-6">
+                <HeartHandshake className="size-8 text-night-400 mx-auto" />
+                <p className="mt-3 text-sm text-slate-channel">Belum ada mimpi terbaru yang dibagikan ke komunitas saat ini.</p>
+              </div>
+            ) : (
+              <div className="relative w-full h-[320px]">
+                {recentDreams.map((dream, idx) => {
+                  let offset = idx - dreamsActiveIndex;
+                  if (offset < -1) offset += recentDreams.length;
+                  if (offset > recentDreams.length - 2) offset -= recentDreams.length;
+
+                  const isVisible = offset === 0 || offset === 1 || offset === -1;
+                  const isCenter = offset === 0;
+
+                  const parsedMeta = safeParseJson<{ emotions?: { name: string; color: string }[] }>(dream.meta, {});
+                  const topEmotion = parsedMeta?.emotions?.[0];
+
+                  return (
+                    <div 
+                      key={dream.id} 
+                      onClick={() => router.push(hasToken() ? `/community/${dream.id}` : "/login")}
+                      className={`absolute top-0 left-1/2 w-[280px] bg-white border border-sea-fog rounded-2xl flex flex-col cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] shadow-dreamy-lg overflow-hidden ${
+                        isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none scale-90"
+                      }`}
+                      style={{
+                        transform: `translate3d(calc(-50% + ${offset * 105}%), ${isCenter ? "0px" : "15px"}, 0) scale(${isCenter ? 1.02 : 0.92})`,
+                        zIndex: isCenter ? 20 : 10,
+                      }}
+                    >
+                      <div className="h-28 bg-gradient-to-tr from-ice-tint via-sea-fog to-light-mist relative flex items-end p-4 rounded-t-2xl">
+                        <span className="absolute top-3 right-3 bg-white/95 text-signal-blue text-[10px] font-bold px-2 py-0.5 rounded-[5px] uppercase shadow-sm">
+                          {dream.user.anonName}
+                        </span>
+                      </div>
+                      <div className="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                          <h3 className="font-bold text-base text-midnight-harbor line-clamp-1 mb-1.5">
+                            {dream.title}
+                          </h3>
+                          {topEmotion && (
+                            <p className="text-[10px] text-slate-channel font-semibold mb-2 flex items-center gap-1">
+                              <span className="inline-block size-1.5 rounded-full" style={{ backgroundColor: topEmotion.color }} />
+                              {topEmotion.name}
+                            </p>
+                          )}
+                          <p className="text-xs text-slate-channel line-clamp-3 leading-relaxed mb-2">
+                            {dream.content}
+                          </p>
+                        </div>
+                        <div className="pt-2 border-t border-sea-fog/50 mt-auto text-[10px] text-slate-channel">
+                          <span>{timeAgo(dream.createdAt)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
@@ -228,18 +307,55 @@ export default function LandingPage() {
         <h2 className="text-center text-3xl font-extrabold text-midnight-harbor tracking-tight mb-12">
           Dari ingatan yang memudar jadi insight yang bertahan
         </h2>
-        <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-6 -mx-6 px-6 sm:mx-0 sm:px-0 sm:grid sm:gap-8 sm:grid-cols-3 sm:overflow-visible sm:pb-0">
+        
+        {/* Desktop View */}
+        <div className="hidden sm:grid gap-8 sm:grid-cols-3">
           {[
             { n: "01", t: "Catat Seketika", d: "Tulis mimpi begitu terbangun sebelum ia menguap — lengkap dengan suasana hati, kualitas tidur, dan parameter mimpi." },
             { n: "02", t: "Analisis Mendalam AI", d: "AI mendeteksi nuansa emosi, simbol psikoanalisis, dan mengekstrak tema utama untuk dihubungkan dalam peta mimpi." },
             { n: "03", t: "Kenali Pola Jiwamu", d: "Mimpi yang menumpuk membentuk garis tren emosi, membantu mengenali stres bawah sadar dan perkembangan batinmu." },
           ].map((s) => (
-            <div key={s.n} className="card p-6 bg-white border border-sea-fog rounded-2xl snap-center shrink-0 w-[280px] sm:w-auto flex-1">
+            <div key={s.n} className="card p-6 bg-white border border-sea-fog rounded-2xl">
               <span className="text-signal-blue font-extrabold text-sm">{s.n}</span>
               <h3 className="mt-3 font-bold text-lg text-midnight-harbor">{s.t}</h3>
               <p className="mt-2 text-sm text-slate-channel leading-relaxed">{s.d}</p>
             </div>
           ))}
+        </div>
+
+        {/* Mobile Carousel View */}
+        <div className="sm:hidden relative w-full h-[220px] flex items-center justify-center">
+          <div className="relative w-full h-[180px]">
+            {[
+              { n: "01", t: "Catat Seketika", d: "Tulis mimpi begitu terbangun sebelum ia menguap — lengkap dengan suasana hati, kualitas tidur, dan parameter mimpi." },
+              { n: "02", t: "Analisis Mendalam AI", d: "AI mendeteksi nuansa emosi, simbol psikoanalisis, dan mengekstrak tema utama untuk dihubungkan dalam peta mimpi." },
+              { n: "03", t: "Kenali Pola Jiwamu", d: "Mimpi yang menumpuk membentuk garis tren emosi, membantu mengenali stres bawah sadar dan perkembangan batinmu." },
+            ].map((s, idx) => {
+              let offset = idx - worksActiveIndex;
+              if (offset < -1) offset += 3;
+              if (offset > 1) offset -= 3;
+
+              const isVisible = offset === 0 || offset === 1 || offset === -1;
+              const isCenter = offset === 0;
+
+              return (
+                <div
+                  key={s.n}
+                  className={`absolute top-0 left-1/2 w-[280px] bg-white border border-sea-fog rounded-2xl p-6 shadow-dreamy-lg flex flex-col transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                    isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none scale-90"
+                  }`}
+                  style={{
+                    transform: `translate3d(calc(-50% + ${offset * 105}%), ${isCenter ? "0px" : "15px"}, 0) scale(${isCenter ? 1.02 : 0.92})`,
+                    zIndex: isCenter ? 20 : 10,
+                  }}
+                >
+                  <span className="text-signal-blue font-extrabold text-sm">{s.n}</span>
+                  <h3 className="mt-2 font-bold text-base text-midnight-harbor">{s.t}</h3>
+                  <p className="mt-1 text-xs text-slate-channel leading-relaxed">{s.d}</p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
