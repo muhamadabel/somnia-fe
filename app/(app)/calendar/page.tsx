@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmotionDot } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Select } from "@/components/ui/input";
 import { DreamRow, type DreamCardData } from "@/components/dream/dream-card";
 import { PageSkeleton } from "@/components/ui/skeleton";
 import { EMOTIONS, emotionLabel } from "@/lib/constants";
@@ -156,17 +157,17 @@ export default function CalendarPage() {
           <form method="GET" className="flex items-center gap-2">
             <input type="hidden" name="month" value={`${year}-${String(month).padStart(2, "0")}`} />
             {view === "week" && <input type="hidden" name="view" value="week" />}
-            <select
+            <Select
               name="emotion"
               defaultValue={emotionFilter}
               aria-label="Filter emosi"
-              className="input-base !w-40 !py-1.5 text-sm"
+              className="!w-40 !py-1.5 text-sm"
             >
               <option value="">Semua emosi</option>
               {EMOTIONS.map((e) => (
                 <option key={e.name} value={e.name}>{e.label}</option>
               ))}
-            </select>
+            </Select>
             <button type="submit" className="text-sm font-medium bg-night-600 hover:bg-night-700 text-white rounded-xl px-3.5 py-1.5 cursor-pointer">
               Filter
             </button>

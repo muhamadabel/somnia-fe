@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
 import { BookmarkButton } from "@/components/symbol/bookmark-button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Select } from "@/components/ui/input";
 import { PageSkeleton } from "@/components/ui/skeleton";
 import { SYMBOL_CATEGORIES, CATEGORY_LABEL } from "@/lib/constants";
 import { symbolLabel } from "@/lib/ai/lexicon";
@@ -60,12 +61,12 @@ export default function SymbolsPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted" aria-hidden />
           <input type="search" name="q" defaultValue={q} placeholder="Cari simbol…" aria-label="Cari simbol" className="input-base pl-9" />
         </div>
-        <select name="category" defaultValue={category} aria-label="Kategori" className="input-base w-40">
+        <Select name="category" defaultValue={category} aria-label="Kategori" className="w-40" placeholder="Semua kategori">
           <option value="">Semua kategori</option>
           {SYMBOL_CATEGORIES.map((c) => (
             <option key={c} value={c}>{CATEGORY_LABEL[c] ?? c}</option>
           ))}
-        </select>
+        </Select>
         <button type="submit" className="bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-xl px-5 cursor-pointer transition-colors">
           Cari
         </button>

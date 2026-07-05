@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge, EmotionDot } from "@/components/ui/badge";
+import { Select } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import { api, ApiError } from "@/lib/client";
@@ -164,10 +165,10 @@ export function AnalysisPanel({
           {analyses.length > 1 && (
             <label className="flex items-center gap-1.5 text-xs text-muted">
               <History className="size-3.5" />
-              <select
+              <Select
                 value={selected}
                 onChange={(e) => setSelected(Number(e.target.value))}
-                className="input-base !w-auto !py-1 !px-2 text-xs"
+                className="!w-auto min-w-52 !py-1.5 !pl-3 !pr-2 text-xs"
                 aria-label="Versi analisis"
               >
                 {analyses.map((v, i) => (
@@ -175,7 +176,7 @@ export function AnalysisPanel({
                     v{v.version} · {formatDateTime(v.generatedAt)}
                   </option>
                 ))}
-              </select>
+              </Select>
             </label>
           )}
           <Button variant="secondary" size="sm" onClick={() => generate()}>

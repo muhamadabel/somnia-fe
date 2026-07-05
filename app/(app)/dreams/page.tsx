@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { DreamCard, type DreamCardData } from "@/components/dream/dream-card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Select } from "@/components/ui/input";
 import { PageSkeleton } from "@/components/ui/skeleton";
 import { EMOTIONS, MOODS } from "@/lib/constants";
 import { useApi } from "@/lib/use-api";
@@ -65,22 +66,22 @@ export default function DreamsPage() {
           </button>
         </div>
         <div className="grid grid-cols-3 gap-2 sm:max-w-md">
-          <select name="emotion" defaultValue={emotion} aria-label="Filter emosi" className="input-base text-sm">
+          <Select name="emotion" defaultValue={emotion} aria-label="Filter emosi" className="text-sm" placeholder="Emosi">
             <option value="">Emosi</option>
             {EMOTIONS.map((e) => (
               <option key={e.name} value={e.name}>{e.label}</option>
             ))}
-          </select>
-          <select name="mood" defaultValue={mood} aria-label="Filter suasana hati" className="input-base text-sm">
+          </Select>
+          <Select name="mood" defaultValue={mood} aria-label="Filter suasana hati" className="text-sm" placeholder="Mood">
             <option value="">Mood</option>
             {MOODS.map((m) => (
               <option key={m.value} value={m.value}>{m.label}</option>
             ))}
-          </select>
-          <select name="sort" defaultValue={sort} aria-label="Urutkan" className="input-base text-sm">
+          </Select>
+          <Select name="sort" defaultValue={sort} aria-label="Urutkan" className="text-sm">
             <option value="newest">Terbaru</option>
             <option value="oldest">Terlama</option>
-          </select>
+          </Select>
         </div>
         {status !== "active" && <input type="hidden" name="status" value={status} />}
       </form>
