@@ -102,7 +102,8 @@ export default function CalendarPage() {
       <PageHeader title="Kalender Mimpi" subtitle="Riwayat mimpimu, malam demi malam." />
 
       {/* controls */}
-      <div className="card p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div className="card p-4 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        {/* Month nav / week label */}
         <div className="flex items-center gap-2">
           {view === "month" && (
             <>
@@ -113,7 +114,7 @@ export default function CalendarPage() {
               >
                 <ChevronLeft className="size-4" />
               </Link>
-              <span className="font-semibold text-body min-w-40 text-center">{monthLabel(year, month)}</span>
+              <span className="font-semibold text-body min-w-32 text-center text-sm sm:text-base">{monthLabel(year, month)}</span>
               <Link
                 href={qp({ month: `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}`, day: undefined })}
                 aria-label="Bulan berikutnya"
@@ -123,10 +124,11 @@ export default function CalendarPage() {
               </Link>
             </>
           )}
-          {view === "week" && <span className="font-semibold text-body">7 hari terakhir</span>}
+          {view === "week" && <span className="font-semibold text-body text-sm">7 hari terakhir</span>}
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* View toggle + emotion filter */}
+        <div className="flex flex-wrap items-center gap-2">
           <SegmentedControl
             ariaLabel="Tampilan kalender"
             value={view}
@@ -135,21 +137,21 @@ export default function CalendarPage() {
               { value: "week", label: "Minggu", href: qp({ view: "week", day: undefined }) },
             ]}
           />
-          <form method="GET" className="flex items-center gap-2">
+          <form method="GET" className="flex items-center gap-2 flex-1 sm:flex-none">
             <input type="hidden" name="month" value={`${year}-${String(month).padStart(2, "0")}`} />
             {view === "week" && <input type="hidden" name="view" value="week" />}
             <Select
               name="emotion"
               defaultValue={emotionFilter}
               aria-label="Filter emosi"
-              className="!w-40 !py-1.5 text-sm"
+              className="flex-1 sm:flex-none !w-auto sm:!w-40 !py-1.5 text-sm"
             >
               <option value="">Semua emosi</option>
               {EMOTIONS.map((e) => (
                 <option key={e.name} value={e.name}>{e.label}</option>
               ))}
             </Select>
-            <button type="submit" className="text-sm font-medium bg-night-600 hover:bg-night-700 text-white rounded-full px-3.5 py-1.5 cursor-pointer">
+            <button type="submit" className="text-sm font-medium bg-night-600 hover:bg-night-700 text-white rounded-full px-3.5 py-1.5 cursor-pointer shrink-0">
               Filter
             </button>
           </form>

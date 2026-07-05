@@ -59,12 +59,60 @@ export function SegmentedControl({
     }
   }
 
-  return (
+  // Helper: get plain text label for the select option
+  function labelText(label: React.ReactNode): string {
+    if (typeof label === "string") return label;
+    if (typeof label === "number") return String(label);
+    return "";
+  }
+
+  // Handle mobile select change — navigate via href or call onChange
+  function handleMobileChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const selected = options.find((o) => o.value === e.target.value);
+    if (!selected) return;
+    if (selected.href) {
+      window.location.href = selected.href;
+    } else if (onChange) {
+      onChange(selected.value);
+    }
+  }
+
+  const usesDropdownOnMobile = options.length > 2;
+
+  // ── Mobile dropdown (only rendered when >2 options) ──
+  const mobileSelect = usesDropdownOnMobile ? (
+    <div className={cn("sm:hidden", className)}>
+      <select
+        aria-label={ariaLabel}
+        value={value}
+        onChange={handleMobileChange}
+        className="w-full rounded-full border border-sea-fog/60 dark:border-night-800/60 bg-white dark:bg-white/10 text-sm font-semibold text-signal-blue dark:text-white px-4 py-2 outline-none focus:ring-2 focus:ring-signal-blue cursor-pointer"
+        style={{
+          appearance: "none",
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234e9ad9' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\")",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "right 14px center",
+          paddingRight: "40px",
+        }}
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {labelText(o.label)}
+          </option>
+        ))}
+      </select>
+    </div>
+  ) : null;
+
+  // ── Desktop pill (always shown when ≤2, hidden on mobile when >2) ──
+  const pillControl = (
     <div
       role="tablist"
       aria-label={ariaLabel}
       className={cn(
         "relative flex rounded-full bg-transparent border border-sea-fog/60 dark:border-night-800/60 p-1 w-64",
+        usesDropdownOnMobile ? "hidden sm:flex" : "flex",
         className
       )}
     >
@@ -116,5 +164,12 @@ export function SegmentedControl({
         );
       })}
     </div>
+  );
+
+  return (
+    <>
+      {mobileSelect}
+      {pillControl}
+    </>
   );
 }

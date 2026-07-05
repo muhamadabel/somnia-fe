@@ -64,7 +64,7 @@ export default function DreamsPage() {
             Terapkan
           </button>
         </div>
-        <div className="grid grid-cols-3 gap-2 sm:max-w-md">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:max-w-md">
           <Select name="emotion" defaultValue={emotion} aria-label="Filter emosi" className="text-sm" placeholder="Emosi">
             <option value="">Emosi</option>
             {EMOTIONS.map((e) => (

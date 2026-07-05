@@ -155,26 +155,26 @@ export default function DashboardPage() {
 
       <MentalHealthBanner />
 
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className="card flex items-center gap-4 px-5 py-4 rounded-[28px]">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${s.tint}1a`, color: s.tint }}>
-              <s.icon className="size-5.5" strokeWidth={2} />
+          <div key={s.label} className="card flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3 sm:py-4 rounded-[28px]">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${s.tint}1a`, color: s.tint }}>
+              <s.icon className="size-5" strokeWidth={2} />
             </div>
-            <div>
-              <p className="text-[26px] font-extrabold text-body leading-none">{s.value}</p>
-              <p className="text-[13px] text-muted font-medium mt-1.5">{s.label}</p>
+            <div className="min-w-0">
+              <p className="text-[22px] sm:text-[26px] font-extrabold text-body leading-none">{s.value}</p>
+              <p className="text-[11px] sm:text-[13px] text-muted font-medium mt-1 leading-tight">{s.label}</p>
             </div>
           </div>
         ))}
-        <div className="card flex items-center gap-4 px-5 py-4 rounded-[28px]">
+        <div className="card flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3 sm:py-4 rounded-[28px]">
           {trends.dominant ? (
             <>
-              <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${trends.dominant.color}1a` }}>
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${trends.dominant.color}1a` }}>
                 <EmotionDot color={trends.dominant.color} className="size-4" />
               </div>
               <div>
-                <p className="text-[20px] font-extrabold leading-tight" style={{ color: trends.dominant.color }}>
+                <p className="text-[18px] sm:text-[20px] font-extrabold leading-tight" style={{ color: trends.dominant.color }}>
                   {emotionLabel(trends.dominant.name)}
                 </p>
                 <p className="text-[13px] text-muted font-medium mt-1">dominan minggu ini</p>
@@ -182,7 +182,7 @@ export default function DashboardPage() {
             </>
           ) : (
             <>
-              <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 surface-2 text-muted">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shrink-0 surface-2 text-muted">
                 <Sparkles className="size-5.5" strokeWidth={2} />
               </div>
               <div>
