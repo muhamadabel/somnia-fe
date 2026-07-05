@@ -22,6 +22,9 @@ export default function LoginPage() {
       if (params.get("tab") === "register") {
         setActiveTab("register");
       }
+      // Reset theme to light mode
+      window.localStorage.setItem("somnia_theme", "light");
+      document.documentElement.classList.remove("dark");
     }
   }, []);
 
