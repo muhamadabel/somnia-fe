@@ -8,6 +8,7 @@ import { api, ApiError } from "@/lib/client";
 import { MAX_DREAM_LENGTH, MOODS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { BedDouble, CalendarDays, Sparkles } from "lucide-react";
+import { TbMoodHappy, TbMoodSmile, TbMoodNeutral, TbMoodSad, TbMoodCry } from "react-icons/tb";
 
 export interface DreamFormValues {
   id?: string;
@@ -157,6 +158,13 @@ export function DreamForm({ initial }: { initial?: Partial<DreamFormValues> }) {
         <div className="grid grid-cols-5 gap-2" role="group" aria-label="Suasana hati saat bangun">
           {MOODS.map((m) => {
             const active = mood === m.value;
+            let Icon = TbMoodNeutral;
+            if (m.value === "great") Icon = TbMoodHappy;
+            else if (m.value === "good") Icon = TbMoodSmile;
+            else if (m.value === "neutral") Icon = TbMoodNeutral;
+            else if (m.value === "low") Icon = TbMoodSad;
+            else if (m.value === "bad") Icon = TbMoodCry;
+            
             return (
               <button
                 key={m.value}
@@ -164,13 +172,13 @@ export function DreamForm({ initial }: { initial?: Partial<DreamFormValues> }) {
                 onClick={() => setMood(active ? "" : m.value)}
                 aria-pressed={active}
                 className={cn(
-                  "flex flex-col items-center gap-1 rounded-xl border py-3 transition-all cursor-pointer",
+                  "flex flex-col items-center gap-1.5 rounded-xl border py-3 transition-all cursor-pointer",
                   active
-                    ? "border-night-500 bg-night-100 dark:bg-night-800 scale-[1.03]"
-                    : "border-base surface hover:border-night-300"
+                    ? "border-night-500 bg-night-100 dark:bg-night-800 scale-[1.03] text-[#3b82f6]"
+                    : "border-base surface hover:border-night-300 text-[#64748b]"
                 )}
               >
-                <span className="text-2xl leading-none" aria-hidden>{m.emoji}</span>
+                <span className="text-[28px] leading-none" aria-hidden><Icon size={28} strokeWidth={active ? 2 : 1.5} /></span>
                 <span className={cn("text-[11px] font-medium", active ? "text-body" : "text-muted")}>{m.label}</span>
               </button>
             );
