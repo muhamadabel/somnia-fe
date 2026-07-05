@@ -74,7 +74,7 @@ export default function SymbolsPage() {
       <SegmentedControl
         ariaLabel="Tampilan simbol"
         value={view}
-        className="mb-6 max-w-sm"
+        className="mb-6 w-full max-w-2xl"
         options={tabs.map((t) => ({
           value: t.key,
           label: t.label,
