@@ -194,16 +194,16 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-5">
-        <section className="lg:col-span-2">
-          <Card className="p-2.5">
+      <div className="mt-6 grid gap-6 lg:grid-cols-5 w-full">
+        <section className="lg:col-span-2 w-full min-w-0">
+          <Card className="p-2.5 w-full">
             <div className="flex items-center justify-between px-3 pt-2 pb-1.5">
               <h2 className="font-bold text-body">Mimpi terbaru</h2>
               <Link href="/dreams" className="text-sm text-signal-blue font-bold hover:underline">
                 Lihat semua
               </Link>
             </div>
-            <div className="space-y-0.5">
+            <div className="space-y-0.5 w-full">
               {recentDreams.map((d) => (
                 <DreamRow key={d.id} dream={d} />
               ))}
@@ -211,8 +211,8 @@ export default function DashboardPage() {
           </Card>
         </section>
 
-        <div className="lg:col-span-3 space-y-6">
-          <Card>
+        <div className="lg:col-span-3 space-y-6 w-full min-w-0">
+          <Card className="w-full overflow-hidden">
             <CardHeader
               title="Nada emosi minggu ini"
               action={
@@ -221,15 +221,19 @@ export default function DashboardPage() {
                 </Link>
               }
             />
-            <MoodScoreChart data={trends.daily} height={170} />
+            <div className="w-full overflow-x-auto scrollbar-thin">
+              <div className="min-w-[340px] sm:min-w-0">
+                <MoodScoreChart data={trends.daily} height={170} />
+              </div>
+            </div>
             <div className="mt-4 flex gap-3 rounded-xl surface-2 border border-base p-4">
               <Sparkles className="size-4.5 text-signal-blue shrink-0 mt-0.5" />
-              <p className="text-sm text-muted leading-relaxed">{trends.observation}</p>
+              <p className="text-sm text-muted leading-relaxed break-words">{trends.observation}</p>
             </div>
           </Card>
 
           {latestReport && (
-            <Card className="flex items-center justify-between gap-4">
+            <Card className="flex items-center justify-between gap-4 w-full overflow-hidden">
               <div className="flex items-center gap-3.5 min-w-0">
                 <span className="rounded-xl surface-2 p-2.5 text-signal-blue shrink-0">
                   <ScrollText className="size-5" />
