@@ -269,7 +269,7 @@ export default function LandingPage() {
                     <div 
                       key={dream.id} 
                       onClick={() => router.push(hasToken() ? `/community/${dream.id}` : "/login")}
-                      className={`absolute top-0 left-1/2 w-[280px] max-w-[calc(100vw-3rem)] bg-white border border-sea-fog rounded-2xl flex flex-col cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] shadow-dreamy-lg overflow-hidden ${
+                      className={`absolute top-0 left-1/2 w-[280px] max-w-[calc(100vw-3rem)] bg-white border border-sea-fog rounded-2xl flex flex-col cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] hover:shadow-dreamy-lg overflow-hidden ${
                         isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none scale-90"
                       }`}
                       style={{
@@ -351,7 +351,7 @@ export default function LandingPage() {
               { n: "02_dup", t: "Analisis Mendalam AI", d: "AI mendeteksi nuansa emosi, simbol psikoanalisis, dan mengekstrak tema utama untuk dihubungkan dalam peta mimpi." },
               { n: "03_dup", t: "Kenali Pola Jiwamu", d: "Mimpi yang menumpuk membentuk garis tren emosi, membantu mengenali stres bawah sadar dan perkembangan batinmu." },
             ].map((s) => (
-              <div key={s.n} className="card p-6 bg-white border border-sea-fog rounded-2xl w-[260px] shrink-0 whitespace-normal shadow-dreamy-lg">
+              <div key={s.n} className="card p-6 bg-white border border-sea-fog rounded-2xl w-[260px] shrink-0 whitespace-normal transition-shadow hover:shadow-dreamy-lg">
                 <span className="text-signal-blue font-extrabold text-sm">{s.n.replace("_dup", "")}</span>
                 <h3 className="mt-2 font-bold text-base text-midnight-harbor">{s.t}</h3>
                 <p className="mt-1 text-xs text-slate-channel leading-relaxed">{s.d}</p>
