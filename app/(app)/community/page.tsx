@@ -83,7 +83,7 @@ export default function CommunityPage() {
           value={sort}
           className="w-full sm:w-64 shrink-0"
           options={[
-            { value: "top", label: "Paling disukai", href: link({ sort: "top" }) },
+            { value: "top", label: "Populer", href: link({ sort: "top" }) },
             { value: "recent", label: "Terbaru", href: link({ sort: "recent" }) },
           ]}
         />
