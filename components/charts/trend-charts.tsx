@@ -43,19 +43,22 @@ const CustomYAxisTick = (props: any) => {
 
   let Icon = TbMoodNeutral;
   let label = "Neutral";
+  let animationClass = "";
   
-  if (val === 100) { Icon = TbMoodHappy; label = "Happy"; }
-  else if (val === 75) { Icon = TbMoodSmile; label = "Calm"; }
-  else if (val === 50) { Icon = TbMoodNeutral; label = "Neutral"; }
-  else if (val === 25) { Icon = TbMoodSad; label = "Sad"; }
-  else if (val === 0) { Icon = TbMoodCry; label = "Down"; }
+  if (val === 100) { Icon = TbMoodHappy; label = "Happy"; animationClass = "animate-bounce-soft hover:scale-110 transition-transform"; }
+  else if (val === 75) { Icon = TbMoodSmile; label = "Calm"; animationClass = "animate-bounce-soft hover:scale-110 transition-transform"; }
+  else if (val === 50) { Icon = TbMoodNeutral; label = "Neutral"; animationClass = "animate-pulse-soft hover:scale-110 transition-transform"; }
+  else if (val === 25) { Icon = TbMoodSad; label = "Sad"; animationClass = "animate-wiggle hover:scale-110 transition-transform"; }
+  else if (val === 0) { Icon = TbMoodCry; label = "Down"; animationClass = "animate-wiggle hover:scale-110 transition-transform"; }
   else return null; // Only render at these specific intervals
 
   return (
     <g transform={`translate(${x},${y})`}>
       <foreignObject x={-85} y={-12} width={80} height={24}>
         <div className="flex items-center justify-end gap-2 h-full text-[#3b82f6]">
-          <Icon size={20} strokeWidth={2} />
+          <div className={animationClass}>
+            <Icon size={20} strokeWidth={2} />
+          </div>
           <span className="text-[11px] font-semibold">{label}</span>
         </div>
       </foreignObject>

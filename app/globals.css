@@ -48,6 +48,8 @@
   --animate-twinkle: twinkle 3.5s ease-in-out infinite;
   --animate-drift: drift 22s linear infinite;
   --animate-pulse-soft: pulse-soft 2.2s ease-in-out infinite;
+  --animate-bounce-soft: bounce-soft 2s ease-in-out infinite;
+  --animate-wiggle: wiggle 2.5s ease-in-out infinite;
 
   @keyframes fade-up {
     from { opacity: 0; transform: translateY(10px); }
@@ -68,6 +70,14 @@
   @keyframes pulse-soft {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.55; }
+  }
+  @keyframes bounce-soft {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(-4deg); }
+    50% { transform: rotate(4deg); }
   }
 }
 
