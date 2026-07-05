@@ -111,8 +111,10 @@ export function SegmentedControl({
       role="tablist"
       aria-label={ariaLabel}
       className={cn(
-        "relative flex rounded-full bg-transparent border border-sea-fog/60 dark:border-night-800/60 p-1 w-64",
+        "relative flex rounded-full bg-transparent border border-sea-fog/60 dark:border-night-800/60 p-1",
         usesDropdownOnMobile ? "hidden sm:flex" : "flex",
+        // If className doesn't contain a width class (e.g. w-full, w-64), default to w-64
+        !className?.split(' ').some(c => c.startsWith('w-')) && "w-64",
         className
       )}
     >

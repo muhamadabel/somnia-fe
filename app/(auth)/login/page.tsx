@@ -118,7 +118,7 @@ export default function LoginPage() {
       <SegmentedControl
         value={activeTab}
         onChange={(v) => handleTabChange(v as "login" | "register")}
-        className="mb-6"
+        className="mb-8 w-full"
         options={[
           { value: "login", label: "Masuk" },
           { value: "register", label: "Daftar" },
@@ -127,8 +127,8 @@ export default function LoginPage() {
 
       {activeTab === "login" ? (
         <div className="animate-fade-in">
-          <h1 className="text-2xl font-extrabold tracking-tight text-midnight-harbor">Selamat datang kembali</h1>
-          <p className="text-sm text-slate-channel mt-1.5">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-midnight-harbor">Selamat datang kembali</h1>
+          <p className="text-sm text-slate-channel mt-2 leading-relaxed">
             Masuk untuk melanjutkan jurnal mimpimu, menjelajahi alam bawah sadar, dan berdiskusi dengan Teman AI tentang arti mimpimu.
           </p>
 
@@ -163,8 +163,8 @@ export default function LoginPage() {
         </div>
       ) : (
         <div className="animate-fade-in">
-          <h1 className="text-2xl font-extrabold tracking-tight text-midnight-harbor">Mulai jurnal mimpimu</h1>
-          <p className="text-sm text-slate-channel mt-1.5">Pribadi, dan milikmu seorang.</p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-midnight-harbor">Mulai jurnal mimpimu</h1>
+          <p className="text-sm text-slate-channel mt-2 leading-relaxed">Pribadi, dan milikmu seorang.</p>
 
           <form onSubmit={onRegisterSubmit} className="mt-6 space-y-4" noValidate>
             <Input

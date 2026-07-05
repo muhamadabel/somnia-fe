@@ -164,7 +164,7 @@
 
 @utility input-base {
   width: 100%;
-  background: var(--surface);
+  background: #ffffff;
   border: 1px solid var(--border);
   border-radius: 24px;
   padding: 0.75rem 1.25rem;
@@ -179,6 +179,25 @@
     outline: none;
     border-color: var(--color-signal-blue);
     box-shadow: 0 0 0 3px rgba(78, 154, 217, 0.18);
+  }
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover, 
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text);
+    -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+}
+
+.dark {
+  & .input-base {
+    background: var(--surface);
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover, 
+    &:-webkit-autofill:focus {
+      -webkit-text-fill-color: #f8fafc;
+      -webkit-box-shadow: 0 0 0px 1000px #121b2d inset;
+    }
   }
 }
 
