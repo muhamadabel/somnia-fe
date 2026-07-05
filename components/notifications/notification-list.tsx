@@ -63,7 +63,7 @@ export function NotificationList({ initial }: { initial: NotificationItem[] }) {
     <>
       {unread > 0 && (
         <div className="flex justify-end mb-3">
-          <Button variant="secondary" size="sm" onClick={markAll}>
+          <Button variant="secondary" size="sm" onClick={markAll} className="text-night-600 dark:text-night-300 border-night-300 dark:border-night-600 hover:bg-night-100 dark:hover:bg-night-800">
             <Check className="size-4" /> Tandai semua dibaca ({unread})
           </Button>
         </div>
