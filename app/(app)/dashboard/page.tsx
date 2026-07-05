@@ -50,7 +50,7 @@ export default function DashboardPage() {
           action={
             <Link
               href="/dreams/new"
-              className="inline-flex items-center gap-2 bg-signal-blue hover:bg-signal-blue/90 text-white font-semibold rounded-3xl px-6 py-3 shadow-sm hover:shadow-md transition-colors"
+              className="inline-flex items-center gap-2 bg-signal-blue hover:bg-signal-blue/90 text-white font-semibold rounded-full px-6 py-3 shadow-sm hover:shadow-md transition-colors"
             >
               <PenLine className="size-4" /> Catat Mimpi Pertama
             </Link>
@@ -74,7 +74,7 @@ export default function DashboardPage() {
         action={
           <Link
             href="/dreams/new"
-            className="inline-flex items-center gap-2 bg-signal-blue hover:bg-signal-blue/90 text-white text-sm font-semibold rounded-3xl px-5 py-2.5 shadow-sm hover:shadow-md transition-colors"
+            className="inline-flex items-center gap-2 bg-signal-blue hover:bg-signal-blue/90 text-white text-sm font-semibold rounded-full px-5 py-2.5 shadow-sm hover:shadow-md transition-colors"
           >
             <PenLine className="size-4" /> Catat Mimpi
           </Link>
@@ -83,17 +83,17 @@ export default function DashboardPage() {
 
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className="flex items-center gap-4 px-5 py-4 rounded-[28px] bg-white shadow-[0_2px_12px_rgba(20,30,40,0.03)] border border-slate-100">
+          <div key={s.label} className="card flex items-center gap-4 px-5 py-4 rounded-[28px]">
             <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${s.tint}1a`, color: s.tint }}>
               <s.icon className="size-5.5" strokeWidth={2} />
             </div>
             <div>
-              <p className="text-[26px] font-extrabold text-[#1e3a5f] leading-none">{s.value}</p>
-              <p className="text-[13px] text-slate-500 font-medium mt-1.5">{s.label}</p>
+              <p className="text-[26px] font-extrabold text-body leading-none">{s.value}</p>
+              <p className="text-[13px] text-muted font-medium mt-1.5">{s.label}</p>
             </div>
           </div>
         ))}
-        <div className="flex items-center gap-4 px-5 py-4 rounded-[28px] bg-white shadow-[0_2px_12px_rgba(20,30,40,0.03)] border border-slate-100">
+        <div className="card flex items-center gap-4 px-5 py-4 rounded-[28px]">
           {trends.dominant ? (
             <>
               <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${trends.dominant.color}1a` }}>
@@ -103,17 +103,17 @@ export default function DashboardPage() {
                 <p className="text-[20px] font-extrabold leading-tight" style={{ color: trends.dominant.color }}>
                   {emotionLabel(trends.dominant.name)}
                 </p>
-                <p className="text-[13px] text-slate-500 font-medium mt-1">dominan minggu ini</p>
+                <p className="text-[13px] text-muted font-medium mt-1">dominan minggu ini</p>
               </div>
             </>
           ) : (
             <>
-              <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-slate-100 text-slate-400">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 surface-2 text-muted">
                 <Sparkles className="size-5.5" strokeWidth={2} />
               </div>
               <div>
-                <p className="text-[15px] font-extrabold text-[#1e3a5f] leading-tight">Belum ada analisis</p>
-                <p className="text-[13px] text-slate-500 font-medium mt-1">minggu ini</p>
+                <p className="text-[15px] font-extrabold text-body leading-tight">Belum ada analisis</p>
+                <p className="text-[13px] text-muted font-medium mt-1">minggu ini</p>
               </div>
             </>
           )}
@@ -122,9 +122,9 @@ export default function DashboardPage() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-5">
         <section className="lg:col-span-2">
-          <Card className="p-2.5 bg-white border border-sea-fog rounded-2xl shadow-sm">
+          <Card className="p-2.5">
             <div className="flex items-center justify-between px-3 pt-2 pb-1.5">
-              <h2 className="font-bold text-midnight-harbor">Mimpi terbaru</h2>
+              <h2 className="font-bold text-body">Mimpi terbaru</h2>
               <Link href="/dreams" className="text-sm text-signal-blue font-bold hover:underline">
                 Lihat semua
               </Link>
@@ -138,7 +138,7 @@ export default function DashboardPage() {
         </section>
 
         <div className="lg:col-span-3 space-y-6">
-          <Card className="bg-white border border-sea-fog rounded-2xl shadow-sm">
+          <Card>
             <CardHeader
               title="Nada emosi minggu ini"
               action={
@@ -148,21 +148,21 @@ export default function DashboardPage() {
               }
             />
             <MoodScoreChart data={trends.daily} height={170} />
-            <div className="mt-4 flex gap-3 rounded-xl bg-ice-tint/60 border border-sea-fog/30 p-4">
+            <div className="mt-4 flex gap-3 rounded-xl surface-2 border border-base p-4">
               <Sparkles className="size-4.5 text-signal-blue shrink-0 mt-0.5" />
-              <p className="text-sm text-slate-channel leading-relaxed">{trends.observation}</p>
+              <p className="text-sm text-muted leading-relaxed">{trends.observation}</p>
             </div>
           </Card>
 
           {latestReport && (
-            <Card className="flex items-center justify-between gap-4 bg-white border border-sea-fog rounded-2xl shadow-sm">
+            <Card className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3.5 min-w-0">
-                <span className="rounded-xl bg-ice-tint p-2.5 text-signal-blue shrink-0">
+                <span className="rounded-xl surface-2 p-2.5 text-signal-blue shrink-0">
                   <ScrollText className="size-5" />
                 </span>
                 <div className="min-w-0">
-                  <p className="font-bold text-midnight-harbor truncate">{latestReport.title}</p>
-                  <p className="text-xs text-slate-channel mt-0.5">
+                  <p className="font-bold text-body truncate">{latestReport.title}</p>
+                  <p className="text-xs text-muted mt-0.5">
                     Dibuat {new Date(latestReport.generatedAt).toLocaleDateString("id-ID", { month: "long", day: "numeric" })}
                   </p>
                 </div>

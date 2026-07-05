@@ -138,7 +138,7 @@ export default function LandingPage() {
             </Link>
             <Link
               href="/register"
-              className="text-sm font-semibold bg-signal-blue hover:bg-signal-blue/90 text-white rounded-3xl px-5 py-2.5 shadow-sm hover:shadow-md transition-all"
+              className="text-sm font-semibold bg-signal-blue hover:bg-signal-blue/90 text-white rounded-full px-5 py-2.5 shadow-sm hover:shadow-md transition-all"
             >
               Mulai
             </Link>
@@ -454,7 +454,7 @@ export default function LandingPage() {
           <div className="pt-4">
             <Link
               href="/register"
-              className="inline-flex items-center gap-2 bg-signal-blue hover:bg-signal-blue/90 text-white font-bold rounded-3xl px-8 py-4 shadow-lg hover:shadow-xl transition-all"
+              className="inline-flex items-center gap-2 bg-signal-blue hover:bg-signal-blue/90 text-white font-bold rounded-full px-8 py-4 shadow-lg hover:shadow-xl transition-all"
             >
               Mulai Jurnal
             </Link>

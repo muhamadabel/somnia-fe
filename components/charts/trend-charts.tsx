@@ -79,7 +79,7 @@ const CustomXAxisTick = (props: any) => {
       <foreignObject x={-20} y={6} width={40} height={40}>
         <div className="flex flex-col items-center justify-center gap-1.5 text-[#3b82f6]">
           <WeatherIcon size={18} strokeWidth={2} />
-          <span className="text-[11px] font-bold text-midnight-harbor">{payload.value.substring(0, 3)}</span>
+          <span className="text-[11px] font-bold text-body">{payload.value.substring(0, 3)}</span>
         </div>
       </foreignObject>
     </g>
@@ -100,7 +100,7 @@ const CustomLineDot = (props: any) => {
 
   return (
     <g transform={`translate(${cx},${cy})`}>
-      <circle cx="0" cy="0" r="14" fill="white" stroke="#3b82f6" strokeWidth="1.5" />
+      <circle cx="0" cy="0" r="14" fill="var(--surface)" stroke="#3b82f6" strokeWidth="1.5" />
       <foreignObject x={-10} y={-10} width={20} height={20}>
         <div className="flex items-center justify-center w-full h-full text-[#3b82f6]">
           <Icon size={18} strokeWidth={2} />
@@ -126,7 +126,7 @@ export function MoodScoreChart({
   return (
     <ResponsiveContainer width="100%" height={height}>
       <ComposedChart data={chartData} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#bfdbfe" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
         
         <XAxis 
           dataKey="label" 
@@ -188,10 +188,10 @@ export function EmotionFrequencyChart({
   return (
     <ResponsiveContainer width="100%" height={Math.max(200, data.length * 42)}>
       <BarChart data={data} layout="vertical" margin={{ top: 0, right: 16, left: 8, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
         <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11, fill: "var(--text-muted)" }} tickLine={false} axisLine={false} />
         <YAxis type="category" dataKey="name" width={86} tick={{ fontSize: 12, fill: "var(--text)" }} tickLine={false} axisLine={false} />
-        <Tooltip contentStyle={tooltipStyle} formatter={(v: unknown) => [`Terdeteksi di : ${v} mimpi`, ""]} labelStyle={{ fontWeight: "bold", color: "var(--text)", marginBottom: 4 }} cursor={{ fill: "#f1f5f9" }} />
+        <Tooltip contentStyle={tooltipStyle} formatter={(v: unknown) => [`Terdeteksi di : ${v} mimpi`, ""]} labelStyle={{ fontWeight: "bold", color: "var(--text)", marginBottom: 4 }} cursor={{ fill: "var(--surface-2)" }} />
         <Bar dataKey="count" radius={[0, 12, 12, 0]} barSize={20}>
           {data.map((d) => (
             <Cell key={d.name} fill={d.color} />
@@ -211,7 +211,7 @@ export function ToneDonut({ positive, negative, neutral }: { positive: number; n
   return (
     <ResponsiveContainer width="100%" height={220}>
       <PieChart>
-        <Pie data={data} dataKey="value" nameKey="name" innerRadius={65} outerRadius={95} paddingAngle={4} stroke="white" strokeWidth={2}>
+        <Pie data={data} dataKey="value" nameKey="name" innerRadius={65} outerRadius={95} paddingAngle={4} stroke="var(--surface)" strokeWidth={2}>
           {data.map((d) => (
             <Cell key={d.name} fill={d.color} />
           ))}
@@ -230,10 +230,10 @@ export function DreamCountChart({
   return (
     <ResponsiveContainer width="100%" height={180}>
       <BarChart data={data} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
         <XAxis dataKey="label" tick={{ fontSize: 11, fill: "var(--text-muted)" }} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={24} />
         <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "var(--text-muted)" }} tickLine={false} axisLine={false} />
-        <Tooltip contentStyle={tooltipStyle} formatter={(v: unknown) => [`${v} mimpi`, ""]} cursor={{ fill: "#f1f5f9" }} />
+        <Tooltip contentStyle={tooltipStyle} formatter={(v: unknown) => [`${v} mimpi`, ""]} cursor={{ fill: "var(--surface-2)" }} />
         <Bar dataKey="count" fill="#a78bfa" radius={[12, 12, 12, 12]} barSize={8} />
       </BarChart>
     </ResponsiveContainer>

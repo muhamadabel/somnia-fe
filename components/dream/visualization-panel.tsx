@@ -66,7 +66,14 @@ export function VisualizationPanel({
     }
   }
 
-  const v = visualizations[Math.min(current, Math.max(0, visualizations.length - 1))];
+  // Filter out SVG backup art if there is at least one successful JPG/PNG generation
+  const hasRealImage = visualizations.some((viz) => !viz.imagePath.toLowerCase().endsWith(".svg"));
+  const activeVisualizations = hasRealImage
+    ? visualizations.filter((viz) => !viz.imagePath.toLowerCase().endsWith(".svg"))
+    : visualizations;
+
+  const v = activeVisualizations[Math.min(current, Math.max(0, activeVisualizations.length - 1))];
+  const ext = v ? v.imagePath.split(".").pop() || "png" : "png";
 
   return (
     <div className="bg-white bg-[url('/canvas.png')] bg-cover bg-center bg-no-repeat rounded-[28px] p-6 shadow-[0_2px_12px_rgba(20,30,40,0.03)] border border-slate-100 flex flex-col">
@@ -80,16 +87,16 @@ export function VisualizationPanel({
           disabled={generating}
           className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-[#1e3a5f] hover:bg-slate-50 transition-colors disabled:opacity-50"
         >
-          <RefreshCw className="size-3.5" /> {visualizations.length ? "Buat ulang" : "Buat sketsa"}
+          <RefreshCw className="size-3.5" /> {activeVisualizations.length ? "Buat ulang" : "Buat sketsa"}
         </button>
       </div>
 
-      {(generating || shouldAuto) && visualizations.length === 0 ? (
+      {(generating || shouldAuto) && activeVisualizations.length === 0 ? (
         <div className="space-y-2" role="status" aria-label="Membuat sketsa mimpi">
           <Skeleton className="aspect-[4/3] w-full rounded-xl" />
           <p className="text-xs text-muted text-center">Melukis sketsa dari isi mimpimu…</p>
         </div>
-      ) : visualizations.length === 0 ? (
+      ) : activeVisualizations.length === 0 ? (
         <p className="text-sm text-muted text-center py-8">
           Belum ada sketsa untuk mimpi ini.
         </p>
@@ -104,11 +111,11 @@ export function VisualizationPanel({
           <p className="mt-2 text-xs text-muted italic">{v.prompt}</p>
           <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-1.5 overflow-x-auto">
-              {visualizations.map((viz, i) => (
+              {activeVisualizations.map((viz, i) => (
                 <button
                   key={viz.id}
                   onClick={() => setCurrent(i)}
-                  aria-label={`Versi ${visualizations.length - i}`}
+                  aria-label={`Versi ${activeVisualizations.length - i}`}
                   className={`shrink-0 rounded-lg border-2 transition-colors cursor-pointer ${
                     i === current ? "border-night-500" : "border-transparent opacity-70 hover:opacity-100"
                   }`}
@@ -121,7 +128,7 @@ export function VisualizationPanel({
             <div className="flex items-center gap-1">
               <a
                 href={fileUrl(v.imagePath)}
-                download={`dream-art-${formatDate(v.createdAt).replace(/[ ,]+/g, "-")}.svg`}
+                download={`dream-art-${formatDate(v.createdAt).replace(/[ ,]+/g, "-")}.${ext}`}
                 className="p-2 rounded-lg text-muted hover:text-body hover:bg-(--surface-2)"
                 aria-label="Unduh karya seni"
                 title="Unduh"

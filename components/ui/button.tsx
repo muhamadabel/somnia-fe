@@ -17,9 +17,9 @@ const variants: Record<Variant, string> = {
 };
 
 const sizes: Record<Size, string> = {
-  sm: "px-4 py-1.5 text-xs rounded-3xl gap-1.5",
-  md: "px-5 py-2.5 text-sm rounded-3xl gap-2",
-  lg: "px-6 py-3 text-base rounded-3xl gap-2",
+  sm: "px-4 py-1.5 text-xs rounded-full gap-1.5",
+  md: "px-5 py-2.5 text-sm rounded-full gap-2",
+  lg: "px-6 py-3 text-base rounded-full gap-2",
 };
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
