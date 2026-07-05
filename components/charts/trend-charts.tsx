@@ -56,7 +56,7 @@ const CustomYAxisTick = (props: any) => {
     <g transform={`translate(${x},${y})`}>
       <foreignObject x={-85} y={-12} width={80} height={24}>
         <div className="flex items-center justify-end gap-2 h-full text-[#3b82f6]">
-          <div className={`${animationClass} sm:hidden`}>
+          <div className={`${animationClass} hidden sm:block`}>
             <Icon size={20} strokeWidth={2} />
           </div>
           <span className="text-[11px] font-semibold">{label}</span>
@@ -78,7 +78,7 @@ const CustomXAxisTick = (props: any) => {
     <g transform={`translate(${x},${y})`}>
       <foreignObject x={-20} y={6} width={40} height={40}>
         <div className="flex flex-col items-center justify-center gap-1 h-full text-[#3b82f6]">
-          <div className="sm:hidden">
+          <div className="hidden sm:block">
             <WeatherIcon size={18} strokeWidth={2} />
           </div>
           <span className="text-[11px] font-bold text-body">{payload.value.substring(0, 3)}</span>
@@ -102,8 +102,8 @@ const CustomLineDot = (props: any) => {
 
   return (
     <g transform={`translate(${cx},${cy})`}>
-      {/* Hide the complex emoji dot on desktop (sm:), render a simple dot instead */}
-      <g className="sm:hidden">
+      {/* Hide the complex emoji dot on mobile, show on desktop (sm:block) */}
+      <g className="hidden sm:block">
         <circle cx="0" cy="0" r="14" fill="var(--surface)" stroke="#3b82f6" strokeWidth="1.5" />
         <foreignObject x={-10} y={-10} width={20} height={20}>
           <div className="flex items-center justify-center w-full h-full text-[#3b82f6]">
@@ -111,7 +111,7 @@ const CustomLineDot = (props: any) => {
           </div>
         </foreignObject>
       </g>
-      <circle cx="0" cy="0" r="5" fill="#3b82f6" stroke="var(--surface)" strokeWidth="1.5" className="hidden sm:block" />
+      <circle cx="0" cy="0" r="5" fill="#3b82f6" stroke="var(--surface)" strokeWidth="1.5" className="sm:hidden" />
     </g>
   );
 };

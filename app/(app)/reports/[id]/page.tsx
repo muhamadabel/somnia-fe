@@ -53,7 +53,7 @@ export default function ReportDetailPage() {
         <PrintButton />
       </div>
 
-      <article className="card p-8 print-area max-w-3xl mx-auto">
+      <article className="card p-8 print-area bg-white print:bg-white max-w-3xl mx-auto print:rounded-none print:border-none print:shadow-none print:p-0">
         {/* header */}
         <header className="text-center border-b border-base pb-6">
           <p className="flex items-center justify-center gap-2 text-night-500 text-sm font-medium">
