@@ -55,21 +55,21 @@ export default function DreamDetailPage() {
 
   return (
     <>
-      <Link href="/dreams" className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-body mb-4">
+      <Link href="/dreams" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800 mb-4 font-medium transition-colors">
         <ArrowLeft className="size-4" /> Semua mimpi
       </Link>
 
       <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-body" style={{ fontFamily: "var(--font-display)" }}>
+          <h1 className="text-3xl font-extrabold text-[#1e3a5f] leading-tight flex items-center flex-wrap gap-2">
             {dream.title ?? "Mimpi tanpa judul"}
             {dream.isDraft && (
-              <Badge className="ml-2 align-middle text-amber-600 dark:text-amber-400">
-                <FileEdit className="size-3" /> Draf
-              </Badge>
+              <span className="inline-flex items-center gap-1.5 border border-slate-200 bg-white text-slate-500 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm">
+                <FileEdit className="size-3.5" /> Draf
+              </span>
             )}
           </h1>
-          <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted">
+          <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-500 font-medium">
             <span className="flex items-center gap-1.5">
               <CalendarDays className="size-4" /> {formatDate(dream.dreamDate, { weekday: "long" })}
             </span>
@@ -92,9 +92,9 @@ export default function DreamDetailPage() {
 
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="lg:col-span-2 space-y-6">
-          <div className="card p-6">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-muted mb-3">Isi mimpi</h2>
-            <p className="text-[15px] text-body leading-relaxed whitespace-pre-line">{dream.description}</p>
+          <div className="bg-white rounded-[28px] p-6 shadow-[0_2px_12px_rgba(20,30,40,0.03)] border border-slate-100">
+            <h2 className="text-[11px] font-bold uppercase tracking-widest text-[#64748b] mb-4">Isi mimpi</h2>
+            <p className="text-[15px] text-[#334155] leading-relaxed whitespace-pre-line font-medium">{dream.description}</p>
 
             {dream.imagePath && (
               /* eslint-disable-next-line @next/next/no-img-element */

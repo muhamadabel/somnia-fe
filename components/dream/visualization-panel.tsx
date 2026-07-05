@@ -69,15 +69,19 @@ export function VisualizationPanel({
   const v = visualizations[Math.min(current, Math.max(0, visualizations.length - 1))];
 
   return (
-    <div className="card p-6">
+    <div className="bg-white rounded-[28px] p-6 shadow-[0_2px_12px_rgba(20,30,40,0.03)] border border-slate-100 h-full flex flex-col justify-center min-h-[160px]">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-2">
-          <Palette className="size-5 text-night-500" />
-          <h2 className="font-semibold text-body">Visualisasi Mimpi</h2>
+          <Palette className="size-5 text-[#3b82f6]" />
+          <h2 className="font-semibold text-[#1e3a5f]">Visualisasi Mimpi</h2>
         </div>
-        <Button variant="secondary" size="sm" onClick={() => generate()} loading={generating}>
+        <button 
+          onClick={() => generate()} 
+          disabled={generating}
+          className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-[#1e3a5f] hover:bg-slate-50 transition-colors disabled:opacity-50"
+        >
           <RefreshCw className="size-3.5" /> {visualizations.length ? "Buat ulang" : "Buat sketsa"}
-        </Button>
+        </button>
       </div>
 
       {(generating || shouldAuto) && visualizations.length === 0 ? (

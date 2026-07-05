@@ -80,24 +80,28 @@ export function DreamActions({
     <div className="flex flex-wrap items-center gap-2">
       <Link
         href={`/dreams/${dreamId}/edit`}
-        className="inline-flex items-center gap-1.5 surface border-base rounded-xl px-3.5 py-2 text-sm font-medium text-body hover:bg-(--surface-2) transition-colors"
+        className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#1e3a5f] hover:bg-slate-50 shadow-[0_2px_8px_rgba(20,30,40,0.04)] transition-colors"
       >
         <Pencil className="size-4" /> Edit
       </Link>
       {!isDraft && (
         <>
-          <Button variant="secondary" size="md" onClick={toggleArchive} disabled={busy}>
+          <Button variant="secondary" size="md" onClick={toggleArchive} disabled={busy} className="rounded-full font-semibold">
             {archived ? <ArchiveRestore className="size-4" /> : <Archive className="size-4" />}
             {archived ? "Keluarkan arsip" : "Arsipkan"}
           </Button>
-          <Button variant="secondary" size="md" onClick={() => setShareOpen(true)} disabled={shared || busy} title={shared ? "Sudah dibagikan ke komunitas" : undefined}>
+          <Button variant="secondary" size="md" onClick={() => setShareOpen(true)} disabled={shared || busy} title={shared ? "Sudah dibagikan ke komunitas" : undefined} className="rounded-full font-semibold">
             <Share2 className="size-4" /> {shared ? "Dibagikan" : "Bagikan"}
           </Button>
         </>
       )}
-      <Button variant="ghost" size="md" className="text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20" onClick={() => setConfirmDelete(true)} disabled={busy}>
+      <button 
+        className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-rose-500 hover:text-rose-600 hover:bg-rose-50 transition-colors disabled:opacity-50" 
+        onClick={() => setConfirmDelete(true)} 
+        disabled={busy}
+      >
         <Trash2 className="size-4" /> Hapus
-      </Button>
+      </button>
 
       {/* ── Delete confirmation ── */}
       <Modal open={confirmDelete} onClose={() => setConfirmDelete(false)} title="Hapus mimpi ini?">

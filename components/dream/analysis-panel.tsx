@@ -96,9 +96,9 @@ export function AnalysisPanel({
 
   if (isDraft) {
     return (
-      <div className="card p-6 text-center">
-        <BrainCircuit className="size-7 text-night-400 mx-auto" />
-        <p className="mt-2 text-sm text-muted">
+      <div className="bg-white rounded-[28px] p-8 h-full shadow-[0_2px_12px_rgba(20,30,40,0.03)] border border-slate-100 flex flex-col items-center justify-center min-h-[160px] text-center">
+        <BrainCircuit className="size-7 text-[#64748b] mx-auto mb-3" />
+        <p className="text-sm font-medium text-[#64748b]">
           Mimpi ini masih draf. Selesaikan (Ubah → Simpan & Analisis) untuk membuka analisis AI.
         </p>
       </div>
