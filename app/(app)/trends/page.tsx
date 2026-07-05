@@ -59,7 +59,7 @@ export default function TrendsPage() {
       <SegmentedControl
         ariaLabel="Rentang waktu"
         value={String(range)}
-        className="mb-6 max-w-sm"
+        className="mb-6 w-full max-w-2xl"
         options={RANGES.map((r) => ({
           value: String(r.days),
           label: r.label,
