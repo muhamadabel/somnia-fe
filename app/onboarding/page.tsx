@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/client";
-import { BookOpenText, BrainCircuit, LineChart, MoonStar, ShieldCheck } from "lucide-react";
+import { BookOpenText, Brain, LineChart, MoonStar, ShieldCheck } from "lucide-react";
 
 const STEPS = [
   {
@@ -12,7 +12,7 @@ const STEPS = [
     text: "Semua yang kamu tulis milikmu seorang. Tidak ada yang dibagikan kecuali kamu memublikasikannya sendiri ke komunitas — pun begitu, hanya dengan nama samaran.",
   },
   {
-    icon: BrainCircuit,
+    icon: Brain,
     title: "AI merefleksikan — bukan mendiagnosis",
     text: "AI membantumu menyadari emosi, simbol, dan pola, serta menjelaskan alasannya. Ia menawarkan refleksi, bukan kesimpulan medis, dan tak pernah menggantikan bantuan profesional.",
   },

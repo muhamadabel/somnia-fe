@@ -7,7 +7,6 @@ import { APP_NAME } from "@/lib/constants";
 import { hasToken } from "@/lib/session";
 import {
   BookOpenText,
-  BrainCircuit,
   CalendarDays,
   HeartHandshake,
   LineChart,

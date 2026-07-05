@@ -7,7 +7,7 @@ import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/components/ui/toast";
 import { api, ApiError } from "@/lib/client";
 import { formatDate } from "@/lib/utils";
-import { Bell, BrainCircuit, Moon, Palette, ShieldCheck, Sun, Trash2, User } from "lucide-react";
+import { Bell, Brain, Moon, Palette, ShieldCheck, Sun, Trash2, User } from "lucide-react";
 
 interface SettingsUser {
   fullName: string;
@@ -259,7 +259,7 @@ export function SettingsForm({
       {/* ── Privacy ── */}
       <section className="card p-6">
         <h2 className="flex items-center gap-2 font-semibold text-body mb-2">
-          <BrainCircuit className="size-4.5 text-night-500" /> Privasi & AI
+          <Brain className="size-4.5 text-night-500" /> Privasi & AI
         </h2>
         {aiMode && (
           <div className="mb-4 rounded-xl surface-2 p-4">

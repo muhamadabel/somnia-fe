@@ -11,7 +11,7 @@ import { EMOTION_COLOR, emotionLabel } from "@/lib/constants";
 import { symbolLabel } from "@/lib/ai/lexicon";
 import { formatDateTime, safeParseJson } from "@/lib/utils";
 import {
-  BrainCircuit,
+  Brain,
   HelpCircle,
   History,
   Lightbulb,
@@ -98,7 +98,7 @@ export function AnalysisPanel({
     return (
       <div className="bg-white rounded-[24px] p-5 shadow-[0_2px_12px_rgba(20,30,40,0.03)] border border-slate-100 flex items-center gap-3.5">
         <div className="bg-slate-50 p-3 rounded-full shrink-0">
-          <BrainCircuit className="size-5 text-[#64748b]" />
+          <Brain className="size-5 text-[#64748b]" />
         </div>
         <p className="text-[13px] font-medium text-[#64748b] leading-relaxed">
           Mimpi ini masih draf. Selesaikan (Ubah → Simpan & Analisis) untuk membuka analisis AI.
@@ -128,7 +128,7 @@ export function AnalysisPanel({
   if (analyses.length === 0) {
     return (
       <div className="card p-6 text-center">
-        <BrainCircuit className="size-7 text-night-400 mx-auto" />
+        <Brain className="size-7 text-night-400 mx-auto" />
         <h3 className="mt-2 font-semibold text-body">Belum ada analisis</h3>
         <p className="mt-1 text-sm text-muted max-w-sm mx-auto">
           Buat pembacaan AI untuk mimpi ini — ringkasan, emosi, simbol, dan refleksi yang mendukung.
@@ -154,7 +154,7 @@ export function AnalysisPanel({
       {/* header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <BrainCircuit className="size-5 text-night-500" />
+          <Brain className="size-5 text-night-500" />
           <h2 className="font-semibold text-body">Analisis AI</h2>
           <Badge title={`Model: ${a.model} · Keyakinan ${(a.confidence * 100).toFixed(0)}%`}>
             {providerLabel(a.provider)}
