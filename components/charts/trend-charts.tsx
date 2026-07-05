@@ -56,7 +56,7 @@ const CustomYAxisTick = (props: any) => {
     <g transform={`translate(${x},${y})`}>
       <foreignObject x={-85} y={-12} width={80} height={24}>
         <div className="flex items-center justify-end gap-2 h-full text-[#3b82f6]">
-          <div className={`${animationClass} hidden sm:block`}>
+          <div className={`${animationClass} hidden sm:block duration-500`}>
             <Icon size={20} strokeWidth={2} />
           </div>
           <span className="text-[11px] font-semibold">{label}</span>
@@ -78,7 +78,7 @@ const CustomXAxisTick = (props: any) => {
     <g transform={`translate(${x},${y})`}>
       <foreignObject x={-20} y={6} width={40} height={40}>
         <div className="flex flex-col items-center justify-center gap-1 h-full text-[#3b82f6]">
-          <div className="hidden sm:block">
+          <div className="hidden sm:block animate-pulse-soft" style={{ animationDelay: `${index * 100}ms` }}>
             <WeatherIcon size={18} strokeWidth={2} />
           </div>
           <span className="text-[11px] font-bold text-body">{payload.value.substring(0, 3)}</span>
@@ -90,7 +90,7 @@ const CustomXAxisTick = (props: any) => {
 
 // Custom Dot for the Line Chart
 const CustomLineDot = (props: any) => {
-  const { cx, cy, payload } = props;
+  const { cx, cy, payload, index } = props;
   if (!cx || !cy || payload.score === null) return null;
   
   let Icon = Meh;
@@ -103,10 +103,10 @@ const CustomLineDot = (props: any) => {
   return (
     <g transform={`translate(${cx},${cy})`}>
       {/* Hide the complex emoji dot on mobile, show on desktop (sm:block) */}
-      <g className="hidden sm:block">
+      <g className="hidden sm:block animate-bounce-soft" style={{ animationDelay: `${index * 150}ms` }}>
         <circle cx="0" cy="0" r="14" fill="var(--surface)" stroke="#3b82f6" strokeWidth="1.5" />
         <foreignObject x={-10} y={-10} width={20} height={20}>
-          <div className="flex items-center justify-center w-full h-full text-[#3b82f6]">
+          <div className="flex items-center justify-center w-full h-full text-[#3b82f6] hover:scale-110 transition-transform">
             <Icon size={18} strokeWidth={2} />
           </div>
         </foreignObject>

@@ -16,7 +16,7 @@ export function Badge({
       title={title}
       className={cn(
         "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium",
-        !color && "surface-2 text-muted",
+        !color && "surface-2 text-body dark:text-slate-300",
         className
       )}
       style={
