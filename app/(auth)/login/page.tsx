@@ -106,7 +106,7 @@ export default function LoginPage() {
   return (
     <div>
       {/* ── Close Button ── */}
-      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 flex items-center gap-2 group">
+      <div className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 flex items-center gap-2 group">
         <span className="text-[10px] font-medium text-slate-channel bg-sea-fog/50 backdrop-blur-sm px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
           Tekan ESC untuk keluar
         </span>
