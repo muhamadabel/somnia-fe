@@ -71,7 +71,7 @@ interface FeedPost {
   user: { anonName: string };
 }
 
-import { API_BASE, ApiEnvelope } from "@/lib/client";
+import { API_BASE, ApiEnvelope, fileUrl } from "@/lib/client";
 import { timeAgo, safeParseJson } from "@/lib/utils";
 
 export default function LandingPage() {
@@ -196,8 +196,9 @@ export default function LandingPage() {
               </div>
             ) : (
               recentDreams.map((dream) => {
-                const parsedMeta = safeParseJson<{ emotions?: { name: string; color: string }[] }>(dream.meta, {});
+                const parsedMeta = safeParseJson<{ emotions?: { name: string; color: string }[]; imagePath?: string }>(dream.meta, {});
                 const topEmotion = parsedMeta?.emotions?.[0];
+                const imageUrl = parsedMeta?.imagePath ? fileUrl(parsedMeta.imagePath) : null;
                 
                 return (
                   <div 
@@ -206,8 +207,15 @@ export default function LandingPage() {
                     className="card overflow-hidden bg-white border border-sea-fog rounded-2xl flex flex-col cursor-pointer hover:shadow-md transition-shadow group"
                   >
                     {/* Full-bleed gradient dream imagery placeholder */}
-                    <div className="h-40 bg-gradient-to-tr from-ice-tint via-sea-fog to-light-mist relative flex items-end p-4 rounded-t-2xl transition-all group-hover:opacity-90">
-                      <span className="absolute top-3 right-3 bg-white/95 text-signal-blue text-[10px] font-bold px-2 py-0.5 rounded-[5px] uppercase shadow-sm">
+                    <div className="h-40 bg-gradient-to-tr from-ice-tint via-sea-fog to-light-mist relative flex items-end p-4 rounded-t-2xl overflow-hidden transition-all group-hover:opacity-90">
+                      {imageUrl && (
+                        <img 
+                          src={imageUrl} 
+                          alt={dream.title}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      )}
+                      <span className="absolute top-3 right-3 bg-white/95 text-signal-blue text-[10px] font-bold px-2 py-0.5 rounded-[5px] uppercase shadow-sm z-10">
                         {dream.user.anonName}
                       </span>
                     </div>
@@ -253,8 +261,9 @@ export default function LandingPage() {
                   const isVisible = offset === 0 || offset === 1 || offset === -1;
                   const isCenter = offset === 0;
 
-                  const parsedMeta = safeParseJson<{ emotions?: { name: string; color: string }[] }>(dream.meta, {});
+                  const parsedMeta = safeParseJson<{ emotions?: { name: string; color: string }[]; imagePath?: string }>(dream.meta, {});
                   const topEmotion = parsedMeta?.emotions?.[0];
+                  const imageUrl = parsedMeta?.imagePath ? fileUrl(parsedMeta.imagePath) : null;
 
                   return (
                     <div 
@@ -268,8 +277,15 @@ export default function LandingPage() {
                         zIndex: isCenter ? 20 : 10,
                       }}
                     >
-                      <div className="h-28 bg-gradient-to-tr from-ice-tint via-sea-fog to-light-mist relative flex items-end p-4 rounded-t-2xl">
-                        <span className="absolute top-3 right-3 bg-white/95 text-signal-blue text-[10px] font-bold px-2 py-0.5 rounded-[5px] uppercase shadow-sm">
+                      <div className="h-28 bg-gradient-to-tr from-ice-tint via-sea-fog to-light-mist relative flex items-end p-4 rounded-t-2xl overflow-hidden">
+                        {imageUrl && (
+                          <img 
+                            src={imageUrl} 
+                            alt={dream.title}
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                        )}
+                        <span className="absolute top-3 right-3 bg-white/95 text-signal-blue text-[10px] font-bold px-2 py-0.5 rounded-[5px] uppercase shadow-sm z-10">
                           {dream.user.anonName}
                         </span>
                       </div>
