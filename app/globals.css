@@ -47,6 +47,7 @@
   --animate-fade-in: fade-in 0.4s ease both;
   --animate-twinkle: twinkle 3.5s ease-in-out infinite;
   --animate-drift: drift 22s linear infinite;
+  --animate-marquee: marquee 16s linear infinite;
   --animate-pulse-soft: emoji-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   --animate-bounce-soft: emoji-pop-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   --animate-wiggle: emoji-pop-wiggle 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
@@ -66,6 +67,10 @@
   @keyframes drift {
     from { transform: translateX(-4%); }
     to { transform: translateX(4%); }
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
   @keyframes emoji-pop {
     0% { transform: scale(0.5); opacity: 0; }

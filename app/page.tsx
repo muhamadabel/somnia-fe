@@ -129,11 +129,11 @@ export default function LandingPage() {
     <main className="min-h-screen bg-canvas-white font-sans text-midnight-harbor antialiased selection:bg-signal-blue selection:text-white">
       {/* ── Sticky Navigation Header ── */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-sea-fog">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 py-4">
           <Link href="/" className="flex items-center gap-1">
             <span className="font-extrabold text-2xl tracking-tighter text-signal-blue lowercase">somnia</span>
           </Link>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 sm:gap-6">
             <Link href="/login" className="text-sm font-semibold text-slate-channel hover:text-midnight-harbor transition-colors">
               Masuk
             </Link>
@@ -149,10 +149,9 @@ export default function LandingPage() {
 
       {/* ── Hero Section ── */}
       <section 
-        className="relative overflow-hidden pt-24 pb-32 bg-no-repeat bg-cover"
+        className="relative overflow-hidden pt-24 pb-32 bg-no-repeat bg-cover bg-right-bottom sm:bg-[position:center_right] before:absolute before:inset-0 before:bg-white/80 before:z-0 sm:before:hidden"
         style={{
           backgroundImage: "url('/sleep-bg-hd.png')",
-          backgroundPosition: "center right",
         }}
       >
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -172,12 +171,12 @@ export default function LandingPage() {
           </div>
 
           {/* Right Column: Empty, illustration is in the background image */}
-          <div className="lg:col-span-5 h-[350px] lg:h-[450px] pointer-events-none" />
+          <div className="hidden lg:block lg:col-span-5 lg:h-[450px] pointer-events-none" />
         </div>
       </section>
 
       {/* ── Product Preview (Grid of Cards) ── */}
-      <section className="bg-ice-tint/30 border-y border-sea-fog py-20">
+      <section className="bg-ice-tint/30 border-y border-sea-fog py-20 overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-extrabold text-midnight-harbor tracking-tight">
@@ -261,7 +260,7 @@ export default function LandingPage() {
                     <div 
                       key={dream.id} 
                       onClick={() => router.push(hasToken() ? `/community/${dream.id}` : "/login")}
-                      className={`absolute top-0 left-1/2 w-[280px] bg-white border border-sea-fog rounded-2xl flex flex-col cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] shadow-dreamy-lg overflow-hidden ${
+                      className={`absolute top-0 left-1/2 w-[280px] max-w-[calc(100vw-3rem)] bg-white border border-sea-fog rounded-2xl flex flex-col cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] shadow-dreamy-lg overflow-hidden ${
                         isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none scale-90"
                       }`}
                       style={{
@@ -323,38 +322,24 @@ export default function LandingPage() {
           ))}
         </div>
 
-        {/* Mobile Carousel View */}
-        <div className="sm:hidden relative w-full h-[220px] flex items-center justify-center">
-          <div className="relative w-full h-[180px]">
+        {/* Mobile Carousel View (Looping Marquee) */}
+        <div className="sm:hidden w-full overflow-hidden relative py-4">
+          <div className="flex gap-6 animate-marquee w-max">
             {[
               { n: "01", t: "Catat Seketika", d: "Tulis mimpi begitu terbangun sebelum ia menguap — lengkap dengan suasana hati, kualitas tidur, dan parameter mimpi." },
               { n: "02", t: "Analisis Mendalam AI", d: "AI mendeteksi nuansa emosi, simbol psikoanalisis, dan mengekstrak tema utama untuk dihubungkan dalam peta mimpi." },
               { n: "03", t: "Kenali Pola Jiwamu", d: "Mimpi yang menumpuk membentuk garis tren emosi, membantu mengenali stres bawah sadar dan perkembangan batinmu." },
-            ].map((s, idx) => {
-              let offset = idx - worksActiveIndex;
-              if (offset < -1) offset += 3;
-              if (offset > 1) offset -= 3;
-
-              const isVisible = offset === 0 || offset === 1 || offset === -1;
-              const isCenter = offset === 0;
-
-              return (
-                <div
-                  key={s.n}
-                  className={`absolute top-0 left-1/2 w-[280px] bg-white border border-sea-fog rounded-2xl p-6 shadow-dreamy-lg flex flex-col transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                    isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none scale-90"
-                  }`}
-                  style={{
-                    transform: `translate3d(calc(-50% + ${offset * 105}%), ${isCenter ? "0px" : "15px"}, 0) scale(${isCenter ? 1.02 : 0.92})`,
-                    zIndex: isCenter ? 20 : 10,
-                  }}
-                >
-                  <span className="text-signal-blue font-extrabold text-sm">{s.n}</span>
-                  <h3 className="mt-2 font-bold text-base text-midnight-harbor">{s.t}</h3>
-                  <p className="mt-1 text-xs text-slate-channel leading-relaxed">{s.d}</p>
-                </div>
-              );
-            })}
+              // Duplicate once for infinite loop
+              { n: "01_dup", t: "Catat Seketika", d: "Tulis mimpi begitu terbangun sebelum ia menguap — lengkap dengan suasana hati, kualitas tidur, dan parameter mimpi." },
+              { n: "02_dup", t: "Analisis Mendalam AI", d: "AI mendeteksi nuansa emosi, simbol psikoanalisis, dan mengekstrak tema utama untuk dihubungkan dalam peta mimpi." },
+              { n: "03_dup", t: "Kenali Pola Jiwamu", d: "Mimpi yang menumpuk membentuk garis tren emosi, membantu mengenali stres bawah sadar dan perkembangan batinmu." },
+            ].map((s) => (
+              <div key={s.n} className="card p-6 bg-white border border-sea-fog rounded-2xl w-[260px] shrink-0 whitespace-normal shadow-dreamy-lg">
+                <span className="text-signal-blue font-extrabold text-sm">{s.n.replace("_dup", "")}</span>
+                <h3 className="mt-2 font-bold text-base text-midnight-harbor">{s.t}</h3>
+                <p className="mt-1 text-xs text-slate-channel leading-relaxed">{s.d}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -377,7 +362,7 @@ export default function LandingPage() {
               return (
                 <div
                   key={f.title}
-                  className={`absolute top-0 left-1/2 w-[290px] sm:w-[320px] bg-white border border-sea-fog rounded-[28px] shadow-dreamy-lg overflow-hidden flex flex-col transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                  className={`absolute top-0 left-1/2 w-[280px] max-w-[calc(100vw-3rem)] sm:w-[320px] bg-white border border-sea-fog rounded-[28px] shadow-dreamy-lg overflow-hidden flex flex-col transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
                     isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none scale-90"
                   }`}
                   style={{
