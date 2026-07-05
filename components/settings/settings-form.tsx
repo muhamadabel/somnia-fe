@@ -246,7 +246,7 @@ export function SettingsForm({
         <div className="relative flex rounded-full bg-transparent border border-sea-fog/60 dark:border-night-800/60 p-1 max-w-xs" role="tablist">
           {/* Sliding Background Box */}
           <div
-            className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white dark:bg-(--surface) rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+            className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white dark:bg-white/15 rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
               prefs.theme === "dark" ? "left-[calc(50%+2px)]" : "left-1"
             }`}
           />

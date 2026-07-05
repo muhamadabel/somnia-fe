@@ -129,7 +129,7 @@ export default function CalendarPage() {
           <div className="relative flex rounded-full surface-2 p-1" role="tablist" aria-label="Tampilan kalender">
             {/* Sliding Background Box */}
             <div
-              className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white dark:bg-(--surface) rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+              className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white dark:bg-white/15 rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
                 view === "week" ? "left-[calc(50%+2px)]" : "left-1"
               }`}
             />
