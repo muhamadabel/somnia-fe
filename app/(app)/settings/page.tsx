@@ -9,6 +9,7 @@ interface ProfileResponse {
   fullName: string;
   email: string;
   anonName: string;
+  avatarPath: string | null;
   timezone: string;
   language: string;
   theme: string;
@@ -35,6 +36,7 @@ export default function SettingsPage() {
           fullName: data.fullName,
           email: data.email,
           anonName: data.anonName,
+          avatarPath: data.avatarPath,
           timezone: data.timezone,
           language: data.language,
           theme: data.theme,

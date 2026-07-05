@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { APP_NAME } from "@/lib/constants";
 import { api } from "@/lib/client";
 import { clearToken } from "@/lib/session";
+import { UserAvatar } from "@/components/layout/avatar";
 import {
   Bell,
   BookOpenText,
@@ -43,7 +44,7 @@ export function Sidebar({
   aiMode,
   unread = 0,
 }: {
-  user: { fullName: string; email: string; role: string };
+  user: { fullName: string; email: string; avatarPath?: string | null; role: string };
   aiMode: { id: string; label: string };
   unread?: number;
 }) {
@@ -124,9 +125,7 @@ export function Sidebar({
           className="flex items-center gap-2.5 flex-1 min-w-0 group"
           title="Profil & pengaturan"
         >
-          <span className="size-9 shrink-0 rounded-full bg-gradient-to-br from-night-400 to-night-700 text-white grid place-items-center text-sm font-semibold">
-            {user.fullName.slice(0, 1).toUpperCase()}
-          </span>
+          <UserAvatar name={user.fullName} avatarPath={user.avatarPath} className="size-9 shrink-0 text-sm" />
           <span className="min-w-0">
             <span className="block text-sm font-medium text-body truncate group-hover:underline">{user.fullName}</span>
             <span className="block text-xs text-muted truncate">{user.email}</span>

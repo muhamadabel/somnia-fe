@@ -9,7 +9,7 @@ import { MoonStar } from "lucide-react";
 
 interface SessionData {
   authenticated: boolean;
-  user?: { id: string; fullName: string; email: string; role: string; theme: string; onboarded: boolean };
+  user?: { id: string; fullName: string; email: string; avatarPath?: string | null; role: string; theme: string; onboarded: boolean };
   aiMode?: { id: string; label: string };
 }
 
@@ -71,7 +71,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       }}
     >
       <Sidebar
-        user={{ fullName: session.user.fullName, email: session.user.email, role: session.user.role }}
+        user={{
+          fullName: session.user.fullName,
+          email: session.user.email,
+          avatarPath: session.user.avatarPath,
+          role: session.user.role,
+        }}
         aiMode={session.aiMode ?? { id: "local", label: "AI" }}
         unread={unread}
       />

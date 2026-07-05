@@ -1,18 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { UserAvatar } from "@/components/layout/avatar";
 import { Button } from "@/components/ui/button";
-import { Input, Select } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/components/ui/toast";
 import { api, ApiError } from "@/lib/client";
 import { formatDate } from "@/lib/utils";
+import { AVATAR_PRESETS, DEFAULT_AVATAR_PATH } from "@/lib/avatar-presets";
 import { Bell, Brain, Moon, Palette, ShieldCheck, Sun, Trash2, User } from "lucide-react";
 
 interface SettingsUser {
   fullName: string;
   email: string;
   anonName: string;
+  avatarPath: string | null;
   timezone: string;
   language: string;
   theme: string;
@@ -82,7 +85,12 @@ export function SettingsForm({
     try {
       await api("/api/user/profile", {
         method: "PATCH",
-        json: { fullName: form.get("fullName"), timezone: form.get("timezone"), language: form.get("language") },
+        json: {
+          fullName: form.get("fullName"),
+          timezone: form.get("timezone"),
+          language: form.get("language"),
+          avatarPath: form.get("avatarPath") || DEFAULT_AVATAR_PATH,
+        },
       });
       toast("success", "Profil diperbarui.");
       window.location.reload();
@@ -172,6 +180,50 @@ export function SettingsForm({
           {stats.analysisCount} analisis · {stats.artCount} karya seni · {stats.postCount} dibagikan
         </p>
         <form onSubmit={saveProfile} className="space-y-4">
+          <div className="rounded-2xl surface-2 p-4">
+            <div className="flex items-center gap-4">
+              <UserAvatar
+                name={user.fullName}
+                avatarPath={prefs.avatarPath || DEFAULT_AVATAR_PATH}
+                className="size-20 shrink-0 border border-base"
+              />
+              <div>
+                <p className="text-sm font-medium text-body">Avatar profil</p>
+                <p className="text-xs text-muted mt-1">
+                  Pilih avatar dari koleksi internal. File gambarnya bisa kamu ganti manual nanti tanpa ubah kode fitur.
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {AVATAR_PRESETS.map((avatar) => {
+                const active = (prefs.avatarPath || DEFAULT_AVATAR_PATH) === avatar.path;
+                return (
+                  <label
+                    key={avatar.id}
+                    className={`cursor-pointer rounded-2xl border p-3 transition ${
+                      active ? "border-night-500 bg-night-500/8" : "border-base hover:border-night-300 hover:bg-white/40"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="avatarPath"
+                      value={avatar.path}
+                      defaultChecked={active}
+                      onChange={() => setPrefs((current) => ({ ...current, avatarPath: avatar.path }))}
+                      className="sr-only"
+                    />
+                    <div className="flex items-center gap-3">
+                      <img src={avatar.path} alt={avatar.label} className="size-12 rounded-full object-cover border border-base" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-body">{avatar.label}</p>
+                        <p className="text-xs text-muted truncate">{avatar.id}</p>
+                      </div>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Input label="Nama" name="fullName" defaultValue={user.fullName} required minLength={2} maxLength={60} />
             <Input label="Email" value={user.email} disabled hint="Perubahan email butuh bantuan dukungan." />
