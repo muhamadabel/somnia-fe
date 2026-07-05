@@ -261,11 +261,11 @@ export default function LandingPage() {
               return (
                 <div
                   key={f.title}
-                  className={`absolute top-0 left-1/2 -translate-x-1/2 w-[280px] sm:w-[320px] bg-white border border-sea-fog rounded-[28px] shadow-dreamy-lg overflow-hidden flex flex-col transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                  className={`absolute top-0 left-1/2 w-[290px] sm:w-[320px] bg-white border border-sea-fog rounded-[28px] shadow-dreamy-lg overflow-hidden flex flex-col transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
                     isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none scale-90"
                   }`}
                   style={{
-                    transform: `translate3d(calc(-50% + ${offset * 320}px), ${isCenter ? "0px" : "15px"}, 0) scale(${isCenter ? 1.02 : 0.92})`,
+                    transform: `translate3d(calc(-50% + ${offset * 105}%), ${isCenter ? "0px" : "15px"}, 0) scale(${isCenter ? 1.02 : 0.92})`,
                     zIndex: isCenter ? 20 : 10,
                   }}
                 >
