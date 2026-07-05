@@ -62,9 +62,9 @@ export default function DashboardPage() {
 
   const dreamsThisWeek = trends.daily.reduce((a, d) => a + d.count, 0);
   const stats = [
-    { icon: BookOpenText, tint: "#4e9ad9", value: String(totalDreams), label: "mimpi tercatat" },
-    { icon: Flame, tint: "#42b3b1", value: String(streak), label: "hari beruntun" },
-    { icon: CalendarDays, tint: "#688dac", value: String(dreamsThisWeek), label: "minggu ini" },
+    { icon: BookOpenText, tint: "#3b82f6", value: String(totalDreams), label: "mimpi tercatat" },
+    { icon: Flame, tint: "#14b8a6", value: String(streak), label: "hari beruntun" },
+    { icon: CalendarDays, tint: "#64748b", value: String(dreamsThisWeek), label: "minggu ini" },
   ];
 
   return (
@@ -83,41 +83,41 @@ export default function DashboardPage() {
 
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
-          <Card key={s.label} className="flex items-center gap-3.5 rounded-3xl bg-white border border-sea-fog shadow-sm">
-            <span className="rounded-full p-3" style={{ backgroundColor: `${s.tint}1f`, color: s.tint }}>
-              <s.icon className="size-5" />
-            </span>
-            <div>
-              <p className="text-2xl font-bold text-midnight-harbor leading-none">{s.value}</p>
-              <p className="text-xs text-slate-channel font-medium mt-1">{s.label}</p>
+          <div key={s.label} className="flex items-center gap-4 px-5 py-4 rounded-[28px] bg-white shadow-[0_2px_12px_rgba(20,30,40,0.03)] border border-slate-100">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${s.tint}1a`, color: s.tint }}>
+              <s.icon className="size-5.5" strokeWidth={2} />
             </div>
-          </Card>
+            <div>
+              <p className="text-[26px] font-extrabold text-[#1e3a5f] leading-none">{s.value}</p>
+              <p className="text-[13px] text-slate-500 font-medium mt-1.5">{s.label}</p>
+            </div>
+          </div>
         ))}
-        <Card className="flex items-center gap-3.5 rounded-3xl bg-white border border-sea-fog shadow-sm">
+        <div className="flex items-center gap-4 px-5 py-4 rounded-[28px] bg-white shadow-[0_2px_12px_rgba(20,30,40,0.03)] border border-slate-100">
           {trends.dominant ? (
             <>
-              <span className="rounded-full p-3" style={{ backgroundColor: `${trends.dominant.color}1f` }}>
-                <EmotionDot color={trends.dominant.color} className="size-5" />
-              </span>
+              <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${trends.dominant.color}1a` }}>
+                <EmotionDot color={trends.dominant.color} className="size-4" />
+              </div>
               <div>
-                <p className="text-lg font-bold leading-tight" style={{ color: trends.dominant.color }}>
+                <p className="text-[20px] font-extrabold leading-tight" style={{ color: trends.dominant.color }}>
                   {emotionLabel(trends.dominant.name)}
                 </p>
-                <p className="text-xs text-slate-channel font-medium mt-0.5">dominan minggu ini</p>
+                <p className="text-[13px] text-slate-500 font-medium mt-1">dominan minggu ini</p>
               </div>
             </>
           ) : (
             <>
-              <span className="rounded-full bg-sea-fog/50 p-3 text-slate-channel">
-                <Sparkles className="size-5" />
-              </span>
+              <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-slate-100 text-slate-400">
+                <Sparkles className="size-5.5" strokeWidth={2} />
+              </div>
               <div>
-                <p className="text-sm font-bold text-midnight-harbor leading-tight">Belum ada analisis</p>
-                <p className="text-xs text-slate-channel font-medium mt-0.5">minggu ini</p>
+                <p className="text-[15px] font-extrabold text-[#1e3a5f] leading-tight">Belum ada analisis</p>
+                <p className="text-[13px] text-slate-500 font-medium mt-1">minggu ini</p>
               </div>
             </>
           )}
-        </Card>
+        </div>
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-5">
