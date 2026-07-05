@@ -198,7 +198,7 @@ export default function LandingPage() {
               recentDreams.map((dream) => {
                 const parsedMeta = safeParseJson<{ emotions?: { name: string; color: string }[]; imagePath?: string }>(dream.meta, {});
                 const topEmotion = parsedMeta?.emotions?.[0];
-                const imageUrl = parsedMeta?.imagePath ? fileUrl(parsedMeta.imagePath) : "/features/canvas.png";
+                const imageUrl = parsedMeta?.imagePath ? fileUrl(parsedMeta.imagePath) : "/canvas.png";
                 
                 return (
                   <div 
@@ -213,7 +213,7 @@ export default function LandingPage() {
                         alt={dream.title}
                         className="absolute inset-0 w-full h-full object-cover"
                         onError={(e) => {
-                          e.currentTarget.src = "/features/canvas.png";
+                          e.currentTarget.src = "/canvas.png";
                         }}
                       />
                       <span className="absolute top-3 right-3 bg-white/95 text-signal-blue text-[10px] font-bold px-2 py-0.5 rounded-[5px] uppercase shadow-sm z-10">
@@ -264,7 +264,7 @@ export default function LandingPage() {
 
                   const parsedMeta = safeParseJson<{ emotions?: { name: string; color: string }[]; imagePath?: string }>(dream.meta, {});
                   const topEmotion = parsedMeta?.emotions?.[0];
-                  const imageUrl = parsedMeta?.imagePath ? fileUrl(parsedMeta.imagePath) : "/features/canvas.png";
+                  const imageUrl = parsedMeta?.imagePath ? fileUrl(parsedMeta.imagePath) : "/canvas.png";
 
                   return (
                     <div 
@@ -284,7 +284,7 @@ export default function LandingPage() {
                           alt={dream.title}
                           className="absolute inset-0 w-full h-full object-cover"
                           onError={(e) => {
-                            e.currentTarget.src = "/features/canvas.png";
+                            e.currentTarget.src = "/canvas.png";
                           }}
                         />
                         <span className="absolute top-3 right-3 bg-white/95 text-signal-blue text-[10px] font-bold px-2 py-0.5 rounded-[5px] uppercase shadow-sm z-10">
