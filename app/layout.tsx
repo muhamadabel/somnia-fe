@@ -8,7 +8,7 @@ import "./globals.css";
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-figtree" });
 
 export const metadata: Metadata = {
-  title: { default: `${APP_NAME} — ${APP_TAGLINE}`, template: `%s · ${APP_NAME}` },
+  title: { default: APP_NAME, template: `%s — ${APP_NAME}` },
   description:
     "Somnia adalah jurnal mimpi bertenaga AI yang membantumu memahami diri — catat mimpi, temukan pola emosi, simbol berulang, dan insight reflektif.",
   icons: { icon: "/icon.png" },
