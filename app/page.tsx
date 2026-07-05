@@ -324,7 +324,7 @@ export default function LandingPage() {
 
         {/* Mobile Carousel View (Looping Marquee) */}
         <div className="sm:hidden w-full overflow-hidden relative py-4">
-          <div className="flex gap-6 animate-marquee w-max">
+          <div className="flex gap-6 animate-marquee w-max hover:[animation-play-state:paused] active:[animation-play-state:paused] cursor-pointer">
             {[
               { n: "01", t: "Catat Seketika", d: "Tulis mimpi begitu terbangun sebelum ia menguap — lengkap dengan suasana hati, kualitas tidur, dan parameter mimpi." },
               { n: "02", t: "Analisis Mendalam AI", d: "AI mendeteksi nuansa emosi, simbol psikoanalisis, dan mengekstrak tema utama untuk dihubungkan dalam peta mimpi." },
