@@ -122,7 +122,7 @@ export default function DashboardPage() {
           action={
             <Link
               href="/dreams/new"
-              className="inline-flex items-center gap-2 bg-signal-blue hover:bg-signal-blue/90 text-white font-semibold rounded-full px-6 py-3 shadow-sm hover:shadow-md transition-colors"
+               className="inline-flex items-center gap-2 bg-signal-blue hover:bg-signal-blue/90 text-white text-sm font-semibold rounded-full px-5 py-2.5 shadow-sm hover:shadow-md transition-colors"
             >
               <PenLine className="size-4" /> Catat Mimpi Pertama
             </Link>

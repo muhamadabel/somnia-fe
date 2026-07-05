@@ -50,7 +50,7 @@ export default function DreamsPage() {
         action={
           <Link
             href="/dreams/new"
-            className="inline-flex items-center gap-2 bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-full px-4 py-2.5 shadow-dreamy transition-colors"
+            className="inline-flex items-center gap-2 bg-night-600 hover:bg-night-700 text-white text-sm font-semibold rounded-full px-5 py-2.5 shadow-dreamy transition-colors"
           >
             <PenLine className="size-4" /> Catat Mimpi
           </Link>
@@ -107,7 +107,7 @@ export default function DreamsPage() {
               : "Mulai dengan mencatat mimpi pertamamu — fragmen pun berarti."
           }
           action={
-            <Link href="/dreams/new" className="inline-flex items-center gap-2 bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-xl px-5 py-2.5 transition-colors">
+             <Link href="/dreams/new" className="inline-flex items-center gap-2 bg-night-600 hover:bg-night-700 text-white text-sm font-semibold rounded-full px-5 py-2.5 transition-colors">
               <PenLine className="size-4" /> Catat mimpi
             </Link>
           }
