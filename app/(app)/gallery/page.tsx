@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
+import { SearchBar } from "@/components/ui/search-bar";
 import { PageSkeleton } from "@/components/ui/skeleton";
 import { GalleryItem } from "@/components/dream/gallery-item";
 import { useApi } from "@/lib/use-api";
@@ -28,18 +29,13 @@ export default function GalleryPage() {
       <PageHeader title="Galeri Visualisasi" />
 
       <form method="GET" className="card p-4 mb-6 flex gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted" aria-hidden />
-          <input
-            type="search"
+          <SearchBar
             name="q"
             defaultValue={q}
             placeholder="Cari berdasarkan judul atau isi mimpi…"
             aria-label="Cari galeri"
-            className="input-base pl-9"
           />
-        </div>
-        <button type="submit" className="bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-xl px-5 cursor-pointer transition-colors">
+        <button type="submit" className="bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-full px-5 cursor-pointer transition-colors">
           Cari
         </button>
       </form>

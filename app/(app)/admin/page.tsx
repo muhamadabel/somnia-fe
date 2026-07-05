@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
 import { PageSkeleton } from "@/components/ui/skeleton";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 import { ModerationActions } from "@/components/admin/moderation-actions";
 import { formatDateTime, timeAgo, truncate } from "@/lib/utils";
 import { useApi } from "@/lib/use-api";
@@ -84,37 +85,16 @@ export default function AdminPage() {
         ))}
       </div>
 
-      <div className="relative flex rounded-full bg-transparent border border-sea-fog/60 dark:border-night-800/60 p-1 mb-6 max-w-md" role="tablist" aria-label="Bagian admin">
-        {/* Sliding Background Box */}
-        <div
-          className="absolute top-1 bottom-1 bg-white dark:bg-white/15 rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
-          style={{
-            width: "calc(33.333% - 5.33px)",
-            left: tab === "users"
-              ? "calc(33.333% + 1.33px)"
-              : tab === "audit"
-                ? "calc(66.666% + 1.33px)"
-                : "4px"
-          }}
-        />
-        {[
-          { key: "moderation", label: `Moderasi${openReports ? ` (${openReports})` : ""}` },
-          { key: "users", label: "Pengguna" },
-          { key: "audit", label: "Jejak audit" },
-        ].map((t) => (
-          <Link
-            key={t.key}
-            href={`/admin?tab=${t.key}`}
-            role="tab"
-            aria-selected={tab === t.key}
-            className={`relative z-10 flex-1 text-center py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
-              tab === t.key ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
-            }`}
-          >
-            {t.label}
-          </Link>
-        ))}
-      </div>
+      <SegmentedControl
+        ariaLabel="Bagian admin"
+        value={tab}
+        className="mb-6 max-w-md"
+        options={[
+          { value: "moderation", label: `Moderasi${openReports ? ` (${openReports})` : ""}`, href: `/admin?tab=moderation` },
+          { value: "users", label: "Pengguna", href: `/admin?tab=users` },
+          { value: "audit", label: "Jejak audit", href: `/admin?tab=audit` },
+        ]}
+      />
 
       {tab === "moderation" && (
         <div className="space-y-3">

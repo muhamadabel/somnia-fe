@@ -16,17 +16,17 @@ import {
   ReferenceLine,
 } from "recharts";
 import {
-  TbMoodHappy,
-  TbMoodSmile,
-  TbMoodNeutral,
-  TbMoodSad,
-  TbMoodCry,
-  TbSun,
-  TbCloud,
-  TbCloudRain,
-  TbMoon,
-  TbStar
-} from "react-icons/tb";
+  Laugh,
+  Smile,
+  Meh,
+  Frown,
+  Angry,
+  Sun,
+  Cloud,
+  CloudRain,
+  Moon,
+  Star
+} from "lucide-react";
 
 const tooltipStyle = {
   backgroundColor: "var(--surface)",
@@ -41,15 +41,15 @@ const CustomYAxisTick = (props: any) => {
   const { x, y, payload } = props;
   const val = payload.value;
 
-  let Icon = TbMoodNeutral;
+  let Icon = Meh;
   let label = "Neutral";
   let animationClass = "";
   
-  if (val === 100) { Icon = TbMoodHappy; label = "Happy"; animationClass = "animate-bounce-soft hover:scale-110 transition-transform"; }
-  else if (val === 75) { Icon = TbMoodSmile; label = "Calm"; animationClass = "animate-bounce-soft hover:scale-110 transition-transform"; }
-  else if (val === 50) { Icon = TbMoodNeutral; label = "Neutral"; animationClass = "animate-pulse-soft hover:scale-110 transition-transform"; }
-  else if (val === 25) { Icon = TbMoodSad; label = "Sad"; animationClass = "animate-wiggle hover:scale-110 transition-transform"; }
-  else if (val === 0) { Icon = TbMoodCry; label = "Down"; animationClass = "animate-wiggle hover:scale-110 transition-transform"; }
+  if (val === 100) { Icon = Laugh; label = "Happy"; animationClass = "animate-bounce-soft hover:scale-110 transition-transform"; }
+  else if (val === 75) { Icon = Smile; label = "Calm"; animationClass = "animate-bounce-soft hover:scale-110 transition-transform"; }
+  else if (val === 50) { Icon = Meh; label = "Neutral"; animationClass = "animate-pulse-soft hover:scale-110 transition-transform"; }
+  else if (val === 25) { Icon = Frown; label = "Sad"; animationClass = "animate-wiggle hover:scale-110 transition-transform"; }
+  else if (val === 0) { Icon = Angry; label = "Down"; animationClass = "animate-wiggle hover:scale-110 transition-transform"; }
   else return null; // Only render at these specific intervals
 
   return (
@@ -71,7 +71,7 @@ const CustomXAxisTick = (props: any) => {
   const { x, y, payload, index } = props;
   
   // Deterministic weather icon picking based on index for visual effect
-  const weatherIcons = [TbSun, TbCloud, TbCloudRain, TbSun, TbStar, TbMoon, TbCloud];
+  const weatherIcons = [Sun, Cloud, CloudRain, Sun, Star, Moon, Cloud];
   const WeatherIcon = weatherIcons[index % weatherIcons.length];
 
   return (
@@ -91,12 +91,12 @@ const CustomLineDot = (props: any) => {
   const { cx, cy, payload } = props;
   if (!cx || !cy || payload.score === null) return null;
   
-  let Icon = TbMoodNeutral;
-  if (payload.score >= 87.5) Icon = TbMoodHappy;
-  else if (payload.score >= 62.5) Icon = TbMoodSmile;
-  else if (payload.score >= 37.5) Icon = TbMoodNeutral;
-  else if (payload.score >= 12.5) Icon = TbMoodSad;
-  else Icon = TbMoodCry;
+  let Icon = Meh;
+  if (payload.score >= 87.5) Icon = Laugh;
+  else if (payload.score >= 62.5) Icon = Smile;
+  else if (payload.score >= 37.5) Icon = Meh;
+  else if (payload.score >= 12.5) Icon = Frown;
+  else Icon = Angry;
 
   return (
     <g transform={`translate(${cx},${cy})`}>

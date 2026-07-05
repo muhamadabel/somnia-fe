@@ -3,15 +3,16 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/toast";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 import { api, ApiError } from "@/lib/client";
+import { useMutation } from "@/lib/use-mutation";
 import { setToken } from "@/lib/session";
 import { X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const toast = useToast();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -27,12 +28,12 @@ export default function LoginPage() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        window.location.href = "/";
+        router.push("/");
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [router]);
 
   const handleTabChange = (tab: "login" | "register") => {
     setActiveTab(tab);
@@ -45,100 +46,84 @@ export default function LoginPage() {
     }
   };
 
-  async function onLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const { mutate: doLogin, isMutating: loggingIn } = useMutation(
+    (json: any) => api<{ token: string; onboarded: boolean }>("/api/auth/login", { method: "POST", json }),
+    {
+      successMessage: "Selamat datang kembali!",
+      disableErrorToast: true,
+      onSuccess: ({ data }) => {
+        setToken(data.token);
+        router.push(data.onboarded ? "/dashboard" : "/onboarding");
+      },
+      onError: (err) => {
+        if (err instanceof ApiError) {
+          setError(err.message);
+          setFieldErrors(err.fieldErrors);
+        } else setError("Gangguan jaringan — periksa koneksimu dan coba lagi.");
+      }
+    }
+  );
+
+  function onLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
     setError(null);
     setFieldErrors({});
     const form = new FormData(e.currentTarget);
-    try {
-      const { data } = await api<{ token: string; onboarded: boolean }>("/api/auth/login", {
-        method: "POST",
-        json: { email: form.get("email"), password: form.get("password") },
-      });
-      setToken(data.token);
-      toast("success", "Selamat datang kembali!");
-      window.location.href = data.onboarded ? "/dashboard" : "/onboarding";
-      return;
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err.message);
-        setFieldErrors(err.fieldErrors);
-      } else setError("Gangguan jaringan — periksa koneksimu dan coba lagi.");
-      setLoading(false);
-    }
+    doLogin({ email: form.get("email"), password: form.get("password") }).catch(() => {});
   }
 
-  async function onRegisterSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const { mutate: doRegister, isMutating: registering } = useMutation(
+    (json: any) => api<{ token: string }>("/api/auth/register", { method: "POST", json }),
+    {
+      successMessage: "Akun dibuat — selamat datang!",
+      disableErrorToast: true,
+      onSuccess: ({ data }) => {
+        setToken(data.token);
+        router.push("/onboarding");
+      },
+      onError: (err) => {
+        if (err instanceof ApiError) {
+          setError(err.fieldErrors.fullName || err.fieldErrors.email || err.fieldErrors.password ? null : err.message);
+          setFieldErrors(err.fieldErrors);
+        } else setError("Gangguan jaringan — periksa koneksimu dan coba lagi.");
+      }
+    }
+  );
+
+  function onRegisterSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     const password = String(form.get("password") ?? "");
     const confirm = String(form.get("confirm") ?? "");
+    
+    setError(null);
+    setFieldErrors({});
+    
     if (password !== confirm) {
       setFieldErrors({ confirm: "Kata sandi tidak cocok" });
       return;
     }
-    setLoading(true);
-    setError(null);
-    setFieldErrors({});
-    try {
-      const { data } = await api<{ token: string }>("/api/auth/register", {
-        method: "POST",
-        json: {
-          fullName: form.get("fullName"),
-          email: form.get("email"),
-          password,
-        },
-      });
-      setToken(data.token);
-      toast("success", "Akun dibuat — selamat datang!");
-      window.location.href = "/onboarding";
-      return;
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err.fieldErrors.fullName || err.fieldErrors.email || err.fieldErrors.password ? null : err.message);
-        setFieldErrors(err.fieldErrors);
-      } else setError("Gangguan jaringan — periksa koneksimu dan coba lagi.");
-      setLoading(false);
-    }
+    
+    doRegister({
+      fullName: form.get("fullName"),
+      email: form.get("email"),
+      password,
+    }).catch(() => {});
   }
 
   return (
     <div>
 
       {/* ── Interactive Switcher Tabs with Sliding Indicator ── */}
-      <div className="relative flex rounded-full bg-transparent border border-sea-fog/60 p-1 mb-6" role="tablist">
-        {/* Sliding Background Box */}
-        <div
-          className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-            activeTab === "register" ? "left-[calc(50%+2px)]" : "left-1"
-          }`}
-        />
-        <button
-          onClick={() => handleTabChange("login")}
-          role="tab"
-          aria-selected={activeTab === "login"}
-          className={`relative z-10 flex-1 text-center py-2 rounded-full text-sm font-semibold transition-colors duration-200 cursor-pointer ${
-            activeTab === "login"
-              ? "text-signal-blue font-bold"
-              : "text-slate-channel hover:text-midnight-harbor"
-          }`}
-        >
-          Masuk
-        </button>
-        <button
-          onClick={() => handleTabChange("register")}
-          role="tab"
-          aria-selected={activeTab === "register"}
-          className={`relative z-10 flex-1 text-center py-2 rounded-full text-sm font-semibold transition-colors duration-200 cursor-pointer ${
-            activeTab === "register"
-              ? "text-signal-blue font-bold"
-              : "text-slate-channel hover:text-midnight-harbor"
-          }`}
-        >
-          Daftar
-        </button>
-      </div>
+      <SegmentedControl
+        value={activeTab}
+        onChange={(v) => handleTabChange(v as "login" | "register")}
+        className="mb-6"
+        options={[
+          { value: "login", label: "Masuk" },
+          { value: "register", label: "Daftar" },
+        ]}
+      />
 
       {activeTab === "login" ? (
         <div className="animate-fade-in">
@@ -171,14 +156,10 @@ export default function LoginPage() {
                 {error}
               </p>
             )}
-            <Button type="submit" loading={loading} className="w-full" size="lg">
+            <Button type="submit" loading={loggingIn} className="w-full" size="lg">
               Masuk
             </Button>
           </form>
-
-          <div className="mt-5 rounded-xl bg-ice-tint border border-sea-fog/50 p-3 text-xs text-slate-channel leading-relaxed text-center">
-            <span className="font-bold text-midnight-harbor">Akun demo:</span> demo@somnia.app · dream1234
-          </div>
         </div>
       ) : (
         <div className="animate-fade-in">
@@ -227,7 +208,7 @@ export default function LoginPage() {
                 {error}
               </p>
             )}
-            <Button type="submit" loading={loading} className="w-full" size="lg">
+            <Button type="submit" loading={registering} className="w-full" size="lg">
               Buat akun
             </Button>
           </form>

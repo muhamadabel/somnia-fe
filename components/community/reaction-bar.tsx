@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useToast } from "@/components/ui/toast";
 import { api } from "@/lib/client";
+import { useMutation } from "@/lib/use-mutation";
 import { REACTION_TYPES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -55,10 +55,14 @@ export function ReactionBar({
   mine: string[];
   compact?: boolean;
 }) {
-  const toast = useToast();
   const [state, setState] = useState({ counts, mine: new Set(mine) });
 
-  async function toggle(e: React.MouseEvent, type: string) {
+  const { mutate } = useMutation(
+    (type: string) => api(`/api/community/posts/${postId}/reactions`, { method: "POST", json: { type } }),
+    { errorMessage: "Gagal menyimpan reaksi." }
+  );
+
+  function toggle(e: React.MouseEvent, type: string) {
     e.preventDefault();
     e.stopPropagation();
     // optimistic update
@@ -72,11 +76,7 @@ export function ReactionBar({
         mine: next,
       };
     });
-    try {
-      await api(`/api/community/posts/${postId}/reactions`, { method: "POST", json: { type } });
-    } catch {
-      toast("error", "Gagal menyimpan reaksi.");
-    }
+    mutate(type).catch(() => {});
   }
 
   return (

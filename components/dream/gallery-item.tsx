@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useToast } from "@/components/ui/toast";
-import { api, ApiError, fileUrl } from "@/lib/client";
+import { api, fileUrl } from "@/lib/client";
+import { useMutation } from "@/lib/use-mutation";
 import { formatDate } from "@/lib/utils";
 import { Download, Trash2 } from "lucide-react";
 
@@ -14,21 +13,15 @@ export function GalleryItem({
   viz: { id: string; imagePath: string; prompt: string; createdAt: string; dreamId: string; dreamTitle: string };
 }) {
   const router = useRouter();
-  const toast = useToast();
-  const [busy, setBusy] = useState(false);
 
-  async function remove() {
-    setBusy(true);
-    try {
-      await api(`/api/visualizations/${viz.id}`, { method: "DELETE" });
-      toast("success", "Karya seni dihapus.");
-      window.location.reload();
-      return;
-    } catch (err) {
-      toast("error", err instanceof ApiError ? err.message : "Gagal menghapus.");
-      setBusy(false);
+  const { mutate: remove, isMutating: busy } = useMutation(
+    () => api(`/api/visualizations/${viz.id}`, { method: "DELETE" }),
+    {
+      successMessage: "Karya seni dihapus.",
+      errorMessage: "Gagal menghapus.",
+      onSuccess: () => router.refresh()
     }
-  }
+  );
 
   return (
     <figure className={`card overflow-hidden group ${busy ? "opacity-50" : ""}`}>
@@ -58,7 +51,7 @@ export function GalleryItem({
             <Download className="size-4" />
           </a>
           <button
-            onClick={remove}
+            onClick={() => remove().catch(() => {})}
             disabled={busy}
             className="p-1.5 rounded-lg text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 cursor-pointer"
             aria-label="Hapus karya seni"

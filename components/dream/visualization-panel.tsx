@@ -1,11 +1,11 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/components/ui/toast";
 import { api, ApiError, fileUrl } from "@/lib/client";
+import { useMutation } from "@/lib/use-mutation";
 import { formatDate } from "@/lib/utils";
 import { Download, Palette, RefreshCw, Trash2 } from "lucide-react";
 
@@ -23,9 +23,8 @@ export function VisualizationPanel({
   dreamId: string;
   visualizations: VisualizationData[];
 }) {
+  const router = useRouter();
   const search = useSearchParams();
-  const toast = useToast();
-  const [generating, setGenerating] = useState(false);
   const [current, setCurrent] = useState(0);
   const autoTriggered = useRef(false);
 
@@ -33,18 +32,30 @@ export function VisualizationPanel({
   // analysis step via ?sketch=1). No manual "buat" click needed.
   const shouldAuto = search.get("sketch") === "1" && visualizations.length === 0;
 
-  async function generate() {
-    setGenerating(true);
-    try {
-      await api(`/api/dreams/${dreamId}/visualization`, { method: "POST" });
-      toast("success", "Sketsa mimpi dibuat.");
-      window.location.href = `/dreams/${dreamId}`;
-      return;
-    } catch (err) {
-      toast("error", err instanceof ApiError ? err.message : "Gagal membuat sketsa saat ini.");
-    } finally {
-      setGenerating(false);
+  const { mutate: doGenerate, isMutating: generating } = useMutation(
+    () => api(`/api/dreams/${dreamId}/visualization`, { method: "POST" }),
+    {
+      successMessage: "Sketsa mimpi dibuat.",
+      errorMessage: "Gagal membuat sketsa saat ini.",
+      onSuccess: () => router.push(`/dreams/${dreamId}`)
     }
+  );
+
+  function generate() {
+    doGenerate().catch(() => {});
+  }
+
+  const { mutate: doRemove } = useMutation(
+    (id: string) => api(`/api/visualizations/${id}`, { method: "DELETE" }),
+    {
+      successMessage: "Karya seni dihapus.",
+      errorMessage: "Gagal menghapus.",
+      onSuccess: () => router.refresh()
+    }
+  );
+
+  function remove(id: string) {
+    doRemove(id).catch(() => {});
   }
 
   useEffect(() => {
@@ -54,17 +65,6 @@ export function VisualizationPanel({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldAuto]);
-
-  async function remove(id: string) {
-    try {
-      await api(`/api/visualizations/${id}`, { method: "DELETE" });
-      toast("success", "Karya seni dihapus.");
-      window.location.reload();
-      return;
-    } catch (err) {
-      toast("error", err instanceof ApiError ? err.message : "Gagal menghapus.");
-    }
-  }
 
   // Filter out SVG backup art if there is at least one successful JPG/PNG generation
   const hasRealImage = visualizations.some((viz) => !viz.imagePath.toLowerCase().endsWith(".svg"));

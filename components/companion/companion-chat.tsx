@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
 import { api, ApiError } from "@/lib/client";
+import { useMutation } from "@/lib/use-mutation";
 import { cn, timeAgo } from "@/lib/utils";
 import { MessagesSquare, MoonStar, Plus, SendHorizontal, Sparkles, Trash2 } from "lucide-react";
 import Link from "next/link";
@@ -119,18 +120,21 @@ export function CompanionChat({
     }
   }
 
-  async function removeConversation(id: string) {
-    try {
-      await api(`/api/conversations/${id}`, { method: "DELETE" });
-      setConversations((c) => c.filter((x) => x.id !== id));
-      if (activeId === id) {
-        setActiveId(null);
-        setMessages([]);
-      }
-      toast("success", "Percakapan dihapus.");
-    } catch {
-      toast("error", "Gagal menghapus.");
+  const { mutate: doRemoveConversation } = useMutation(
+    (id: string) => api(`/api/conversations/${id}`, { method: "DELETE" }),
+    {
+      successMessage: "Percakapan dihapus.",
+      errorMessage: "Gagal menghapus.",
     }
+  );
+
+  function removeConversation(id: string) {
+    setConversations((c) => c.filter((x) => x.id !== id));
+    if (activeId === id) {
+      setActiveId(null);
+      setMessages([]);
+    }
+    doRemoveConversation(id).catch(() => {});
   }
 
   return (
@@ -197,11 +201,7 @@ export function CompanionChat({
           <div className="flex items-center gap-2">
             <MessagesSquare className="size-5 text-night-500" />
             <h1 className="font-semibold text-body">Teman Mimpi</h1>
-            <Badge title="Teman AI membaca riwayat mimpimu untuk menjawab dengan konteks nyata.">
-              {memoryEnabled ? "mengenal riwayat mimpimu" : "tanpa memori (nonaktif)"}
-            </Badge>
           </div>
-          <Badge>{aiMode.label}</Badge>
         </header>
 
         <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4">
@@ -287,7 +287,7 @@ export function CompanionChat({
             className="input-base flex-1"
             disabled={sending}
           />
-          <Button type="submit" disabled={!input.trim() || sending} aria-label="Kirim pesan">
+          <Button type="submit" className="rounded-full" disabled={!input.trim() || sending} aria-label="Kirim pesan">
             <SendHorizontal className="size-4" />
           </Button>
         </form>

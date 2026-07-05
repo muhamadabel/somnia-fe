@@ -56,7 +56,7 @@ export function Sidebar({
   async function logout() {
     await api("/api/auth/logout", { method: "POST" }).catch(() => {});
     clearToken();
-    window.location.href = "/login";
+    router.push("/login");
   }
 
   const nav = (

@@ -3,12 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/toast";
 import { api, ApiError } from "@/lib/client";
+import { useMutation } from "@/lib/use-mutation";
 import { MAX_DREAM_LENGTH, MOODS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { BedDouble, CalendarDays, Sparkles } from "lucide-react";
-import { TbMoodHappy, TbMoodSmile, TbMoodNeutral, TbMoodSad, TbMoodCry } from "react-icons/tb";
+import { BedDouble, CalendarDays, Sparkles, Laugh, Smile, Meh, Frown, Angry } from "lucide-react";
 
 export interface DreamFormValues {
   id?: string;
@@ -33,7 +32,6 @@ const PROMPTS = [
 
 export function DreamForm({ initial }: { initial?: Partial<DreamFormValues> }) {
   const router = useRouter();
-  const toast = useToast();
   const editing = !!initial?.id;
 
   const [title, setTitle] = useState(initial?.title ?? "");
@@ -53,7 +51,25 @@ export function DreamForm({ initial }: { initial?: Partial<DreamFormValues> }) {
 
   const words = description.trim() ? description.trim().split(/\s+/).length : 0;
 
-  async function submit(asDraft: boolean) {
+  const { mutate: doSubmit } = useMutation(
+    (payload: any) => editing
+      ? api<{ id: string }>(`/api/dreams/${initial!.id}`, { method: "PATCH", json: payload })
+      : api<{ id: string }>("/api/dreams", { method: "POST", json: payload }),
+    {
+      disableErrorToast: true,
+      onError: (err) => {
+        if (err instanceof ApiError) {
+          setFieldErrors(err.fieldErrors);
+          setError(Object.keys(err.fieldErrors).length ? null : err.message);
+        } else {
+          setError("Ada gangguan jaringan — tulisanmu masih aman, coba simpan lagi.");
+        }
+        setSaving(null);
+      }
+    }
+  );
+
+  function submit(asDraft: boolean) {
     setSaving(asDraft ? "draft" : "dream");
     setError(null);
     setFieldErrors({});
@@ -66,25 +82,10 @@ export function DreamForm({ initial }: { initial?: Partial<DreamFormValues> }) {
       dreamDate,
       isDraft: asDraft,
     };
-
-    try {
-      const { data } = editing
-        ? await api<{ id: string }>(`/api/dreams/${initial!.id}`, { method: "PATCH", json: payload })
-        : await api<{ id: string }>("/api/dreams", { method: "POST", json: payload });
+    doSubmit(payload).then(({ data }) => {
       const dreamId = editing ? initial!.id! : data.id;
-
-      toast("success", asDraft ? "Draf tersimpan." : editing ? "Mimpi diperbarui." : "Mimpi tercatat ✨");
-      window.location.href = `/dreams/${dreamId}${asDraft ? "" : "?analyze=1"}`;
-      return;
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setFieldErrors(err.fieldErrors);
-        setError(Object.keys(err.fieldErrors).length ? null : err.message);
-      } else {
-        setError("Ada gangguan jaringan — tulisanmu masih aman, coba simpan lagi.");
-      }
-      setSaving(null);
-    }
+      router.push(`/dreams/${dreamId}${asDraft ? "" : "?analyze=1"}`);
+    }).catch(() => {});
   }
 
   return (
@@ -158,12 +159,12 @@ export function DreamForm({ initial }: { initial?: Partial<DreamFormValues> }) {
         <div className="grid grid-cols-5 gap-2" role="group" aria-label="Suasana hati saat bangun">
           {MOODS.map((m) => {
             const active = mood === m.value;
-            let Icon = TbMoodNeutral;
-            if (m.value === "great") Icon = TbMoodHappy;
-            else if (m.value === "good") Icon = TbMoodSmile;
-            else if (m.value === "neutral") Icon = TbMoodNeutral;
-            else if (m.value === "low") Icon = TbMoodSad;
-            else if (m.value === "bad") Icon = TbMoodCry;
+            let Icon = Meh;
+            if (m.value === "great") Icon = Laugh;
+            else if (m.value === "good") Icon = Smile;
+            else if (m.value === "neutral") Icon = Meh;
+            else if (m.value === "low") Icon = Frown;
+            else if (m.value === "bad") Icon = Angry;
             
             return (
               <button

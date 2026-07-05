@@ -1,53 +1,55 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import useSWR from "swr";
 import { api, ApiError } from "@/lib/client";
-import { getCached, setCache, getInflight, setInflight } from "@/lib/api-cache";
+
+interface ApiResponse<T> {
+  data: T;
+  meta: Record<string, any>;
+  message: string;
+}
+
+const fetcher = async (key: string | any[]): Promise<ApiResponse<any>> => {
+  const path = typeof key === "string" ? key : key[0];
+  return api<any>(path);
+};
 
 export function useApi<T>(path: string | null, deps: unknown[] = []) {
-  const cached = path ? getCached<T>(path) : null;
+  const key = path ? [path, ...deps] : null;
 
-  const [data, setData] = useState<T | null>(cached?.data ?? null);
-  const [meta, setMeta] = useState<Record<string, unknown>>(cached?.meta ?? {});
-  const [loading, setLoading] = useState(!cached);
-  const [error, setError] = useState<string | null>(null);
-
-  const reload = useCallback(async () => {
-    if (path === null) {
-      setLoading(false);
-      return;
+  const { data: swrResponse, error: swrError, mutate } = useSWR<ApiResponse<T>>(
+    key,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      shouldRetryOnError: false,
     }
+  );
 
-    if (!getCached(path)) {
-      setLoading(true);
-    }
-    setError(null);
+  const loading = path !== null && !swrResponse && !swrError;
+  const error = swrError ? (swrError instanceof ApiError ? swrError.message : "Gagal memuat data. Coba lagi.") : null;
 
-    try {
-      const existing = getInflight(path);
-      let res: { data: T; meta: Record<string, unknown>; message: string };
-      if (existing) {
-        res = await existing as any;
-      } else {
-        const promise = api<T>(path);
-        setInflight(path, promise);
-        res = await promise;
-      }
-      setData(res.data);
-      setMeta(res.meta);
-      setCache(path, res.data, res.meta);
-    } catch (e) {
-      setError(e instanceof ApiError ? e.message : "Gagal memuat data. Coba lagi.");
-    } finally {
-      setLoading(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [path]);
+  const reload = async () => {
+    await mutate();
+  };
 
-  useEffect(() => {
-    reload();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+  const setData = (newData: T) => {
+    mutate(
+      {
+        data: newData,
+        meta: swrResponse?.meta ?? {},
+        message: swrResponse?.message ?? "",
+      },
+      false
+    );
+  };
 
-  return { data, meta, loading, error, reload, setData };
+  return {
+    data: swrResponse?.data ?? null,
+    meta: swrResponse?.meta ?? {},
+    loading,
+    error,
+    reload,
+    setData,
+  };
 }

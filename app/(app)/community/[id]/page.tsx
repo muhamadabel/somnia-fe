@@ -80,7 +80,7 @@ export default function CommunityPostPage() {
           </div>
         </div>
 
-        <h1 className="mt-4 text-2xl font-semibold text-body" style={{ fontFamily: "var(--font-display)" }}>
+        <h1 className="mt-4 text-2xl font-semibold text-body font-display">
           {post.title}
         </h1>
         <p className="mt-3 text-[15px] text-body leading-relaxed whitespace-pre-line">{post.content}</p>

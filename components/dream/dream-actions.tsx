@@ -5,9 +5,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
-import { useToast } from "@/components/ui/toast";
-import { api, ApiError } from "@/lib/client";
+import { api } from "@/lib/client";
+import { useMutation } from "@/lib/use-mutation";
 import { Archive, ArchiveRestore, Pencil, Share2, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function DreamActions({
   dreamId,
@@ -22,58 +23,50 @@ export function DreamActions({
   shared: boolean;
   isDraft: boolean;
 }) {
-  const toast = useToast();
+  const router = useRouter();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
-  const [busy, setBusy] = useState(false);
 
-  async function doDelete() {
-    setBusy(true);
-    try {
-      await api(`/api/dreams/${dreamId}`, { method: "DELETE" });
-      toast("success", "Mimpi dipindahkan ke sampah.");
-      window.location.href = "/dreams";
-      return;
-    } catch (err) {
-      toast("error", err instanceof ApiError ? err.message : "Gagal menghapus.");
-      setBusy(false);
+  const { mutate: doDelete, isMutating: deleting } = useMutation(
+    () => api(`/api/dreams/${dreamId}`, { method: "DELETE" }),
+    {
+      successMessage: "Mimpi dipindahkan ke sampah.",
+      errorMessage: "Gagal menghapus.",
+      onSuccess: () => router.push("/dreams")
     }
-  }
+  );
 
-  async function toggleArchive() {
-    setBusy(true);
-    try {
-      const { message } = await api(`/api/dreams/${dreamId}/archive`, { method: "POST" });
-      toast("success", message);
-      window.location.reload();
-    } catch (err) {
-      toast("error", err instanceof ApiError ? err.message : "Tindakan gagal.");
-    } finally {
-      setBusy(false);
+  const { mutate: toggleArchive, isMutating: archiving } = useMutation(
+    () => api<{ message: string }>(`/api/dreams/${dreamId}/archive`, { method: "POST" }),
+    {
+      successMessage: (data) => data.message,
+      errorMessage: "Tindakan gagal.",
+      onSuccess: () => router.refresh()
     }
-  }
+  );
 
-  async function share(e: React.FormEvent<HTMLFormElement>) {
+  const { mutate: doShare, isMutating: sharing } = useMutation(
+    (json: any) => api("/api/community/posts", { method: "POST", json }),
+    {
+      successMessage: "Mimpi dibagikan ke komunitas (anonim).",
+      errorMessage: "Gagal membagikan.",
+      onSuccess: () => {
+        setShareOpen(false);
+        router.refresh();
+      }
+    }
+  );
+
+  const busy = deleting || archiving || sharing;
+
+  function share(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setBusy(true);
     const form = new FormData(e.currentTarget);
-    try {
-      await api("/api/community/posts", {
-        method: "POST",
-        json: {
-          dreamId,
-          title: String(form.get("title") ?? "").trim(),
-          note: String(form.get("note") ?? "").trim() || null,
-        },
-      });
-      toast("success", "Mimpi dibagikan ke komunitas (anonim).");
-      setShareOpen(false);
-      window.location.reload();
-    } catch (err) {
-      toast("error", err instanceof ApiError ? err.message : "Gagal membagikan.");
-    } finally {
-      setBusy(false);
-    }
+    doShare({
+      dreamId,
+      title: String(form.get("title") ?? "").trim(),
+      note: String(form.get("note") ?? "").trim() || null,
+    }).catch(() => {});
   }
 
   return (
@@ -86,7 +79,7 @@ export function DreamActions({
       </Link>
       {!isDraft && (
         <>
-          <Button variant="secondary" size="md" onClick={toggleArchive} disabled={busy} className="rounded-full font-semibold">
+          <Button variant="secondary" size="md" onClick={() => toggleArchive().catch(() => {})} disabled={busy} className="rounded-full font-semibold">
             {archived ? <ArchiveRestore className="size-4" /> : <Archive className="size-4" />}
             {archived ? "Keluarkan arsip" : "Arsipkan"}
           </Button>
@@ -113,7 +106,7 @@ export function DreamActions({
           <Button variant="secondary" onClick={() => setConfirmDelete(false)}>
             Batal
           </Button>
-          <Button variant="danger" onClick={doDelete} loading={busy}>
+          <Button variant="danger" onClick={() => doDelete().catch(() => {})} loading={deleting}>
             Hapus mimpi
           </Button>
         </div>
@@ -138,7 +131,7 @@ export function DreamActions({
             <Button type="button" variant="secondary" onClick={() => setShareOpen(false)}>
               Batal
             </Button>
-            <Button type="submit" loading={busy}>
+            <Button type="submit" loading={sharing}>
               <Share2 className="size-4" /> Bagikan anonim
             </Button>
           </div>

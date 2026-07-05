@@ -7,7 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { BookmarkButton } from "@/components/symbol/bookmark-button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Select } from "@/components/ui/input";
+import { SearchBar } from "@/components/ui/search-bar";
 import { PageSkeleton } from "@/components/ui/skeleton";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 import { SYMBOL_CATEGORIES, CATEGORY_LABEL } from "@/lib/constants";
 import { symbolLabel } from "@/lib/ai/lexicon";
 import { truncate } from "@/lib/utils";
@@ -57,48 +59,28 @@ export default function SymbolsPage() {
 
       <form method="GET" className="card p-4 mb-4 flex flex-wrap gap-3">
         {view !== "all" && <input type="hidden" name="view" value={view} />}
-        <div className="relative flex-1 min-w-52">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted" aria-hidden />
-          <input type="search" name="q" defaultValue={q} placeholder="Cari simbol…" aria-label="Cari simbol" className="input-base pl-9" />
-        </div>
+        <SearchBar name="q" defaultValue={q} placeholder="Cari simbol…" aria-label="Cari simbol" wrapperClassName="min-w-52" />
         <Select name="category" defaultValue={category} aria-label="Kategori" className="w-40" placeholder="Semua kategori">
           <option value="">Semua kategori</option>
           {SYMBOL_CATEGORIES.map((c) => (
             <option key={c} value={c}>{CATEGORY_LABEL[c] ?? c}</option>
           ))}
         </Select>
-        <button type="submit" className="bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-xl px-5 cursor-pointer transition-colors">
+        <button type="submit" className="bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-full px-5 cursor-pointer transition-colors">
           Cari
         </button>
       </form>
 
-      <div className="relative flex rounded-full bg-transparent border border-sea-fog/60 dark:border-night-800/60 p-1 mb-6 max-w-sm" role="tablist" aria-label="Tampilan simbol">
-        {/* Sliding Background Box */}
-        <div
-          className="absolute top-1 bottom-1 bg-white dark:bg-white/15 rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
-          style={{
-            width: "calc(33.333% - 5.33px)",
-            left: view === "mine"
-              ? "calc(33.333% + 1.33px)"
-              : view === "bookmarked"
-                ? "calc(66.666% + 1.33px)"
-                : "4px"
-          }}
-        />
-        {tabs.map((t) => (
-          <Link
-            key={t.key}
-            href={link({ view: t.key })}
-            role="tab"
-            aria-selected={view === t.key}
-            className={`relative z-10 flex-1 text-center py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
-              view === t.key ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
-            }`}
-          >
-            {t.label}
-          </Link>
-        ))}
-      </div>
+      <SegmentedControl
+        ariaLabel="Tampilan simbol"
+        value={view}
+        className="mb-6 max-w-sm"
+        options={tabs.map((t) => ({
+          value: t.key,
+          label: t.label,
+          href: link({ view: t.key }),
+        }))}
+      />
 
       {loading ? (
         <PageSkeleton />

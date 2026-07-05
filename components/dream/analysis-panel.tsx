@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge, EmotionDot } from "@/components/ui/badge";
 import { Select } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/components/ui/toast";
 import { api, ApiError } from "@/lib/client";
+import { useMutation } from "@/lib/use-mutation";
 import { EMOTION_COLOR, emotionLabel } from "@/lib/constants";
 import { symbolLabel } from "@/lib/ai/lexicon";
 import { formatDateTime, safeParseJson } from "@/lib/utils";
@@ -58,33 +58,30 @@ export function AnalysisPanel({
 }) {
   const router = useRouter();
   const search = useSearchParams();
-  const toast = useToast();
   const [selected, setSelected] = useState(0);
-  const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const autoTriggered = useRef(false);
 
   const shouldAuto = search.get("analyze") === "1" && analyses.length === 0 && !isDraft;
 
-  async function generate(chainSketch = false) {
-    setGenerating(true);
-    setError(null);
-    try {
-      await api(`/api/dreams/${dreamId}/analysis`, { method: "POST" });
-      toast("success", "Analisis siap.");
-      // Reload the page data so the new analysis version appears. On a fresh
-      // dream, chain into auto-generating the AI sketch (?sketch=1).
-      window.location.href = `/dreams/${dreamId}${chainSketch ? "?sketch=1" : ""}`;
-      return;
-    } catch (err) {
-      setError(
+  const { mutate: doGenerate, isMutating: generating } = useMutation(
+    () => api(`/api/dreams/${dreamId}/analysis`, { method: "POST" }),
+    {
+      successMessage: "Analisis siap.",
+      disableErrorToast: true,
+      onError: (err) => setError(
         err instanceof ApiError
           ? err.message
           : "Layanan AI sedang tidak tersedia. Mimpimu aman — coba lagi sebentar lagi."
-      );
-    } finally {
-      setGenerating(false);
+      )
     }
+  );
+
+  function generate(chainSketch = false) {
+    setError(null);
+    doGenerate().then(() => {
+      router.push(`/dreams/${dreamId}${chainSketch ? "?sketch=1" : ""}`);
+    }).catch(() => {});
   }
 
   useEffect(() => {

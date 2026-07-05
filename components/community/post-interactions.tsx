@@ -5,35 +5,31 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
-import { useToast } from "@/components/ui/toast";
-import { api, ApiError } from "@/lib/client";
+import { api } from "@/lib/client";
+import { useMutation } from "@/lib/use-mutation";
 import { Flag, SendHorizontal, Trash2 } from "lucide-react";
 
 export function CommentForm({ postId, onSuccess }: { postId: string; onSuccess?: () => void }) {
   const router = useRouter();
-  const toast = useToast();
   const [content, setContent] = useState("");
-  const [busy, setBusy] = useState(false);
 
-  async function submit(e: React.FormEvent) {
+  const { mutate, isMutating } = useMutation(
+    () => api(`/api/community/posts/${postId}/comments`, { method: "POST", json: { content } }),
+    {
+      successMessage: "Komentar terkirim.",
+      errorMessage: "Gagal mengirim komentar.",
+      onSuccess: () => {
+        setContent("");
+        if (onSuccess) onSuccess();
+        else router.refresh();
+      }
+    }
+  );
+
+  function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!content.trim()) return;
-    setBusy(true);
-    try {
-      await api(`/api/community/posts/${postId}/comments`, { method: "POST", json: { content } });
-      setContent("");
-      toast("success", "Komentar terkirim.");
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        window.location.reload();
-      }
-      return;
-    } catch (err) {
-      toast("error", err instanceof ApiError ? err.message : "Gagal mengirim komentar.");
-    } finally {
-      setBusy(false);
-    }
+    mutate().catch(() => {});
   }
 
   return (
@@ -48,7 +44,7 @@ export function CommentForm({ postId, onSuccess }: { postId: string; onSuccess?:
           className="min-h-16 w-full"
         />
       </div>
-      <Button type="submit" loading={busy} disabled={!content.trim()} aria-label="Kirim komentar" className="mt-0.5">
+      <Button type="submit" loading={isMutating} disabled={!content.trim()} aria-label="Kirim komentar" className="mt-0.5">
         <SendHorizontal className="size-4" />
       </Button>
     </form>
@@ -56,27 +52,27 @@ export function CommentForm({ postId, onSuccess }: { postId: string; onSuccess?:
 }
 
 export function ReportButton({ postId, commentId }: { postId?: string; commentId?: string }) {
-  const toast = useToast();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
-  const [busy, setBusy] = useState(false);
 
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    try {
-      const { message } = await api("/api/community/report", {
-        method: "POST",
-        json: { postId, commentId, reason },
-      });
-      toast("success", message);
-      setOpen(false);
-      setReason("");
-    } catch (err) {
-      toast("error", err instanceof ApiError ? err.message : "Gagal mengirim laporan.");
-    } finally {
-      setBusy(false);
+  const { mutate, isMutating } = useMutation(
+    () => api<{ message: string }>("/api/community/report", {
+      method: "POST",
+      json: { postId, commentId, reason },
+    }),
+    {
+      successMessage: (data) => data.message,
+      errorMessage: "Gagal mengirim laporan.",
+      onSuccess: () => {
+        setOpen(false);
+        setReason("");
+      }
     }
+  );
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    mutate().catch(() => {});
   }
 
   return (
@@ -105,7 +101,7 @@ export function ReportButton({ postId, commentId }: { postId?: string; commentId
             <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
               Batal
             </Button>
-            <Button type="submit" variant="danger" loading={busy} disabled={reason.trim().length < 3}>
+            <Button type="submit" variant="danger" loading={isMutating} disabled={reason.trim().length < 3}>
               Kirim laporan
             </Button>
           </div>
@@ -125,28 +121,28 @@ export function DeleteContentButton({
   redirectTo?: string;
 }) {
   const router = useRouter();
-  const toast = useToast();
   const [confirm, setConfirm] = useState(false);
-  const [busy, setBusy] = useState(false);
 
-  async function doDelete() {
-    setBusy(true);
-    try {
-      await api(commentId ? `/api/community/comments/${commentId}` : `/api/community/posts/${postId}`, {
-        method: "DELETE",
-      });
-      toast("success", commentId ? "Komentar dihapus." : "Postingan dihapus.");
-      setConfirm(false);
-      if (redirectTo) {
-        window.location.href = redirectTo;
-      } else {
-        window.location.reload();
+  const { mutate, isMutating } = useMutation(
+    () => api(commentId ? `/api/community/comments/${commentId}` : `/api/community/posts/${postId}`, {
+      method: "DELETE",
+    }),
+    {
+      successMessage: commentId ? "Komentar dihapus." : "Postingan dihapus.",
+      errorMessage: "Gagal menghapus.",
+      onSuccess: () => {
+        setConfirm(false);
+        if (redirectTo) {
+          router.push(redirectTo);
+        } else {
+          router.refresh();
+        }
       }
-      return;
-    } catch (err) {
-      toast("error", err instanceof ApiError ? err.message : "Gagal menghapus.");
-      setBusy(false);
     }
+  );
+
+  function doDelete() {
+    mutate().catch(() => {});
   }
 
   return (
@@ -164,7 +160,7 @@ export function DeleteContentButton({
         </p>
         <div className="mt-5 flex justify-end gap-2">
           <Button variant="secondary" onClick={() => setConfirm(false)}>Batal</Button>
-          <Button variant="danger" onClick={doDelete} loading={busy}>Hapus</Button>
+          <Button variant="danger" onClick={doDelete} loading={isMutating}>Hapus</Button>
         </div>
       </Modal>
     </>

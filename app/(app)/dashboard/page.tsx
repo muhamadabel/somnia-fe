@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { DreamRow, type DreamCardData } from "@/components/dream/dream-card";
 import { Card, CardHeader } from "@/components/ui/card";
@@ -10,15 +11,20 @@ import { PageSkeleton } from "@/components/ui/skeleton";
 import { MoodScoreChart } from "@/components/charts/trend-charts";
 import { emotionLabel } from "@/lib/constants";
 import { useApi } from "@/lib/use-api";
+import { api } from "@/lib/client";
 import type { TrendData } from "@/lib/api-types";
+import type { NotificationItem } from "@/components/notifications/notification-list";
 import {
   BookOpenText,
   CalendarDays,
+  Download,
   Flame,
   MoonStar,
   PenLine,
   ScrollText,
   Sparkles,
+  TriangleAlert,
+  X,
 } from "lucide-react";
 
 interface DashboardData {
@@ -28,6 +34,72 @@ interface DashboardData {
   streak: number;
   trends: TrendData;
   latestReport: { id: string; title: string; generatedAt: string } | null;
+}
+
+/** Banner peringatan pola emosi negatif di dashboard */
+function MentalHealthBanner() {
+  const { data: notifications } = useApi<NotificationItem[]>("/api/notifications");
+  const [dismissed, setDismissed] = useState(false);
+
+  const alert = notifications?.find(
+    (n) => n.type === "mental_health_alert" && !n.readAt
+  );
+
+  if (!alert || dismissed) return null;
+
+  function dismiss() {
+    setDismissed(true);
+    api(`/api/notifications/${alert!.id}`, { method: "POST" }).catch(() => {});
+  }
+
+  return (
+    <div className="mb-6 rounded-[20px] border border-amber-300/60 dark:border-amber-600/40 bg-amber-50/80 dark:bg-amber-950/20 p-4 flex gap-4 items-start shadow-sm">
+      <span className="shrink-0 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 p-2.5 mt-0.5">
+        <TriangleAlert className="size-5" />
+      </span>
+      <div className="flex-1 min-w-0">
+        <p className="font-bold text-amber-800 dark:text-amber-300 text-sm">{alert.title}</p>
+        <p className="text-sm text-amber-700 dark:text-amber-400 mt-1 leading-relaxed">{alert.message}</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {alert.link && (
+            <Link
+              href={alert.link}
+              onClick={dismiss}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white rounded-full px-3.5 py-1.5 transition-colors"
+            >
+              <ScrollText className="size-3.5" /> Lihat Laporan
+            </Link>
+          )}
+          {alert.link && (
+            <Link
+              href={alert.link}
+              onClick={() => {
+                dismiss();
+                setTimeout(() => window.print(), 800);
+              }}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold border border-amber-400 dark:border-amber-600 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-full px-3.5 py-1.5 transition-colors"
+            >
+              <Download className="size-3.5" /> Unduh Laporan (PDF)
+            </Link>
+          )}
+          <Link
+            href="/reports"
+            onClick={dismiss}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold border border-amber-400 dark:border-amber-600 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-full px-3.5 py-1.5 transition-colors"
+          >
+            Buat Laporan Baru
+          </Link>
+        </div>
+      </div>
+      <button
+        onClick={dismiss}
+        aria-label="Tutup peringatan"
+        className="p-1.5 rounded-lg text-amber-500 hover:text-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900/30 cursor-pointer shrink-0"
+      >
+        <X className="size-4" />
+      </button>
+    </div>
+  );
 }
 
 export default function DashboardPage() {
@@ -80,6 +152,8 @@ export default function DashboardPage() {
           </Link>
         }
       />
+
+      <MentalHealthBanner />
 
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (

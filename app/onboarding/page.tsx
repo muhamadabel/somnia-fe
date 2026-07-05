@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { UserAvatar } from "@/components/layout/avatar";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/client";
+import { useMutation } from "@/lib/use-mutation";
 import { AVATAR_PRESETS, DEFAULT_AVATAR_PATH } from "@/lib/avatar-presets";
 import { BookOpenText, Brain, LineChart, MoonStar, ShieldCheck, Sparkles } from "lucide-react";
 
@@ -33,21 +35,22 @@ const INFO_STEPS = [
 const TOTAL_STEPS = INFO_STEPS.length + 1;
 
 export default function OnboardingPage() {
+  const router = useRouter();
   const [step, setStep] = useState(0);
-  const [loading, setLoading] = useState(false);
   const [avatarPath, setAvatarPath] = useState(DEFAULT_AVATAR_PATH);
   const isAvatarStep = step === INFO_STEPS.length;
   const current = INFO_STEPS[Math.min(step, INFO_STEPS.length - 1)];
   const Icon = isAvatarStep ? Sparkles : current.icon;
 
-  async function finish() {
-    setLoading(true);
-    try {
-      await api("/api/user/onboard", { method: "POST", json: { avatarPath } });
-    } catch {
-      // non-blocking — proceed anyway
-    }
-    window.location.href = "/dashboard";
+  const { mutate, isMutating } = useMutation(
+    () => api("/api/user/onboard", { method: "POST", json: { avatarPath } }),
+    { disableErrorToast: true }
+  );
+
+  function finish() {
+    mutate().catch(() => {}).finally(() => {
+      router.push("/dashboard");
+    });
   }
 
   return (
@@ -126,7 +129,7 @@ export default function OnboardingPage() {
           {step < TOTAL_STEPS - 1 ? (
             <Button onClick={() => setStep((s) => s + 1)}>Lanjut</Button>
           ) : (
-            <Button onClick={finish} loading={loading}>
+            <Button onClick={finish} loading={isMutating}>
               <MoonStar className="size-4" /> Buka jurnalku
             </Button>
           )}

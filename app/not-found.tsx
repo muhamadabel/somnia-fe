@@ -5,7 +5,7 @@ export default function NotFound() {
   return (
     <main className="min-h-screen night-sky flex flex-col items-center justify-center p-6 text-center text-white">
       <MoonStar className="size-10 text-night-300" />
-      <h1 className="mt-4 text-3xl font-semibold" style={{ fontFamily: "var(--font-display)" }}>
+      <h1 className="mt-4 text-3xl font-semibold font-display">
         Halaman ini menghilang
       </h1>
       <p className="mt-2 text-night-200 max-w-sm">

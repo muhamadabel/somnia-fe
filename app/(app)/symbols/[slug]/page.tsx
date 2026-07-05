@@ -58,7 +58,7 @@ export default function SymbolDetailPage() {
       <div className="card p-7 mb-6">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-semibold text-body" style={{ fontFamily: "var(--font-display)" }}>
+            <h1 className="text-2xl font-semibold text-body font-display">
               ✧ {symbolLabel(symbol.slug)}
             </h1>
             <div className="mt-2 flex flex-wrap items-center gap-1.5">

@@ -5,7 +5,9 @@ import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
+import { SearchBar } from "@/components/ui/search-bar";
 import { PageSkeleton } from "@/components/ui/skeleton";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 import { ReactionBar } from "@/components/community/reaction-bar";
 import { safeParseJson, timeAgo, truncate } from "@/lib/utils";
 import { emotionLabel } from "@/lib/constants";
@@ -60,55 +62,31 @@ export default function CommunityPage() {
       />
 
       <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-sea-fog/60 shadow-dreamy-lg rounded-2xl p-3 sm:p-4 mb-6 flex flex-col sm:flex-row gap-4 items-center">
-        <form method="GET" className="flex items-center flex-1 w-full relative">
-          <div className="relative flex-1 flex items-center bg-white dark:bg-slate-950 border border-sea-fog rounded-2xl px-3 py-1.5 focus-within:border-signal-blue focus-within:ring-4 focus-within:ring-signal-blue/15 transition-all">
-            <Search className="size-4 text-slate-channel mr-2.5 shrink-0" aria-hidden />
-            <input 
-              type="search" 
-              name="q" 
-              defaultValue={q} 
-              placeholder="Cari mimpi yang dibagikan…" 
-              aria-label="Cari komunitas" 
-              className="w-full bg-transparent border-0 outline-none text-sm text-midnight-harbor dark:text-white placeholder:text-slate-channel/50 py-1" 
-            />
-            {sort !== "recent" && <input type="hidden" name="sort" value={sort} />}
-            <button 
-              type="submit" 
-              className="bg-signal-blue hover:bg-signal-blue/90 text-white text-xs sm:text-sm font-semibold rounded-xl px-4 py-2 cursor-pointer transition-all shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Cari
-            </button>
-          </div>
+        <form method="GET" className="flex gap-2 flex-1 w-full relative">
+          <SearchBar 
+            name="q" 
+            defaultValue={q} 
+            placeholder="Cari mimpi yang dibagikan…" 
+            aria-label="Cari komunitas" 
+          />
+          {sort !== "recent" && <input type="hidden" name="sort" value={sort} />}
+          <button 
+            type="submit" 
+            className="bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-full px-5 cursor-pointer transition-colors"
+          >
+            Cari
+          </button>
         </form>
 
-        <div className="relative flex rounded-full surface-2 p-1" role="tablist" aria-label="Urutkan feed">
-          {/* Sliding Background Box */}
-          <div
-            className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white dark:bg-(--surface) rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-              sort === "top" ? "left-[calc(50%+2px)]" : "left-1"
-            }`}
-          />
-          <Link
-            href={link({ sort: "recent" })}
-            role="tab"
-            aria-selected={sort === "recent"}
-            className={`relative z-10 flex-1 text-center px-3 py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
-              sort === "recent" ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
-            }`}
-          >
-            Terbaru
-          </Link>
-          <Link
-            href={link({ sort: "top" })}
-            role="tab"
-            aria-selected={sort === "top"}
-            className={`relative z-10 flex-1 text-center px-3 py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
-              sort === "top" ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
-            }`}
-          >
-            Paling disukai
-          </Link>
-        </div>
+        <SegmentedControl
+          ariaLabel="Urutkan feed"
+          value={sort}
+          className="w-full sm:w-64 shrink-0"
+          options={[
+            { value: "recent", label: "Terbaru", href: link({ sort: "recent" }) },
+            { value: "top", label: "Paling disukai", href: link({ sort: "top" }) },
+          ]}
+        />
       </div>
 
       {loading ? (

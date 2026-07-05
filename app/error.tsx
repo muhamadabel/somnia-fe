@@ -7,7 +7,7 @@ export default function ErrorPage({ reset }: { error: Error & { digest?: string 
   return (
     <main className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
       <CloudMoon className="size-10 text-night-400" />
-      <h1 className="mt-4 text-2xl font-semibold text-body" style={{ fontFamily: "var(--font-display)" }}>
+      <h1 className="mt-4 text-2xl font-semibold text-body font-display">
         Terjadi kesalahan
       </h1>
       <p className="mt-2 text-sm text-muted max-w-sm">

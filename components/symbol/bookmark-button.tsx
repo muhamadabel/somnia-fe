@@ -1,34 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { useToast } from "@/components/ui/toast";
 import { api } from "@/lib/client";
+import { useMutation } from "@/lib/use-mutation";
 import { Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function BookmarkButton({ symbolId, bookmarked }: { symbolId: string; bookmarked: boolean }) {
-  const toast = useToast();
   const [state, setState] = useState(bookmarked);
-  const [busy, setBusy] = useState(false);
 
-  async function toggle(e: React.MouseEvent) {
+  const { mutate, isMutating } = useMutation(
+    () => api<{ bookmarked: boolean }>(`/api/symbols/${symbolId}/bookmark`, { method: "POST" }),
+    {
+      onSuccess: ({ data }) => setState(data.bookmarked),
+      errorMessage: "Gagal memperbarui simpanan."
+    }
+  );
+
+  function toggle(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
-    setBusy(true);
-    try {
-      const { data } = await api<{ bookmarked: boolean }>(`/api/symbols/${symbolId}/bookmark`, { method: "POST" });
-      setState(data.bookmarked);
-    } catch {
-      toast("error", "Gagal memperbarui simpanan.");
-    } finally {
-      setBusy(false);
-    }
+    mutate().catch(() => {});
   }
 
   return (
     <button
       onClick={toggle}
-      disabled={busy}
+      disabled={isMutating}
       aria-pressed={state}
       aria-label={state ? "Hapus simpanan" : "Simpan simbol ini"}
       className={cn(

@@ -59,7 +59,7 @@ export default function ReportDetailPage() {
           <p className="flex items-center justify-center gap-2 text-night-500 text-sm font-medium">
             <Moon className="size-4" /> Somnia — Penganalisis Jurnal Mimpi
           </p>
-          <h1 className="mt-2 text-3xl font-semibold text-body" style={{ fontFamily: "var(--font-display)" }}>
+          <h1 className="mt-2 text-3xl font-semibold text-body font-display">
             {report.title}
           </h1>
           <p className="mt-2 text-sm text-muted">

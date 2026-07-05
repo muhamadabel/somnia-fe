@@ -148,10 +148,7 @@ export default function LandingPage() {
 
       {/* ── Hero Section ── */}
       <section 
-        className="relative overflow-hidden pt-24 pb-32 bg-no-repeat bg-cover bg-right-bottom sm:bg-[position:center_right] before:absolute before:inset-0 before:bg-white/80 before:z-0 sm:before:hidden"
-        style={{
-          backgroundImage: "url('/sleep-bg-hd.png')",
-        }}
+        className="relative overflow-hidden pt-24 pb-32 bg-no-repeat bg-cover bg-right-bottom sm:bg-[position:center_right] before:absolute before:inset-0 before:bg-white/80 before:z-0 sm:before:hidden bg-[url('/sleep-bg-hd.png')]"
       >
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Column: Text & Controls */}
@@ -438,10 +435,7 @@ export default function LandingPage() {
 
       {/* ── Dark CTA Banner (Full Bleed contrast section) ── */}
       <section 
-        className="text-white py-24 relative overflow-hidden bg-no-repeat bg-cover bg-center"
-        style={{
-          backgroundImage: "url('/book-image.png')",
-        }}
+        className="text-white py-24 relative overflow-hidden bg-no-repeat bg-cover bg-center bg-[url('/book-image.png')]"
       >
         <div className="absolute inset-0 bg-midnight-harbor/85 backdrop-blur-[1px] pointer-events-none" />
         <div className="relative max-w-4xl mx-auto px-6 text-center space-y-6 z-10">

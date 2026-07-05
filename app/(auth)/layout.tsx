@@ -8,12 +8,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
     <main className="min-h-screen night-sky lg:grid lg:grid-cols-2">
       {/* ── Left: night scenery + tagline (desktop only) ── */}
       <section 
-        className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden text-white bg-midnight-harbor"
-        style={{
-          backgroundImage: "url('/book-image-crop.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
+        className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden text-white bg-midnight-harbor bg-[url('/book-image-crop.png')] bg-cover bg-center"
       >
         <div className="absolute inset-0 bg-midnight-harbor/40 backdrop-blur-[1px]" />
         <Stars count={50} />

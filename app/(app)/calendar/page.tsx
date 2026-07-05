@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Select } from "@/components/ui/input";
 import { DreamRow, type DreamCardData } from "@/components/dream/dream-card";
 import { PageSkeleton } from "@/components/ui/skeleton";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 import { EMOTIONS, emotionLabel } from "@/lib/constants";
 import { useApi } from "@/lib/use-api";
 import { ChevronLeft, ChevronRight, MoonStar } from "lucide-react";
@@ -126,34 +127,14 @@ export default function CalendarPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="relative flex rounded-full surface-2 p-1" role="tablist" aria-label="Tampilan kalender">
-            {/* Sliding Background Box */}
-            <div
-              className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white dark:bg-white/15 rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-                view === "week" ? "left-[calc(50%+2px)]" : "left-1"
-              }`}
-            />
-            <Link
-              href={qp({ view: undefined, day: undefined })}
-              role="tab"
-              aria-selected={view === "month"}
-              className={`relative z-10 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
-                view === "month" ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
-              }`}
-            >
-              Bulan
-            </Link>
-            <Link
-              href={qp({ view: "week", day: undefined })}
-              role="tab"
-              aria-selected={view === "week"}
-              className={`relative z-10 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
-                view === "week" ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
-              }`}
-            >
-              Minggu
-            </Link>
-          </div>
+          <SegmentedControl
+            ariaLabel="Tampilan kalender"
+            value={view}
+            options={[
+              { value: "month", label: "Bulan", href: qp({ view: undefined, day: undefined }) },
+              { value: "week", label: "Minggu", href: qp({ view: "week", day: undefined }) },
+            ]}
+          />
           <form method="GET" className="flex items-center gap-2">
             <input type="hidden" name="month" value={`${year}-${String(month).padStart(2, "0")}`} />
             {view === "week" && <input type="hidden" name="view" value="week" />}
@@ -168,7 +149,7 @@ export default function CalendarPage() {
                 <option key={e.name} value={e.name}>{e.label}</option>
               ))}
             </Select>
-            <button type="submit" className="text-sm font-medium bg-night-600 hover:bg-night-700 text-white rounded-xl px-3.5 py-1.5 cursor-pointer">
+            <button type="submit" className="text-sm font-medium bg-night-600 hover:bg-night-700 text-white rounded-full px-3.5 py-1.5 cursor-pointer">
               Filter
             </button>
           </form>

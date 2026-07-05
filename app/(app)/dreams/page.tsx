@@ -6,7 +6,9 @@ import { PageHeader } from "@/components/layout/page-header";
 import { DreamCard, type DreamCardData } from "@/components/dream/dream-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Select } from "@/components/ui/input";
+import { SearchBar } from "@/components/ui/search-bar";
 import { PageSkeleton } from "@/components/ui/skeleton";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 import { EMOTIONS, MOODS } from "@/lib/constants";
 import { useApi } from "@/lib/use-api";
 import { PenLine, Search } from "lucide-react";
@@ -48,7 +50,7 @@ export default function DreamsPage() {
         action={
           <Link
             href="/dreams/new"
-            className="inline-flex items-center gap-2 bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-xl px-4 py-2.5 shadow-dreamy transition-colors"
+            className="inline-flex items-center gap-2 bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-full px-4 py-2.5 shadow-dreamy transition-colors"
           >
             <PenLine className="size-4" /> Catat Mimpi
           </Link>
@@ -57,11 +59,8 @@ export default function DreamsPage() {
 
       <form method="GET" className="card p-4 mb-6 space-y-3">
         <div className="flex gap-2">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted" aria-hidden />
-            <input type="search" name="q" defaultValue={q} placeholder="Cari mimpi…" aria-label="Cari mimpi" className="input-base pl-9" />
-          </div>
-          <button type="submit" className="bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-xl px-5 cursor-pointer transition-colors">
+          <SearchBar name="q" defaultValue={q} placeholder="Cari mimpi…" aria-label="Cari mimpi" />
+          <button type="submit" className="bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-full px-5 cursor-pointer transition-colors">
             Terapkan
           </button>
         </div>
@@ -86,37 +85,16 @@ export default function DreamsPage() {
         {status !== "active" && <input type="hidden" name="status" value={status} />}
       </form>
 
-      <div className="relative flex rounded-full bg-transparent border border-sea-fog/60 dark:border-night-800/60 p-1 mb-5 max-w-xs" role="tablist" aria-label="Status mimpi">
-        {/* Sliding Background Box */}
-        <div
-          className="absolute top-1 bottom-1 bg-white dark:bg-white/15 rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
-          style={{
-            width: "calc(33.333% - 5.33px)",
-            left: status === "drafts"
-              ? "calc(33.333% + 1.33px)"
-              : status === "archived"
-                ? "calc(66.666% + 1.33px)"
-                : "4px"
-          }}
-        />
-        {[
-          { key: "active", label: "Jurnal" },
-          { key: "drafts", label: "Draf" },
-          { key: "archived", label: "Arsip" },
-        ].map((t) => (
-          <Link
-            key={t.key}
-            href={filterLink({ status: t.key, page: "" })}
-            role="tab"
-            aria-selected={status === t.key}
-            className={`relative z-10 flex-1 text-center py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
-              status === t.key ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
-            }`}
-          >
-            {t.label}
-          </Link>
-        ))}
-      </div>
+      <SegmentedControl
+        ariaLabel="Status mimpi"
+        value={status}
+        className="mb-5 max-w-xs"
+        options={[
+          { value: "active", label: "Jurnal", href: filterLink({ status: "active", page: "" }) },
+          { value: "drafts", label: "Draf", href: filterLink({ status: "drafts", page: "" }) },
+          { value: "archived", label: "Arsip", href: filterLink({ status: "archived", page: "" }) },
+        ]}
+      />
 
       {loading ? (
         <PageSkeleton />

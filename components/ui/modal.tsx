@@ -21,15 +21,48 @@ export function Modal({
 
   useEffect(() => {
     if (!open) return;
+    const dialog = ref.current;
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        onClose();
+      }
     };
-    document.addEventListener("keydown", onKey);
+
+    function trapFocus(e: KeyboardEvent) {
+      if (e.key !== "Tab") return;
+      const focusable = dialog?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusable || focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first || document.activeElement === dialog) {
+          e.preventDefault();
+          last?.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first?.focus();
+        }
+      }
+    }
+
+    document.addEventListener("keydown", onKey, true); // Use capture phase to stop propagation effectively
+    dialog?.addEventListener("keydown", trapFocus);
     document.body.style.overflow = "hidden";
+    
     // move focus into the dialog for keyboard users
-    ref.current?.focus();
+    dialog?.focus();
+    
     return () => {
-      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("keydown", onKey, true);
+      dialog?.removeEventListener("keydown", trapFocus);
       document.body.style.overflow = "";
     };
   }, [open, onClose]);

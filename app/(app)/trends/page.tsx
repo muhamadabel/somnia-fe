@@ -7,6 +7,7 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { Badge, EmotionDot } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageSkeleton } from "@/components/ui/skeleton";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 import {
   DreamCountChart,
   EmotionFrequencyChart,
@@ -55,35 +56,16 @@ export default function TrendsPage() {
     <>
       <PageHeader title="Tren Emosi" />
 
-      <div className="relative flex rounded-full bg-transparent border border-sea-fog/60 dark:border-night-800/60 p-1 mb-6 max-w-sm" role="tablist" aria-label="Rentang waktu">
-        {/* Sliding Background Box */}
-        <div
-          className="absolute top-1 bottom-1 bg-white dark:bg-white/15 rounded-full shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
-          style={{
-            width: "calc(25% - 6px)",
-            left: range === 7
-              ? "4px"
-              : range === 30
-                ? "calc(25% + 1px)"
-                : range === 90
-                  ? "calc(50% + 1px)"
-                  : "calc(75% + 1px)"
-          }}
-        />
-        {RANGES.map((r) => (
-          <Link
-            key={r.days}
-            href={`/trends?range=${r.days}`}
-            role="tab"
-            aria-selected={range === r.days}
-            className={`relative z-10 flex-1 text-center py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
-              range === r.days ? "text-signal-blue dark:text-white" : "text-muted hover:text-body"
-            }`}
-          >
-            {r.label}
-          </Link>
-        ))}
-      </div>
+      <SegmentedControl
+        ariaLabel="Rentang waktu"
+        value={String(range)}
+        className="mb-6 max-w-sm"
+        options={RANGES.map((r) => ({
+          value: String(r.days),
+          label: r.label,
+          href: `/trends?range=${r.days}`,
+        }))}
+      />
 
       {trends.totalDreams === 0 ? (
         <EmptyState
