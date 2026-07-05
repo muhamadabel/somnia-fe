@@ -96,9 +96,11 @@ export function AnalysisPanel({
 
   if (isDraft) {
     return (
-      <div className="bg-white rounded-[28px] p-8 h-full shadow-[0_2px_12px_rgba(20,30,40,0.03)] border border-slate-100 flex flex-col items-center justify-center min-h-[160px] text-center">
-        <BrainCircuit className="size-7 text-[#64748b] mx-auto mb-3" />
-        <p className="text-sm font-medium text-[#64748b]">
+      <div className="bg-white rounded-[24px] p-5 shadow-[0_2px_12px_rgba(20,30,40,0.03)] border border-slate-100 flex items-center gap-3.5">
+        <div className="bg-slate-50 p-3 rounded-full shrink-0">
+          <BrainCircuit className="size-5 text-[#64748b]" />
+        </div>
+        <p className="text-[13px] font-medium text-[#64748b] leading-relaxed">
           Mimpi ini masih draf. Selesaikan (Ubah → Simpan & Analisis) untuk membuka analisis AI.
         </p>
       </div>
