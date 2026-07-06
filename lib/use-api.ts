@@ -51,5 +51,6 @@ export function useApi<T>(path: string | null, deps: unknown[] = []) {
     error,
     reload,
     setData,
+    mutate,
   };
 }

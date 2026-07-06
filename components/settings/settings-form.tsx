@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSWRConfig } from "swr";
 import { api } from "@/lib/client";
 import { useMutation } from "@/lib/use-mutation";
 import { DEFAULT_AVATAR_PATH } from "@/lib/avatar-presets";
@@ -36,6 +37,7 @@ export function SettingsForm({
   aiMode?: { id: string; label: string };
 }) {
   const router = useRouter();
+  const { mutate: swrMutate } = useSWRConfig();
   const [prefs, setPrefs] = useState(user);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
@@ -50,7 +52,10 @@ export function SettingsForm({
     {
       successMessage: "Profil diperbarui.",
       errorMessage: "Gagal menyimpan profil.",
-      onSuccess: () => router.refresh()
+      onSuccess: () => {
+        router.refresh();
+        swrMutate("/api/auth/session");
+      }
     }
   );
 

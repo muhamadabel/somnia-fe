@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Sidebar } from "@/components/layout/sidebar";
 import { api } from "@/lib/client";
 import { hasToken } from "@/lib/session";
+import { useApi } from "@/lib/use-api";
 import { prefetchRoute } from "@/lib/prefetch";
 import { MoonStar } from "lucide-react";
 
@@ -16,44 +17,37 @@ interface SessionData {
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [session, setSession] = useState<SessionData | null>(null);
+  const [ready, setReady] = useState(false);
   const [unread, setUnread] = useState(0);
+  const { data: session } = useApi<SessionData>("/api/auth/session");
 
   useEffect(() => {
     if (!hasToken()) {
       router.replace("/login");
       return;
     }
-    let alive = true;
-    (async () => {
-      try {
-        const { data } = await api<SessionData>("/api/auth/session");
-        if (!alive) return;
-        if (!data.authenticated || !data.user) {
-          router.replace("/login");
-          return;
-        }
-        if (!data.user.onboarded) {
-          router.replace("/onboarding");
-          return;
-        }
-        setSession(data);
-        // Warm cache for dashboard — the first page user lands on
-        prefetchRoute("/dashboard");
-        // Notifications count is best-effort.
-        api<Array<{ readAt: string | null }>>("/api/notifications")
-          .then(({ data }) => alive && setUnread(data.filter((n) => !n.readAt).length))
-          .catch(() => {});
-      } catch {
-        if (alive) router.replace("/login");
-      }
-    })();
-    return () => {
-      alive = false;
-    };
   }, [router]);
 
-  if (!session?.user) {
+  useEffect(() => {
+    if (!session) return;
+    if (!session.authenticated || !session.user) {
+      router.replace("/login");
+      return;
+    }
+    if (!session.user.onboarded) {
+      router.replace("/onboarding");
+      return;
+    }
+    setReady(true);
+    prefetchRoute("/dashboard");
+    let alive = true;
+    api<Array<{ readAt: string | null }>>("/api/notifications")
+      .then(({ data }) => alive && setUnread(data.filter((n) => !n.readAt).length))
+      .catch(() => {});
+    return () => { alive = false; };
+  }, [session, router]);
+
+  if (!ready || !session?.user) {
     return (
       <div className="min-h-screen bg-base grid place-items-center">
         <div className="flex items-center gap-2 text-muted animate-pulse-soft">
