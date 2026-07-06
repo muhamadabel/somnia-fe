@@ -26,6 +26,7 @@ export function VisualizationPanel({
   const router = useRouter();
   const search = useSearchParams();
   const [current, setCurrent] = useState(0);
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
   const autoTriggered = useRef(false);
 
   // Fresh dream just saved → auto-generate the sketch once (chained from the
@@ -55,6 +56,7 @@ export function VisualizationPanel({
   );
 
   function remove(id: string) {
+    setDeletedIds((prev) => new Set(prev).add(id));
     doRemove(id).catch(() => {});
   }
 
@@ -67,10 +69,11 @@ export function VisualizationPanel({
   }, [shouldAuto]);
 
   // Filter out SVG backup art if there is at least one successful JPG/PNG generation
-  const hasRealImage = visualizations.some((viz) => !viz.imagePath.toLowerCase().endsWith(".svg"));
+  const visible = visualizations.filter((viz) => !deletedIds.has(viz.id));
+  const hasRealImage = visible.some((viz) => !viz.imagePath.toLowerCase().endsWith(".svg"));
   const activeVisualizations = hasRealImage
-    ? visualizations.filter((viz) => !viz.imagePath.toLowerCase().endsWith(".svg"))
-    : visualizations;
+    ? visible.filter((viz) => !viz.imagePath.toLowerCase().endsWith(".svg"))
+    : visible;
 
   const v = activeVisualizations[Math.min(current, Math.max(0, activeVisualizations.length - 1))];
   const ext = v ? v.imagePath.split(".").pop() || "png" : "png";
