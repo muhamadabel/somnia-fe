@@ -37,7 +37,7 @@ export function VisualizationPanel({
     {
       successMessage: "Sketsa mimpi dibuat.",
       errorMessage: "Gagal membuat sketsa saat ini.",
-      onSuccess: () => router.push(`/dreams/${dreamId}`)
+      onSuccess: () => router.refresh()
     }
   );
 

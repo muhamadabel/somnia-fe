@@ -80,7 +80,10 @@ export function AnalysisPanel({
   function generate(chainSketch = false) {
     setError(null);
     doGenerate().then(() => {
-      router.push(`/dreams/${dreamId}${chainSketch ? "?sketch=1" : ""}`);
+      router.refresh();
+      if (chainSketch) {
+        router.push(`/dreams/${dreamId}?sketch=1`);
+      }
     }).catch(() => {});
   }
 
