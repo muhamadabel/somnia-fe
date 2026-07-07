@@ -1,130 +1,138 @@
-# 🌙 Somnia — Penganalisis Jurnal Mimpi (Frontend)
+# Somnia — Dream Journal Analyzer (Frontend)
 
-Antarmuka **jurnal mimpi bertenaga AI** untuk refleksi diri: catat mimpi, dapatkan analisis AI (emosi, simbol, tema, refleksi), ubah mimpi jadi **karya seni AI**, pantau tren emosi, terima laporan kesejahteraan, ngobrol dengan **Teman AI yang mengingat seluruh riwayat mimpimu**, dan bagikan mimpi secara anonim ke komunitas.
+Somnia is an AI-powered dream journal platform designed for self-reflection. Users can record dreams, receive AI-driven analysis (emotions, symbols, themes, reflections), generate AI artwork from dreams, track emotional trends, obtain well-being reports, chat with an AI companion that remembers their entire dream history, and share dreams anonymously with the community.
 
-**Seluruh antarmuka & keluaran AI berbahasa Indonesia.**
-
-Ini adalah **frontend saja** — sebuah SPA Next.js yang memanggil backend lewat HTTP. Backend (data + AI) ada di repo terpisah.
-
-- 🖥️ **Repo ini — Frontend (SPA):** https://github.com/muhamadabel/somnia-fe
-- 🗄️ **Repo Backend (API + database + AI):** https://github.com/muhamadabel/somnia-be-
-
-> **Disclaimer** — Somnia adalah alat refleksi diri, bukan perangkat medis. Insight AI bersifat reflektif & edukatif, bukan diagnosis, dan tak menggantikan bantuan profesional kesehatan mental.
+> **Disclaimer** — Somnia is a self-reflection tool, not a medical device. AI insights are reflective and educational, not diagnostic, and do not replace professional mental health support.
 
 ---
 
-## 🧩 Arsitektur (dua aplikasi terpisah)
+## Tech Stack
 
-```
-┌────────────────────────┐        HTTPS + Bearer token       ┌────────────────────────┐
-│   Frontend (repo ini)  │  ──────────────────────────────▶  │   Backend (somnia-be)  │
-│   Next.js SPA           │   fetch(NEXT_PUBLIC_API_URL/...)  │   Next.js API + Prisma │
-│   Deploy: Vercel (gratis)│  ◀──────────────────────────────  │   Deploy: server temanku│
-└────────────────────────┘        JSON envelope + gambar      └────────────────────────┘
-```
-
-- Frontend **tidak** punya database atau AI — semua lewat API backend.
-- Login/daftar mengembalikan **token**, disimpan di `localStorage`, dikirim sebagai `Authorization: Bearer <token>` di tiap permintaan.
-- Gambar (seni mimpi/upload) juga diambil dari backend (`/api/files/...`).
-- Satu-satunya konfigurasi yang dibutuhkan frontend: **`NEXT_PUBLIC_API_URL`** (alamat backend).
+| Technology | Purpose |
+|------------|---------|
+| **Next.js 15 (App Router) + TypeScript** | Frontend framework, deployed as SPA |
+| **Tailwind CSS v4** | Utility-first styling with dark mode support |
+| **Recharts** | Data visualization and emotional trend charts |
+| **lucide-react** | Icon library |
+| **Bearer Token (localStorage)** | Authentication mechanism |
 
 ---
 
-## 🚀 Menjalankan lokal
+## Architecture
 
-Butuh **Node.js 18.18+** dan **backend yang sudah jalan** (lihat repo `somnia-be-`).
+Somnia follows a two-repo architecture. This repository contains the frontend SPA, which communicates with a separate backend via HTTP:
+
+```
+Frontend (somnia-fe)  ─── HTTPS + Bearer Token ───▶  Backend (somnia-be)
+Next.js SPA                                         Next.js API + Prisma
+```
+
+- The frontend has **no database or AI** — all data and intelligence are accessed through the backend API.
+- Authentication uses **Bearer tokens** stored in `localStorage`.
+- Images (dream art, uploads) are served from the backend (`/api/files/...`).
+- The only required configuration is **`NEXT_PUBLIC_API_URL`** pointing to the backend.
+
+**Repositories:**
+- Frontend: https://github.com/muhamadabel/somnia-fe
+- Backend: https://github.com/muhamadabel/somnia-be-
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18.18+
+- A running instance of the backend (see `somnia-be-` repository)
+
+### Local Development
 
 ```bash
 npm install
-cp .env.example .env.local      # lalu isi NEXT_PUBLIC_API_URL
-npm run dev                     # buka http://localhost:3000
+cp .env.example .env.local      # set NEXT_PUBLIC_API_URL
+npm run dev                     # opens http://localhost:3000
 ```
 
-Isi `.env.local`:
+Configure `.env.local`:
 
 ```env
-# Arahkan ke backend yang sedang berjalan:
-NEXT_PUBLIC_API_URL="http://localhost:3001"      # kalau backend lokal di port 3001
-# atau backend produksi temanku:
-# NEXT_PUBLIC_API_URL="https://be-somnia.hallojanu.xyz"
+NEXT_PUBLIC_API_URL="http://localhost:3001"      # local backend
+# NEXT_PUBLIC_API_URL="https://be-somnia.hallojanu.xyz"   # production backend
 ```
 
-> Frontend dan backend jalan di port berbeda (mis. FE 3000, BE 3001). Backend harus mengizinkan origin frontend lewat `FRONTEND_URL` (CORS) — lihat README backend.
+The frontend and backend run on different ports (e.g., FE on 3000, BE on 3001). The backend must allow the frontend origin via `FRONTEND_URL` (CORS configuration).
 
-Skrip: `npm run dev` (pengembangan), `npm run build` + `npm start` (produksi), `npm run lint`.
+### Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm start` | Start production server |
+| `npm run lint` | Run linter |
 
 ---
 
-## ☁️ Deploy ke Vercel (gratis)
+## Deployment (Vercel)
 
-1. Push repo ini ke GitHub (sudah).
-2. Di [vercel.com](https://vercel.com) → **New Project** → impor `somnia-fe`.
-3. **Environment Variables** → tambahkan:
+1. Push this repository to GitHub.
+2. Go to [vercel.com](https://vercel.com) → **New Project** → import `somnia-fe`.
+3. Add environment variables:
+
    | Name | Value |
    |------|-------|
-   | `NEXT_PUBLIC_API_URL` | `https://be-somnia.hallojanu.xyz` (URL backend, tanpa `/` di akhir) |
-4. **Deploy**. Vercel mendeteksi Next.js otomatis (build `next build`).
-5. Setelah dapat domain frontend (mis. `https://somnia.vercel.app` atau domain kustom), **beri tahu backend**: set `FRONTEND_URL` di backend = domain itu, supaya CORS mengizinkannya.
+   | `NEXT_PUBLIC_API_URL` | `https://be-somnia.hallojanu.xyz` (backend URL, no trailing slash) |
 
-> `NEXT_PUBLIC_API_URL` "dibakar" saat build. Kalau alamat backend berubah, ubah env di Vercel lalu **redeploy**.
+4. Deploy. Vercel automatically detects Next.js and runs `next build`.
+5. After obtaining the frontend domain, update the backend's `FRONTEND_URL` environment variable to match for CORS compliance.
 
-Panduan langkah demi langkah ada di [`DEPLOY.md`](DEPLOY.md).
+> `NEXT_PUBLIC_API_URL` is baked in at build time. If the backend URL changes, update the environment variable in Vercel and redeploy.
 
----
-
-## ✨ Fitur
-
-| Fitur | Keterangan |
-|-------|-----------|
-| 📝 Catat Mimpi | CRUD + draf, arsip, mood emoji, durasi tidur, lampiran gambar |
-| 🧠 Analisis AI | Ringkasan, emosi + alasan, simbol + alasan, tema, refleksi, pola lintas mimpi |
-| 🎨 Visualisasi Mimpi | **Gambar AI asli** dari emosi & simbol mimpi (bukan upload) |
-| 📈 Tren Emosi | Grafik positivitas, frekuensi emosi, keseimbangan positif/negatif |
-| 📅 Kalender | Riwayat mimpi kronologis dengan penanda emosi |
-| ✨ Pustaka Simbol | 40+ simbol + interpretasi + mimpi terkait + bookmark |
-| 📋 Laporan Kesejahteraan | Ringkasan mingguan/bulanan/tahunan + ekspor PDF |
-| 💬 Teman AI | Chat yang membaca **seluruh riwayat mimpi** — menyebut mimpi spesifik & pola |
-| 🤝 Komunitas | Berbagi anonim (nama samaran), komentar, reaksi, laporan konten |
-| 🔔 Notifikasi · ⚙️ Pengaturan · 🛡️ Admin | Notifikasi, profil/privasi/tema, moderasi |
+Detailed step-by-step instructions are available in [`DEPLOY.md`](DEPLOY.md).
 
 ---
 
-## 🧱 Teknologi (frontend)
+## Features
 
-| Pilihan | Alasan |
-|---------|--------|
-| **Next.js 15 (App Router) + TypeScript** | Semua halaman client component, di-deploy sebagai SPA |
-| **Tailwind CSS v4** | Design token konsisten, dark mode, tema "langit malam" |
-| **Recharts** | Grafik yang mudah dibaca non-teknis |
-| **lucide-react** | Ikon |
-| **Auth Bearer token (localStorage)** | Cocok untuk frontend & backend beda origin |
+| Feature | Description |
+|---------|-------------|
+| 📝 Dream Journal | Full CRUD with drafts, archive, mood emoji, sleep duration, image attachments |
+| 🧠 AI Analysis | Summary, emotions + reasoning, symbols + interpretation, themes, cross-dream patterns |
+| 🎨 Dream Visualization | AI-generated artwork from dream emotions and symbols |
+| 📈 Emotional Trends | Positivity graphs, emotion frequency, positive/negative balance |
+| 📅 Calendar | Chronological dream history with emotional markers |
+| ✨ Symbol Library | 40+ symbols with interpretations, related dreams, bookmarks |
+| 📋 Well-being Reports | Weekly/monthly/yearly summaries with PDF export |
+| 💬 AI Companion | Chat interface that references the user's full dream history |
+| 🤝 Community | Anonymous sharing, comments, reactions, content reporting |
+| 🔔 Notifications · ⚙️ Settings · 🛡️ Admin | Notification system, profile/privacy/theme settings, content moderation |
 
 ---
 
-## 📂 Struktur
+## Project Structure
 
 ```
 app/
-  (auth)/        login, register        (setToken → localStorage)
-  (app)/         halaman terproteksi (dashboard, dreams, calendar, dst.)
-  onboarding/    perkenalan
-  layout.tsx     root (tema), (app)/layout.tsx = penjaga sesi + sidebar
-components/       UI kit + komponen fitur (semua client)
+  (auth)/        Login, registration pages (setToken → localStorage)
+  (app)/         Protected pages (dashboard, dreams, calendar, etc.)
+  onboarding/    Onboarding flow
+  layout.tsx     Root layout (theme), (app)/layout.tsx = session guard + sidebar
+components/       UI kit and feature components (all client-side)
 lib/
-  client.ts      pembungkus fetch → API backend (Bearer token, fileUrl)
-  session.ts     simpan/ambil/hapus token di localStorage
-  use-api.ts     hook pemuat data (data/loading/error/reload)
-  api-types.ts   tipe respons API (aman untuk client)
+  client.ts      Fetch wrapper → backend API (Bearer token, fileUrl)
+  session.ts     Token management (localStorage)
+  use-api.ts     Data loading hook (data/loading/error/reload)
+  api-types.ts   API response types
   constants, utils
-  ai/lexicon.ts  label simbol/emosi Indonesia (data murni, dipakai UI)
-docs/            dokumen spesifikasi (00–16)
+  ai/lexicon.ts  Emotion and symbol labels (Indonesian)
+docs/            Specification documents (00–16)
 ```
 
 ---
 
-## 🔒 Catatan keamanan
+## Security Notes
 
-- Token disimpan di `localStorage` dan dikirim sebagai header `Authorization: Bearer`.
-- Respons `401` otomatis menghapus token dan mengarahkan ke `/login`.
-- File `.env.local` (berisi `NEXT_PUBLIC_API_URL`) tidak ikut ke Git.
-- Semua validasi kepemilikan, rate limiting, hashing kata sandi, dan penyimpanan file ada di **backend**.
+- Tokens are stored in `localStorage` and sent as `Authorization: Bearer` headers.
+- A `401` response automatically clears the token and redirects to `/login`.
+- `.env.local` (containing `NEXT_PUBLIC_API_URL`) is excluded from Git.
+- All ownership validation, rate limiting, password hashing, and file storage are handled by the **backend**.
