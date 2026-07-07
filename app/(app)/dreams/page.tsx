@@ -61,7 +61,7 @@ export default function DreamsPage() {
         <div className="flex gap-2">
           <SearchBar name="q" defaultValue={q} placeholder="Cari mimpi…" aria-label="Cari mimpi" />
           <button type="submit" className="bg-night-600 hover:bg-night-700 text-white text-sm font-medium rounded-full px-5 cursor-pointer transition-colors">
-            Terapkan
+            Cari
           </button>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:max-w-md">
