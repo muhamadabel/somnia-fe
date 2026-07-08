@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: { default: APP_NAME, template: `%s — ${APP_NAME}` },
   description:
     "Somnia adalah jurnal mimpi bertenaga AI yang membantumu memahami diri — catat mimpi, temukan pola emosi, simbol berulang, dan insight reflektif.",
-  icons: { icon: "/icon-white.png" },
+  icons: { icon: "/icon.png" },
 };
 
 // Default to light theme; ThemeApplier switches according to saved preference.
