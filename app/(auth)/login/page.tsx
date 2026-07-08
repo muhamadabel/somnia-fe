@@ -163,6 +163,13 @@ export default function LoginPage() {
               Masuk
             </Button>
           </form>
+
+          <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-500 space-y-1">
+            <p className="font-semibold text-slate-600">Akun Demo</p>
+            <p>Email: <code className="text-slate-700">demo@somnia.app</code> / Sandi: <code className="text-slate-700">dream1234</code></p>
+            <p className="font-semibold text-slate-600 mt-2">Admin</p>
+            <p>Email: <code className="text-slate-700">admin@somnia.app</code> / Sandi: <code className="text-slate-700">admin1234</code></p>
+          </div>
         </div>
       ) : (
         <div className="animate-fade-in">
